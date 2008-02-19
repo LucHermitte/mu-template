@@ -1,0 +1,8 @@
+VimL:" $Id$
+VimL:"{xsl:if} Template, Luc Hermitte, 30th Jul 2003
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = '¡'
+VimL: let s:reindent = 1 
+<xsl:if test="¡Marker_Txt('condition')¡">
+¡Marker_Txt()¡
+</xsl:if>
