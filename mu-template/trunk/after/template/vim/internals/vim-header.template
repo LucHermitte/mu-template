@@ -1,0 +1,19 @@
+VimL: " $Id$
+VimL: "«Vim» scripts header Template File, Luc Hermitte
+"=============================================================================
+" ¡'$'¡Id$
+" File:		¡expand("%:t")¡                                           {{{1
+" Author:	¡Author()¡
+" Version:	<+version+>
+" Created:	¡DateStamp()¡
+" Last Update:	¡'$'¡Date$
+"------------------------------------------------------------------------
+" Description:	<+description+>
+" 
+"------------------------------------------------------------------------
+" Installation:	<+install details+>
+" History:	<+history+>
+" TODO:		<+missing features+>
+" }}}1
+"=============================================================================
+

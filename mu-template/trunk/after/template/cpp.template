@@ -1,0 +1,7 @@
+VimL:" $Id$
+VimL:" C/C++ File Template, Luc Hermitte, 30th mar 2003
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: call s:Include( (expand("%:e") =~ '^hh\=$\|^hpp$') ?'c-header' : 'c-imp', 'c/internals')
