@@ -1,0 +1,727 @@
+*mu-template.txt*	Utility for loading and expanding template-files
+*mu-template.vim*	For Vim version 7+	Last change: 15th Feb 2008
+*µTemplate*
+
+		    µTemplate MANUAL	by Luc Hermitte (LH)
+		    Version 2.0.0
+
+
+==============================================================================
+CONTENTS                                    *MuT-contents*     {{{1
+|MuT-presentation|	Presentation
+|MuT-features|		Features
+|MuT-syntax|		Template-files syntax
+|MuT-config|		Configuration
+|MuT-design|		Design considerations
+|MuT-files|		Files
+|MuT-external-plugins|	Other plugins of interest
+|MuT-trojan-horse|	Security concerns
+|MuT-credits|		Credits
+|add-local-help|	Instructions on installing this file
+
+}}}1
+==============================================================================
+PRESENTATION                                *MuT-presentation* {{{1
+
+µTemplate is a template-files loader for Vim. Once loaded, templates are
+interpreted and expanded according to a flexible syntax (|MuT-syntax|).
+
+Note: Every time you read "I", "me" or "my", consider that I, Luc Hermitte, have
+written this documentation.
+
+------------------------------------------------------------------------------
+{{{2 Template-files paths              ~
+					    *MuT-paths*
+
+The template-files are searched within a list of directories specified by
+|{runtimepath}/template/| and by |$VIMTEMPLATES|. 
+
+*{runtimepath}/template/* refers to 'template/' subdirectories, built from the
+list of directories specified in the 'runtimepath' vim-option. 
+
+*$VIMTEMPLATES* is a comma (or semicolon) separated list of directories. When
+set, it has precedence over paths of the form |{runtimepath}/template/|.
+
+
+Precedence~
+By default, the template-files should be installed into your
+$HOME/.vim/after/template/ directory. ($HOME/vimfiles under windows systems ...
+cf. 'runtimepath' for other acceptable directories ; prefer the after/
+sub-hierarchy).
+
+Hence, you can easily override a default template-file by yours. Put your file
+into your $HOME/.vim/template/ directory.
+
+
+Sharing template-files~
+As template-files are searched within a list of directories, sharing them
+between several people or teams becomes really easy. There are several ways to
+proceed:
+- put all the template-files into $VIM/vimfiles/after/template/
+  At this point, VIM administrators (often known as system administrators) on
+  your environment should not let anybody add new template-files to the common
+  repository. Cf. |MuT-trojan-horse|.
+- Import the configuration from another VIM user by adding '~hislogin/.vim' to
+  your 'runtimepath'. By doing so, you will use the plugin and ftplugins he is
+  using, but also the template-file he uses. 
+- More interresting, on a project you work on with other VIM users, you can
+  share a directory (directly, or through a CVS/SVN base) with everybody and
+  set |$VIMTEMPLATES| point to this directory.
+
+					*MuT-multiprojects*
+  If you are working on several projects, you can use for instance Aric Blumer's
+  |project| plugin and set |$VIMRUNTIME| to a specific value with every
+  different project. We can also rely on plugins like |MuT-local_vimrc|.
+  It is not very handy yet, I'm opened to any suggestion.
+
+Note: Every time you share template-files with other people, be sure that these
+template-files are not |MuT-trojan-horse|s. Actually, it is exactly the same
+issue as using someone else's plugins.
+
+Note: Since Version 2.0.0 template-files naming policy has drastically
+changed. From "template.{id}", it has become "{id}.template". Here is a little
+oneliner that may help you convert filenames (the *nix tools find, xargs, and
+perl are required) >
+ find /some/pathname/ -name "template.*" | perl -pe 's/(.*)(template)\.(.*)/$1$2.$3 $1$3.$2/ ' | xargs -l1 mv
+I'm quite sure there are simplier solutions when we are true Perl mongers.
+(NB: be sure to exclude {rtp}/ftplugin/template.vim which is a |ftplugin|,
+its name must not be changed)
+
+
+------------------------------------------------------------------------------
+{{{2 Loading template-files            ~
+					    *MuT-load*
+
+There are several ways to load template-files:
+- Automatic expansion .... |MuT-autoload|
+- Explicit expansion ..... |:MuTemplate|
+- Insert-mode expansion .. |i_CTRL-R_TAB|
+- Through the menu ....... |MuT-menu|
+
+
+{{{3 Automatic expansion of templates when opening new files   ~
+					*MuT-autoload*
+    When opening a new file, if |g:mt_IDontWantTemplatesAutomaticallyInserted|
+    is false, then the first template-file found whose name matches:
+	{path}/{filetype}.template
+    is loaded and interpreted.
+
+    {path} refers to directories listed within |{runtimepath}/template/| or
+    |$VIMTEMPLATES|.
+    {filetype} refers to the |filetype| of the new file.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+{{{3 Explicit expansion of template-files                      ~
+					*:MuTemplate*
+    We can explicitly load and interpret the template-file whose name matches:
+	{path}/{extension}.template
+    thanks to the command:
+	:MuTemplate {extension}
+	
+    Note: {path} still refers to directories listed within |$VIMTEMPLATES| or
+    |{runtimepath}/template/|.
+
+
+    The code snippets associated to a particular filetype can be accessed thanks
+    to the call:
+	:MuTemplate {ft}/{code}
+    which loads and interprets the template-file whose name matches:
+	{path}/{ft}/{code}.template
+
+    Note: The filetype of the current file does not need to be the same as {ft}.
+
+    Note: A partially successful auto completion is implemented. As
+    :MuTemplate expects {ft}/{code}, and as vim filters the acceptable
+    parameters to commands (when auto completion is triggered), the auto
+    completion works best on "*/pattern". e.g.: >
+	:MuTemplate */f<tab>
+					
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+{{{3 Insert-mode expansion of template-files                   ~
+					*i_CTRL-R_SPACE* *i_CTRL-R_TAB*
+    This plugin defines two default insert-mode mappings:
+    (*) i_CTRL-R_SPACE 
+	uses as a {pattern}: the keyword (check 'iskeyword') before the cursor.
+    (*) i_{WORD}_CTRL-R_TAB
+	uses as a {pattern}: the |WORD| before the cursor.
+
+    ]Contrary to |expand()|, "before" means "whose first character is placed on
+    ]a column prior to the column where is cursor is".
+
+    The work of the mappings consists in:
+    - listing all the template-files whose names match:
+	 {path}/{filetype}-{pattern}.template 
+      or {path}/template/{filetype}/{pattern}.template
+      NB: template-files may come from the ones inherited from another
+          filetype (see |g:mt_inherited_ft_for_{filetype}|.
+    - If there are several matches, the user will have to choose one template-
+      file.
+    - The template-file thus selected is inserted in place of the (key)word
+      before the cursor.
+
+      If there were characters before and after the word, the line is not split.
+      For instance, let's suppose the xslt line: >
+	blah xsl:val foo
+<     with the cursor just after "val". 
+      Hitting CTRL-R_TAB expands the line into: >
+        blah <xsl:value-of select=«XPath»/> foo
+
+<   In order to replace these mapping keybindings with some you found more
+    ergonomic, see |<Plug>MuT_ckword|.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+{{{3 Through the menu                                          ~
+    See |MuT-menu|.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+{{{3 Filetype inheritance                                      ~
+				    *g:mt_inherited_ft_for_{filetype}*
+The template-files to expand are searched according to the current |filetype|.
+Sometimes, we want to reuse the template-files written for other filetypes.
+For instance, a C code-snippet is likely to be usefull in C++.
+
+There several two ways to achieve this:
+- If every template-files from a given {root-filetype} are acceptable with another
+  {filetype}, then we can set the global option
+  |g:mt_inherited_ft_for_{filetype}| to {root-filetype}. By default,
+  mu-template makes C template-files available in C++, Java and C# thanks to: >
+    let g:mt_inherited_ft_for_cpp    = 'c'
+    let g:mt_inherited_ft_for_java   = 'c'
+    let g:mt_inherited_ft_for_csharp = 'c'
+< If you don't want these default settings, then set these variables to an
+  empty string ('') in your |.vimrc|.
+  
+  @todo: support list of filetypes.
+
+- On a file per file basis, we can call |s:Include()| in order to import the
+  definition from a template-file into another one. This approach will require
+  as many template-files in the leaf filetype, as template-files from the
+  {root-filetype} we want to support.
+
+- We can also on the operating system, and more precisely, on the file
+  system's links (hard links, symbolic links, connection points (? -- NTFS)) 
+
+
+==============================================================================
+FEATURES                                    *MuT-features*     {{{1
+
+{{{2 Markers -- a.k.a `placeholders'   ~
+				 				*MuT-markers*
+
+    {{{3 Inserting markers                           ~
+							    *MuT-Marker_Txt()|*
+    This plugin supports |markers| -- also known as |placeholders| in Srinath
+    Avadhanula's imaps.vim plugin, and vim-latex.
+    
+    To benefit (of?) the power of advanced markers systems, you can:
+    - either directly write "<+{marker/placeholder-text}+>" in your
+      template-file, 
+    - or use the function |Marker_Txt()| within your template-files -- or even
+      |Marker_Open()| or |Marker_Close()|.
+    The text will be expanded into "«{parameter}»", "<+{parameter}+>" or
+    whatever according to your configuration and your environment. See
+    |marker|.
+
+    Almost every default template-files are already relying on this feature.
+    
+    All the definitions required to take advantage of the markers are defined
+    into |bracketing.base.vim|, which comes from |lh-map-tools|.
+    Right now, they are compatible with my |markers| system and Srinath
+    Avadhanula's |placeholders| system. However, to use his configuration
+    variables instead of mine, don't forget to set |g:use_place_holders| to 1.
+
+    If you want to develop or support another n-th markers system, then you will
+    have to define these three functions in a plugin that MUST be placed into
+    one of your {runtimepath}/after/plugin/ directories (not just
+    {rtp}/plugin/), and to define as well the mappings to |!jump!| -- see
+    |MuT-!jump!|. 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    {{{3 Jumping to markers                          ~
+							  |!jump!| *MuT-!jump!*
+    |bracketing.base.vim| also proposes some default mappings that jump to the
+    next marker. These mappings are required by µTemplate.
+
+    Note: This means that by default, the jumping-forward function from my
+    |markers| system will be used. The jumping functions defined are quite
+    accurate (they handle multi-characters markers, multi-byte characters, don't
+    mess when jumping to markers hidden within folds, etc), very flexible
+    (through options), and can jump forward and backward.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    {{{3 Automatic jump to the first marker          ~
+		    *b:mt_jump_to_first_markers* *g:mt_jump_to_first_markers*
+    After a template-file has been loaded and expanded, the cursor is moved to
+    the first |marker| encountered. If the marker is within a fold, then the
+    fold will be opened and the marker selected.
+
+    Sometimes, we define scripts that generate code. Usually, these scripts 
+    will expect neither the cursor to move on its own, nor to be in
+    |Select-mode|. 
+    In order to not mess things up this plugin defines the option
+    |g:mt_jump_to_first_markers|, which must be set to 0.
+
+    So, when a new buffer is created, we can prevent µTemplate from jumping to
+    the first marker. For instance, my |lh-cpp|-ftplugins detects µTemplate
+    presence on the system, and sets off this options while generating code. If
+    you are using such a tool unable to work with µTemplate, patch it
+    (contacting the author is even better) to integrate something like: >
+      if exists('g:mu_template') && 
+	    \ (   !exists('g:mt_jump_to_first_markers') 
+	    \  || g:mt_jump_to_first_markers)
+	" NB: g:mt_jump_to_first_markers is true by default
+	let mt_jump = 1
+	let g:mt_jump_to_first_markers = 0
+      endif
+      
+      ... where a new buffer is opened and filled ...
+
+      if exists('mt_jump')
+        let g:mt_jump_to_first_markers = mt_jump
+        unlet mt_jump
+      endif
+
+------------------------------------------------------------------------------
+{{{2 Other features of interest        ~
+
+    {{{3 Syntax easy to enhance                      ~
+
+    The syntax is only limited by VimL's syntax. See |MuT-syntax|.
+    Thus, you can add |plugins| of our own that define new |functions| or
+    |:command|s that you can use within your own template-files.
+
+    Right now, you can use all the builtin-|functions| that Vim proposes plus
+    some wrappers I propose with µTemplate (see |MuT-Marker_Txt()|,
+    |s:Include()|) and |ui-functions.vim|.
+
+    In |lh-cpp|, a few functions constitute an API (|lh-cpp-API|) that can be
+    used to analyze C++ code. For instance, |Cpp_SearchClassDefinition()|
+    tells the complete name of the current class. 
+    Note also the command |:DOX| that parses C++ functions signature and then
+    relies on mu-template to insert a doxygen template-comment listing every
+    parameters from the function.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    {{{3 Other things provided if not yet defined ...~
+    *g:author* *Author()*	([$USER/$USERNAME]/"")
+    This function is used in some templates.
+    - Author([0]) tries to return in order: b:author, or g:author, or
+      $USERNAME (win32), or $USER (unix), or an empty string
+    - Author(1) tries to return in order: b:author_short, or g:author_short,
+      or $USERNAME (win32), or $USER (unix), or an empty string
+
+    *DateStamp()*
+    Used in some templates. See this function as a overrideable |strftime()|.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    {{{3 Menus                                       ~
+					    *MuT-menu*
+
+    µTemplate will propose a |menu| on systems that support them.
+    The placement of the menu can be adjusted thanks to the two options:
+    |g:mt_menu_priority| and |g:mt_menu_name|.
+
+    The menu-items are based on the template-files detected on your system ;
+    see |MuT-paths|:
+    - First, it lists all the skeletons that can be used when a new buffer is
+      created
+    - Then, it lists the different filetypes for which there are code snippets
+    - Finally, the last menu item permits to rebuild the menu when some
+      template-files are added or deleted from the system.
+    
+
+==============================================================================
+TEMPLATE FILES SYNTAX                       *MuT-syntax*       {{{1
+
+{{{2 Syntax                            ~
+    ¡|expression|¡					*MuT-expression*
+	is expanded into the result of the VimL {expression}.
+	If the {expression} results into an empty line, this empty line is
+	trimmed.
+	The characters delimiting the {expression} can be changed thanks to
+	|s:value_start| and |s:value_end|.
+    
+    VimL: {VimL-instruction}				*MuT-intruction*
+	{VimL-instruction} is an Ex command that is executed.
+	This statement is expanded into an empty string, 
+	Note however that this command must not attempt to modify the current
+	buffer, or directly change the |s:content| of the lines being added.
+	This may lead to an undefined behaviour.
+
+------------------------------------------------------------------------------
+{{{2 How-To                            ~
+					    *MuT-howto*
+
+Q:  "How can I automate the insertion of |markers|/placeholders matching my
+    current configuration (defined in lh's bracketing.base.vim, or in Srinath
+    Avadhanula's imaps.vim)?"
+A:  There are two ways to accomplish that.
+    1- With |Marker_Txt()| >
+	¡Marker_Txt('comment text')¡
+<							*MuT-<++>*
+    2- It is also possible to just type >
+	<+comment text+>
+<   which simplifies the syntax of the template-file.
+    The "<+" and "+>" will be replaced by the current markers characters. In
+    order to use other characters, in the template-file (only!), just set
+    *s:marker_open* and *s:marker_close* to anything you like. for instance: >
+	VimL: let s:marker_open  ='<<<'
+	VimL: let s:marker_close ='<<<'
+	Some text <<<the placeholder to replace>>> other text.
+
+Q:  "How can I insert the current date?"
+A:  Use |MuT-expression| with a VimL function that returns the current date. >
+	¡strftime({format})¡
+<   check |strftime()|, and |DateStamp()|
+
+Q:  "How can I insert the name of the current file?"
+A:  Use |MuT-expression| with a VimL function that returns the name of the
+    current file. >
+	¡expand('%:t')¡
+<   check |expand()|
+
+Q:  "How can I insert my name?"
+A:  Have it stored in a VimL variable and use a |MuT-expression|.
+    Note that mu-template tries to deduce it, the result is stored in
+    |g:author|. If you only need one version of your name in a given project
+    (|MuT-multiprojects|), you'd rather set |g:author| yourself.
+    Examples of use: >
+	Maintainer: ¡g:author¡
+<   Prefer |Author()|in case its value may change depending on the filetype,
+    ... >
+	Maintainer: ¡Author()¡
+
+Q:  "How can I store the result of a expression into a variable?"
+A:  Use the VimL instruction |:let|, and make the scope of the variable to be
+    either |s:var|, |b:var|, |w:var| or |g:var|. 
+    |local-variables| can not be used. 
+    Ex.: >
+        VimL: let s:my_variable = 1 + 2
+<   However, note that some script-symbol are reserved and must not be used. See
+    |MuT-reserved-symbols|.
+
+Q:  "How can I interactively insert things?"
+A:  Use interactive functions like |confirm()|, |input()|, ..., or their
+    wrappers from |ui-functions.vim|. >
+	VimL: let s:choice = CONFIRM('prompt', "&Yes\n&No", 2)
+	¡IF(s:choice, 'I agree', 'I disagree')¡
+
+	VimL: let s:name = INPUT('what name ?')
+	The name chosen is ¡s:name¡
+<   Examples: check cpp/class.template
+
+Q:  "How can I select which group of lines to insert depending on a given
+    criteria?"
+A:  If you want to insert a lot of lines according to a given case (for
+    instance, vim ftplugins, plugins, syntax files, etc. are quite different
+    and required specialized skeletons), you'd better use |s:Include()|
+    instead of |IF()|.
+    Examples: check c.template, vim.template
+
+Q:  "How can I re-indent the lines inserted?" 		*s:reindent*
+A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
+    be automatically re-indented according to the current indent scheme. >
+	VimL: let s:reindent = 1
+<   Examples: check */*.template.
+
+Q:  "How can I load another skeleton?"			*s:Include()*
+A:  This can be achieved with the special function |s:Include()|.  >
+	VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
+<   Examples: check c.template that loads the template-file for C header
+    files, or C implementation files according to the current buffer's file
+    extension (.h or .c)
+
+Q:  "How can I change the expression delimiters?"	*s:value_start* *s:value_end*
+A:  Just change the special variables |s:value_start| and |s:value_end|.
+    Doing so can help us release the default latin1 character used (¡ ==
+    Spanish inverted exclamation mark). I must admit I do not know how the
+    character 0xa1 translates in other encodings.
+    Any string is fine here. As long it is not expected to have it plainly
+    written in the template-file. For instance, avoid '{' and '}' in C++ code
+    snippets.
+
+    Note: this option is not just cosmetic, it enables us to have a
+    template-file used in different 'encoding's. See also |MuT-encodings|.
+    >
+	VimL: let s:value_start  = '%((('
+	VimL: let s:value_end    = '%)))'
+	Creation date: %(((strftime(%c)%)))
+
+Q:  "How comments are written in the template-file?"
+A:  "VimL:" introduces Ex commands (|MuT-intruction|).  This means comments
+    are lines starting with a double |:quote|. >
+	VimL:" This is a comment that won't be inserted.
+
+Q:  "I want to use expressions that expands on several lines, but mu-template
+    keeps doing funny things: it joins lines that should not"
+A:  Be sure the expression to expand does not end with a "\n". You may want to
+    append a neutral space. >
+	VimL: let s:expr = "first line\nsecond line\n "
+	text ¡s:expr¡
+	text
+<   «todo: check if it concerns every ending \n, or only strings strictly equal to "\n"»
+
+					*MuT-loops* *MuT-instruction-injection* 
+    You can also inject text (or even |MuT-instruction|) into |s:content| with: >
+        VimL: call extend(s:content.crt, {'first line', 'VimL: echomsg "foo"}, s:content.crt+1)
+<   but I wouldn't advice such practices as they can get deprecated at anytime.
+    You'd better define complex functions in |autoload| plugins instead, or
+    even use |s:Include()| recursively or not.
+    
+Q:  "How can I make CVS/Subversion ignore special tags in a template-file?"
+A:  There is a nasty trick accomplished with |MuT-expression|: >
+	¡'$'¡Id$
+
+Q:  "How can I use template-files from another filetype?"
+A:  Set the corresponding |g:mt_inherited_ft_for_{filetype}| variable in your
+    |.vimrc|.
+    Example, to accept all xml template-files when editing xslt files: >
+	let g:mt_inherited_ft_for_xslt = 'xml'
+
+Q:  "When I expand my template-file, I get funny characters"
+A:  If your |MuT-expression|s are not expanded, be sure to:
+    - explicitly set |s:value_start| and |s:value_end|
+    - save your template-file in utf-8 (see next Q/A)
+    If the text you want to insert contains non ASCII characters and that your
+    are not working in latin1, nor in utf-8. I'm afraid I have no answer yet.
+    Anyway, let me know.
+
+Q:  "I want to write a template-file, but I do not succeed to have a utf-8
+     file."
+A:  To save your template-file in utf-8, save it with >
+	:w ++enc=utf-8
+<   See |++enc|, 'encoding', and |MuT-encodings| 
+
+Q: *s:path_from_root()*
+A:
+
+Q: "How may I now the line number of the current line in the final buffer?" *s:Line()*
+A: This information can be obtained thanks to a call to |s:Line()|
+
+Q: "How may I know the content of the lines being expanded?" *s:content*
+A: The |Dictionary| |s:content| contains the lines already interpreted, and
+those that will be. Its fields are:
+   - "lines": a |List| of all the lines,
+   - "start": line number where the first line of a:content.lines will be
+     inserted,
+   - "crt": number of the line being currently interpreted.
+   NB: This is an implementation detail. This can be deprecated at moment.
+
+------------------------------------------------------------------------------
+{{{2 Encoding issues                   ~
+						    *MuT-encodings*
+
+After many trials and errors, I came up to the conclusion that template-files
+must be encoded in utf-8. Whatever 'encoding' we are running vim within.
+
+So far, this approach has been successfully tested on:
+- a Windows XP box, with vim compiled with |+multi_byte|, in latin1 as well as
+  in utf-8 
+- a Sun Solaris system, with vim not compiled with |+multi_byte|
+- «test on Linux -> Zdenek feedback»
+
+I had partially successful results on my French XP box, with vim running in
+latin2. 
+- |MuT-expression|s were correctly expanded (with |s:value_start| and
+  |s:value_end| both set to a non ASCII character)
+- Simplified textual placeholders (|MuT-<++>|) were correctly replaced with my
+  non ASCII marker characters («»).
+- However, non ASCII characters (even «») were not correctly translated in
+  latin2. In latin1, I had no such problems.
+  Please note that my version of vim is compiled with |+iconv/dyn|. However,
+  neither "has('iconv')", nor "has('iconv/dyn')" return 1.
+
+The completely unsuccessful approach was to have the template-file in latin1,
+and load them in a buffer while being in utf-8. To be more exact, it worked
+only with |s:value_start| and |s:value_end| set to plain ASCII characters (1
+or more characters coded on 7bits) -- in that case, the main difficulty is to
+avoid meaningful characters like "!" in C template-files. 
+
+
+THIS MEANS
+As a consequence, do not try to have non-utf-8 template-files that contain
+non-ASCII characters.
+
+Note: If vim is not compiled with |+multi_byte| support, template expansion
+will still work correctly (even with template-files in utf-8), however
+NON-ASCII characters cannot be converted.
+
+------------------------------------------------------------------------------
+{{{2 Reserved symbols                  ~
+						    *MuT-reserved-symbols*
+
+Several symbols are reserved and you must NOT use them in your template-files.
+The correct execution of the plugin can not be guarantied otherwise.
+
+The exhaustive list of the reserved symbols is:
+- s:content, s:r, s:NeedToJoin
+- s:menu_prio, s:menu_name, s:AddMenu(), s:BuildMenu(),
+- s:Interpret(), s:InterpretValues(), s:InterpretValue(),
+  s:InterpretCommand(), s:InterpretLines(),
+- s:Template(), s:TemplateDirs(), s:LoadTemplate s:SearchTemplates(),
+- s:CheckDeps(), s:Option().
+- s:NoRegex(), s:Marker(), s:Value(), s:Command(), s:Comment()
+
+@todo all variables starting will a double underscore will be reserved.
+
+==============================================================================
+CONFIGURATION                               *MuT-config*       {{{1
+
+{{{2 Options                           ~
+    *b:mt_how_to_join* *g:mt_how_to_join*
+	Used only with |i_CTRL-R_TAB|.
+	== 0 : "{pattern}^r\t foo" -> "{the template}\nfoo"
+	== 1 : "{pattern}^r\t foo" -> "{the template} foo"
+	== 2 : "{pattern}^r\t foo" -> "{the template}«» foo"
+
+    |b:mt_jump_to_first_markers| |g:mt_jump_to_first_markers| (bool; default 1)
+	Specifies whether we want to automatically jump to the first |marker|
+	inserted. Mainly aimed at |ftplugin| writers who wish to be compatible
+	with µTemplate.
+
+    *g:mt_IDontWantTemplatesAutomaticallyInserted*  (boolean; default: 0)
+	Forbids µtemplate from automatically inserting template-files when
+	opening new files.
+
+    *g:mt_menu_priority* (number/string; default: 59)
+    *g:mt_menu_name* (string; default: "&Templates")
+	These two options enable µTemplate's menu to be placed wherever we wish
+	it to be. For instance: >
+            let g:mt_menu_priority = '40.700'
+            let g:mt_menu_name     = '&Tools.Templates'
+<       Must be set once before mu-template.vim is sourced -> .vimrc
+
+------------------------------------------------------------------------------
+{{{2 Mappings                          ~
+    *<Plug>MuT_ckword* 
+    *<Plug>MuT_cWORD*
+
+To override the default INSERT-mode mappings used to insert and expand
+template-files, choose a key sequence that suits you best, and :imaps it to
+|<Plug>MuT_ckword| or |<Plug>MuT_cWORD| in your |.vimrc|. e.g. >
+    imap ` <Plug>MuT_cWORD
+    imap ² <Plug>MuT_ckword
+
+
+==============================================================================
+DESIGN CONSIDERATIONS                       *MuT-design*       {{{1
+
+Out there, there are several other template-expander plugins that use a
+predefined set of "expandable" tags.
+µTemplate, on the contrary, does not use any predefined set of tags. Instead,
+it expands VimL |expression|s and interpret VimL commands. Thus, we can expand
+almost any kind of tags we wish to. Our possibilities are limited only by
+VimL.
+
+
+mu-Template.vim is best placed in a {rtp}/after/ directory. This way, several
+things (like the bracketing and marker systems) can be overridden before this
+plugin is initialized.
+
+The default template-files, shipped with the vimball archive, are also best
+placed into a {rtp}/after/ directory. Thus, it leaves us the possibility to
+override them. See |MuT-paths|.
+
+       
+µTemplate uses some other plugins. I (LH)'d rather use one (even complex) plugin
+that defines a feature I need in several places, instead of copying an
+over-simplified and limited version of the functions defined in that plugin in
+every other (ft)plugin that need this specific feature. 
+In other words, I prefer modularity over redundancy. That's why µTemplate
+depends on other plugins.
+
+
+==============================================================================
+FILES                                       *MuT-files*        {{{1
+
+Mu-Template depends on:
+- |lh-vim-lib|
+- |lh-map-tools|
+- |searchInRuntime|
+
+{runtimepath}/  ($HOME/.vim/ or $HOME/vimfiles/ ; cf. 'runtimepath')
++-> doc/                                         {{{2
+|   |  Don't forget to execute ':helptags $HOME/.vim/doc'
+|   +-> |mu-template.txt|  : this file
+|
++-> plugin/                                      {{{2
+|   +-> *ui-functions.vim*				supported
+|        defines functions that will ease the definition of template-files.
+|        Required by the template-files: vim.template, cpp/class.template, ...
+|
++-> after/plugin/                                {{{2
+|   +-> |mu-template.vim|
+|        The main file of this plugin
+| 
++-> after/template/                              {{{2
+|   +-> *.template	\ template-files for |mu-template|
+|   +-> *		/ 
+| 
++-> syntax/                                      {{{2
+    +-> 2html.vim : override $VIMRUNTIME/syntax/2html.vim in order that
+         mu-Template does not mess up with ":runtime syntax/2html.vim"
+
+
+All the corresponding |vimball|s can be obtained from
+<http://code.google.com/p/lh-vim>.
+
+==============================================================================
+OTHER PLUGINS OF INTEREST                   *MuT-external-plugins* {{{1
+
+|local_vimrc|					*MuT-local_vimrc*
+<http://hermitte.free.fr/vim/ressources/vimfiles/plugin/local_vimrc.vim>
+<http://www.vim.org/scripts.php?script_id=727>
+
+|lh-cpp-readme|					*MuT-lh-cpp*
+<http://hermitte.free.fr/vim/c.php>
+<http://hermitte.free.fr/vim/ressources/lh-cpp.tar.gz>
+<http://www.vim.org/scripts.php?script_id=336>
+<http://code.google.com/p/lh-vim/wiki/lhCpp>
+
+Note: This set of ftplugins contains many C&C++ specific code-snippets that
+are not shipped with mu-tempate.
+
+
+==============================================================================
+SECURITY CONCERNS                           *MuT-trojan-horse* {{{1
+
+Out there, there are several template expanders that strictly limit the set of
+expressions they can understand and expand. With this plugin, the opposite
+approach has been chosen: any VimL |expression| or statement correctly
+introduced will be interpreted and expanded.
+
+As a consequence, any one can write a template |trojan-horse| that this plugin
+will execute automatically. You can argue that is a backdoor. Yes indeed. It is
+a backdoor as well as |plugin|s and |ftplugin|s are. As you won't install and
+activate plugins or ftplugins from untrusted sources, DO NOT install or share
+template-files from untrusted sources.
+
+This being said, the usual recommendations apply: do not fly a plane, pilot an
+atomic plant or conduct any other important activity while this plugin is
+running.
+
+
+This plugin is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  
+
+
+==============================================================================
+CREDITS                                     *MuT-credits*      {{{1
+
+Gergely Kontra:		Author of the first version of µTemplate
+Luc Hermitte (LH):	Author of this enhanced version and this documentation
+Robert Kelly IV:	For his insight and the ideas he gave me (LH)
+
+	* Robert Kelly IV's |fte.txt| proposes a nice way to post process the
+	  skeleton inserted. ie. mu-template.vim can be used for immediate GUI
+	  interactions, and |:FTE| to treat delayed expansions that need more
+	  attention from the developper.
+
+                                                                           }}}1
+==============================================================================
+ © Luc Hermitte, 2001-2008, <http://hermitte.free.fr/vim/>		{{{1
+ $Id$
+ VIM: let b:VS_language = 'american' 
+ vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
+ vim600:fdm=marker:

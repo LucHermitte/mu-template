@@ -1,0 +1,6 @@
+VimL: " $Id$
+VimL: "«Vim» autoload plugin Template File, Luc Hermitte
+let s:cpo_save=&cpo
+set cpo&vim
+"------------------------------------------------------------------------
+

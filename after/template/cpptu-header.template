@@ -1,0 +1,11 @@
+VimL: " $Id$
+VimL: "C++ CXXTest File-Template, Luc Hermitte
+VimL: let s:TUName = expand('%:t:r')
+#include <cxxtext/TestSuite.h>
+
+class ¡s:TUName¡ : public CxxTest::TestSuite
+{
+public:
+    void test_<+fct+>();
+};
+
