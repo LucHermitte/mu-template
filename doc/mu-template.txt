@@ -3,7 +3,7 @@
 *µTemplate*
 
 		    µTemplate MANUAL	by Luc Hermitte (LH)
-		    Version 2.0.0
+		    Version 2.0.1
 
 
 ==============================================================================
@@ -542,9 +542,18 @@ THIS MEANS
 As a consequence, do not try to have non-utf-8 template-files that contain
 non-ASCII characters.
 
-Note: If vim is not compiled with |+multi_byte| support, template expansion
-will still work correctly (even with template-files in utf-8), however
-NON-ASCII characters cannot be converted.
+							    *s:fileencoding*
+If you need to insert non-ASCII characters with a template-file, tell
+mu-emplate to convert all the lines expanded to the current encoding by
+setting: >
+    VimL: let s:fileencoding = 'utf-8'
+However ...
+
+WARNING~
+... if vim is not compiled with |+multi_byte| support, template expansion will
+still work correctly (even with template-files in utf-8), however NON-ASCII
+characters cannot be converted. If you need such characters in your
+template-files, save them in the encoding you are using with vim.
 
 ------------------------------------------------------------------------------
 {{{2 Reserved symbols                  ~
@@ -553,7 +562,7 @@ NON-ASCII characters cannot be converted.
 Several symbols are reserved and you must NOT use them in your template-files.
 The correct execution of the plugin can not be guarantied otherwise.
 
-The exhaustive list of the reserved symbols is:
+The (non) exhaustive list of the reserved symbols is:
 - s:content, s:r, s:NeedToJoin
 - s:menu_prio, s:menu_name, s:AddMenu(), s:BuildMenu(),
 - s:Interpret(), s:InterpretValues(), s:InterpretValue(),
