@@ -3,7 +3,7 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	1.0.0
+" Version:	2.0.0
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------

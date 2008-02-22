@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://hermitte.free.fr/vim/>
 " Last Update:  $Date$
-" Version:	2.0.0
+" Version:	2.0.1
 "
 " Initial Author:		Gergely Kontra <kgergely@mcl.hu>
 " Last Official Version:	0.11
@@ -199,6 +199,11 @@
 "	(*) Bug fix: Problem when modeline activates folding and we try to jump
 "	    to the first marker.
 " 	(*) Bug fix: the first thing in the first line must not be a marker
+" 	v2.0.1
+" 	(*) Bug fix: Work around the regression on the encoding issue
+" 	    introduced with the new kernel in v2.0.0
+" 	    -> new variable: s:fileencoding for template-files that have
+" 	    characters in non ASCII encodings
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -219,6 +224,9 @@
 "	  takes the encoding of the file to load as a parameter. Or play with
 "	  iconv() in |MuT-expression|s.
 "	- Change the names of internal variables to something like s:__{variable} 
+"	- Find some way to push/pop values into variables for the scope of a
+"	  call to s:Include. Will be useful with s:fileencoding, s:marker_open,
+"	  ...
 "
 "}}}1
 "========================================================================
@@ -518,6 +526,10 @@ function! s:InterpretLines(first_line)              " {{{2
   endwhile
 endfunction
 
+function! s:Reencode()
+  call map(s:content.lines, 'lh#encoding#Iconv(v:val, '.string(s:fileencoding).', &enc)')
+endfunction
+
 " s:IsKindOfEmptyLine(lineNo)                                  {{{2
 " @return true on empty lines or on lines containing an empty comment
 function! s:IsKindOfEmptyLine(lineNo)
@@ -599,12 +611,22 @@ function! s:Template(NeedToJoin, ...)
     " template file). 
     let s:marker_open  = '<+'
     let s:marker_close = '+>'
+    " Default fileencoding to override in template files
+    let s:fileencoding = &enc
 
     " Note: last is the number of the last line inserted
     " 3- If successful, interpret it {{{3
     if len(s:content.lines) > 0 " {{{4
       " Interpret
       call s:InterpretLines(pos)
+      " Reencode
+      if s:fileencoding != &enc
+	if has('multi_byte') 
+	  call s:Reencode()
+	else
+	  call lh#common#WarningMsg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
+	endif
+      endif
       " Insert
       call append(pos, s:content.lines)
       let last=pos + len(s:content.lines)
