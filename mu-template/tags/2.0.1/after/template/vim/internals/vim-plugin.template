@@ -1,0 +1,17 @@
+VimL: " $Id$
+VimL: "«Vim» plugins Template File, Luc Hermitte
+" Avoid global reinclusion {{{1
+if exists("g:loaded_¡s:fn¡") && !exists('g:force_reload_¡s:fn¡')
+  finish
+endif
+let s:cpo_save=&cpo
+set cpo&vim
+" Avoid global reinclusion }}}1
+"------------------------------------------------------------------------
+" Commands and Mappings {{{1
+" Commands and Mappings }}}1
+"------------------------------------------------------------------------
+" Functions {{{1
+<+Global definitions -- like functions+>
+
+" Functions }}}1
