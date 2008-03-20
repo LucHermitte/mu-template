@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://hermitte.free.fr/vim/>
 " Last Update:  $Date$
-" Version:	2.0.1
+" Version:	2.0.2
 "
 " Initial Author:		Gergely Kontra <kgergely@mcl.hu>
 " Last Official Version:	0.11
@@ -204,6 +204,9 @@
 " 	    introduced with the new kernel in v2.0.0
 " 	    -> new variable: s:fileencoding for template-files that have
 " 	    characters in non ASCII encodings
+" 	v2.0.2
+" 	(*) Defect #6: g:mt_templates_dirs is not defined when menus are not active
+" 	    NB: g:mt_templates_dirs becomes s:_mt_templates_dirs
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -398,7 +401,7 @@ function! s:LoadTemplate(pos, templatepath)                      " {{{2
     let s:wildignore = &wildignore
     let &wildignore  = ""
 
-    let matching_filenames = lh#path#GlobAsList(g:mt_templates_dirs, a:templatepath)
+    let matching_filenames = lh#path#GlobAsList(s:_mt_templates_dirs, a:templatepath)
     if len(matching_filenames) == 0
       return 0 " NB: the finally block is still executed
       " call lh#common#WarningMsg("muTemplate: No template file matching <".a:templatepath.">")
@@ -568,6 +571,7 @@ endfunction
 
 " s:TemplateOnBufNewFile() triggered by BufNewFile event       {{{2
 function! s:TemplateOnBufNewFile()
+  let s:_mt_templates_dirs = s:TemplateDirs()
   " echomsg 's:TemplateOnBufNewFile'
   let res = s:Template(0)
   if res && s:Option('jump_to_first_markers',1)
@@ -605,7 +609,6 @@ function! s:Template(NeedToJoin, ...)
   try
     "NAMES WERE: call  s:LoadTemplate(0, dir.'template.'.ft)
     call  s:LoadTemplate(0, dir.ft.'.template')
-    " unlet g:mt_templates_dirs
 
     " Default values for placeholder characters (they can be overridden in each
     " template file). 
@@ -722,11 +725,11 @@ function! s:GetTemplateFilesMatching(word, filetype)
   endwhile
 
   " And search
-  let g:mt_templates_dirs = s:TemplateDirs()
+  let s:_mt_templates_dirs = s:TemplateDirs()
   try
     let l:wildignore = &wildignore
     let &wildignore  = ""
-    let files = lh#path#GlobAsList(g:mt_templates_dirs, gpatterns)
+    let files = lh#path#GlobAsList(s:_mt_templates_dirs, gpatterns)
     return files
   finally
     let &wildignore = l:wildignore
@@ -736,8 +739,8 @@ endfunction
 " s:ShortenTemplateFilesNames(list)                            {{{2
 function! s:ShortenTemplateFilesNames(list)
   :let g:list =a:list
-  " 1- Strip path part from g:mt_templates_dirs
-  call map(a:list, 'lh#path#StripStart(v:val, g:mt_templates_dirs)')
+  " 1- Strip path part from s:_mt_templates_dirs
+  call map(a:list, 'lh#path#StripStart(v:val, s:_mt_templates_dirs)')
   " 2- simplify filename to keep only the non "template" part
   "NAMES WERE: call map(a:list, 'substitute(v:val, "\\<template\.", "", "")')
   call map(a:list, 'substitute(v:val, "\.template\\>", "", "")')
@@ -760,7 +763,6 @@ function! s:SearchTemplates(word)
   let w = substitute(a:word, ':', '-', 'g').'*'
   " call confirm("w =  #".w."#", '&ok', 1)
   let files = s:GetShortListOfTFMatching(w, &ft)
-  " unlet g:mt_templates_dirs
 
   " 2- Select one template file only {{{3
   let strings = join(files, "\n")
@@ -887,8 +889,8 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
   let s:wildignore = &wildignore
   let &wildignore  = ""
   let ftlist = s:ShortenTemplateFilesNames(
-        \ lh#path#GlobAsList(g:mt_templates_dirs, ArgLead.'*.template'))
-        "NAMES WERE: \ lh#path#GlobAsList(g:mt_templates_dirs, 'template.'.ArgLead.'*'))
+        \ lh#path#GlobAsList(s:_mt_templates_dirs, ArgLead.'*.template'))
+        "NAMES WERE: \ lh#path#GlobAsList(s:_mt_templates_dirs, 'template.'.ArgLead.'*'))
   let &wildignore = s:wildignore
   call extend(ftlist, s:GetShortListOfTFMatching(ArgLead.'*', &ft))
   let res = join(ftlist, "\n")
@@ -963,10 +965,10 @@ function! s:BuildMenu(doRebuild)
   try
     let s:wildignore = &wildignore
     let &wildignore  = ""
-    let g:mt_templates_dirs = s:TemplateDirs()
+    let s:_mt_templates_dirs = s:TemplateDirs()
     let new_list = s:ShortenTemplateFilesNames(
-          \ lh#path#GlobAsList(g:mt_templates_dirs, '*.template'))
-          "NAMES WERE: \ lh#path#GlobAsList(g:mt_templates_dirs, 'template.*'))
+          \ lh#path#GlobAsList(s:_mt_templates_dirs, '*.template'))
+          "NAMES WERE: \ lh#path#GlobAsList(s:_mt_templates_dirs, 'template.*'))
     call s:AddMenu('&New.&', '100.10', new_list)
 
     " 5- contructs                    {{{3
