@@ -3,14 +3,21 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.0.0
+" Version:	2.0.2
+let s:version = '2.0.2'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
 cd <sfile>:p:h
-15,$MkVimball! mu-template
-set modifiable
-set buftype=
+try 
+  let save_rtp = &rtp
+  let &rtp = expand('<sfile>:p:h:h').','.&rtp
+  exe '22,$MkVimball! mu-template-'.s:version
+  set modifiable
+  set buftype=
+finally
+  let &rtp = save_rtp
+endtry
 finish
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
