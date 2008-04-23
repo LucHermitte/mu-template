@@ -1,9 +1,10 @@
 VimL: " $Id$
 VimL: "«Vim» plugins Template File, Luc Hermitte
 " Avoid global reinclusion {{{1
-if exists("g:loaded_¡s:fn¡") && !exists('g:force_reload_¡s:fn¡')
+if cp || (exists("g:loaded_¡s:fn¡") && !exists('g:force_reload_¡s:fn¡'))
   finish
 endif
+let g:force_reload_¡s:fn¡ = <+version+>
 let s:cpo_save=&cpo
 set cpo&vim
 " Avoid global reinclusion }}}1
