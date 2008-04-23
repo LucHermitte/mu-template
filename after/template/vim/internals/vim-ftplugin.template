@@ -3,9 +3,10 @@ VimL: "«Vim» ft-plugins Template File, Luc Hermitte
 VimL: let s:filetype = matchstr(expand('%:p'), 'ftplugin/\zs.\{-}\ze\%(\.vim\|[_/\\]\)')
 " Buffer-local Definitions {{{1
 " Avoid local reinclusion {{{2
-if exists("b:loaded_ftplug_¡s:fn¡") && !exists('g:force_reload_ftplug_¡s:fn¡')
+if cp || (exists("b:loaded_ftplug_¡s:fn¡") && !exists('g:force_reload_ftplug_¡s:fn¡'))
   finish
 endif
+let b:loaded_ftplug_¡s:fn¡ = <+version+>
 let s:cpo_save=&cpo
 set cpo&vim
 " Avoid local reinclusion }}}2
@@ -23,10 +24,11 @@ command -b -nargs=<++> <+CommandName+> <+Action+>
 "=============================================================================
 " Global Definitions {{{1
 " Avoid global reinclusion {{{2
-if exists("g:loaded_ftplug_¡s:fn¡") && !exists('g:force_reload_ftplug_¡s:fn¡')
+if cp || (exists("g:loaded_ftplug_¡s:fn¡") && !exists('g:force_reload_ftplug_¡s:fn¡'))
   let &cpo=s:cpo_save
   finish
 endif
+let g:loaded_ftplug_¡s:fn¡ = <+version+>
 " Avoid global reinclusion }}}2
 "------------------------------------------------------------------------
 " Functions {{{2
