@@ -6,9 +6,7 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: call s:Include('vim-header', 'vim/internals')
 VimL: let s:fn = substitute(expand("%:t:r"),'\W', '_', 'g') 
-VimL: let s:ftplug = expand('%:p') =~ '/ftplugin'
-VimL: let s:alplug = expand('%:p') =~ '/autoload'
-VimL: let s:plugin = expand('%:p') =~ '/plugin'
+VimL: call s:Include('get-script-kind', 'vim/internals')
 VimL: if s:ftplug | call s:Include('vim-ftplugin', 'vim/internals') | endif
 VimL: if s:alplug | call s:Include('vim-autoload-plugin', 'vim/internals') | endif
 VimL: if s:plugin | call s:Include('vim-plugin', 'vim/internals') | endif
