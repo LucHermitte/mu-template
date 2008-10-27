@@ -1,6 +1,20 @@
 VimL: " $Id$
 VimL: "«Vim» autoload plugin Template File, Luc Hermitte
+VimL: "
+VimL: call s:Include('vim-autoload-function', 'vim/internals')
+VimL: "
 let s:cpo_save=&cpo
 set cpo&vim
 "------------------------------------------------------------------------
 
+" ## Functions {{{1
+" # Debug {{{2
+function! ¡s:function_prefix¡verbose(level)
+  let s:verbose = a:level
+endfunction
+
+function! s:Verbose(expr)
+  if exists(s:verbose) && s:verbose
+    echomsg a:expr
+  endif
+endfunction
