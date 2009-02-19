@@ -14,7 +14,12 @@ function! ¡s:function_prefix¡verbose(level)
 endfunction
 
 function! s:Verbose(expr)
-  if exists(s:verbose) && s:verbose
+  if exists('s:verbose') && s:verbose
     echomsg a:expr
   endif
 endfunction
+
+function! ¡s:function_prefix¡debug(expr)
+  return eval(a:expr)
+endfunction
+
