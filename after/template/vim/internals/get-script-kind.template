@@ -1,0 +1,5 @@
+VimL: " $Id$
+VimL: "«Vim» Template Files tool function, Luc Hermitte
+VimL: let s:ftplug = expand('%:p') =~ '/ftplugin'
+VimL: let s:alplug = expand('%:p') =~ '/autoload'
+VimL: let s:plugin = expand('%:p') =~ '/plugin'
