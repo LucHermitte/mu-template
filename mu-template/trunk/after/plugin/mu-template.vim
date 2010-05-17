@@ -1,10 +1,10 @@
 "===========================================================================
 " $Id$
-" File:		mu-template.vim		{{{1
+" File:		after/plugin/mu-template.vim		{{{1
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
-" 		<URL:http://hermitte.free.fr/vim/>
+" 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.0.2
+" Version:	2.0.3
 "
 " Initial Author:		Gergely Kontra <kgergely@mcl.hu>
 " Last Official Version:	0.11
@@ -207,6 +207,9 @@
 " 	v2.0.2
 " 	(*) Defect #6: g:mt_templates_dirs is not defined when menus are not active
 " 	    NB: g:mt_templates_dirs becomes s:_mt_templates_dirs
+" 	v2.0.3
+" 	<*) Use :SourceLocalVimrc to import project local settings before
+" 	    expanding templates
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -230,13 +233,20 @@
 "	- Find some way to push/pop values into variables for the scope of a
 "	  call to s:Include. Will be useful with s:fileencoding, s:marker_open,
 "	  ...
+"	- :SourceLocalVimrc hook shall be overidable from $HOME/.vimrc
+"	- See how the :SourceLocalVimrc idea could be adapeted to the plugin
+"	  project.vim.
+"	- Move the functions to an autoload plugin
 "
 "}}}1
 "========================================================================
-if exists("g:mu_template") && !exists('g:force_reload_mu_template')
+let s:k_version = 203
+if exists("g:mu_template") 
+      \ && g:mu_template >= s:k_version
+      \ && !exists('g:force_reload_mu_template')
   finish 
 endif
-let g:mu_template = 1
+let g:mu_template = s:k_version
 let s:cpo_save=&cpo
 set cpo&vim
 " scriptencoding latin1
@@ -247,10 +257,10 @@ command! -nargs=1 MUEcho :echo s:<args>
 "========================================================================
 " Low level functions {{{1
 function! s:ErrorMsg(text)                  " {{{3
-  call lh#common#ErrorMsg(a:text)
+  call lh#common#error_msg(a:text)
 endfunction
 function! s:CheckDeps(Symbol, File, path) " {{{3
-  return lh#common#CheckDeps(a:Symbol, a:File, a:path, 'mu-template')
+  return lh#common#check_deps(a:Symbol, a:File, a:path, 'mu-template')
 endfunction
 " }}}1
 "========================================================================
@@ -341,9 +351,9 @@ function! s:Include(template, ...)
     let dir .= a:1 . '/'
   endif
   "NAMES WERE: if 0 == s:LoadTemplate(pos-correction, dir.'template.'.a:template)
-  "NAMES WERE:   call lh#common#WarningMsg("muTemplate: No template file matching <".dir.'template.'.a:template.">")
+  "NAMES WERE:   call lh#common#warning_msg("muTemplate: No template file matching <".dir.'template.'.a:template.">")
   if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
-    call lh#common#WarningMsg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+    call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
 endfunction
 
@@ -352,9 +362,9 @@ function! s:path_from_root(path)   " {{{3
   if exists('b:sources_root')
     let s = strlen(b:sources_root)
     if b:sources_root[s-1] !~ '/\|\\'
-      let b:sources_root = b:sources_root 
-	    \ . ((!exists('shellslash')||&shellslash)?'/':'\')
-      let s = s + 1
+      let b:sources_root .=
+	    \ ((!exists('shellslash')||&shellslash)?'/':'\')
+      let s += 1
     endif
     let p = stridx(path, b:sources_root)
     if 0 == p
@@ -401,10 +411,10 @@ function! s:LoadTemplate(pos, templatepath)                      " {{{2
     let s:wildignore = &wildignore
     let &wildignore  = ""
 
-    let matching_filenames = lh#path#GlobAsList(s:_mt_templates_dirs, a:templatepath)
+    let matching_filenames = lh#path#glob_as_list(s:_mt_templates_dirs, a:templatepath)
     if len(matching_filenames) == 0
       return 0 " NB: the finally block is still executed
-      " call lh#common#WarningMsg("muTemplate: No template file matching <".a:templatepath.">")
+      " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
     else
       if &verbose >= 1
 	echo "Loading <".matching_filenames[0].">"
@@ -430,7 +440,7 @@ function! s:InterpretValue(what)
     " NB: cannot use a local variable, hence the "s:xxxx"
     return s:r
   catch /.*/
-    call lh#common#WarningMsg("muTemplate: Cannot interpret `".a:what."': ".v:exception)
+    call lh#common#warning_msg("muTemplate: Cannot interpret `".a:what."': ".v:exception)
     return a:what
   endtry
 endfunction
@@ -442,7 +452,7 @@ function! s:InterpretCommand(what)
   try
     exe a:what
   catch /.*/
-    call lh#common#WarningMsg("muTemplate: Cannot execute `".a:what."': ".v:exception)
+    call lh#common#warning_msg("muTemplate: Cannot execute `".a:what."': ".v:exception)
     throw "muTemplate: Cannot execute `".a:what."': ".v:exception
   endtry
 endfunction
@@ -530,7 +540,7 @@ function! s:InterpretLines(first_line)              " {{{2
 endfunction
 
 function! s:Reencode()
-  call map(s:content.lines, 'lh#encoding#Iconv(v:val, '.string(s:fileencoding).', &enc)')
+  call map(s:content.lines, 'lh#encoding#iconv(v:val, '.string(s:fileencoding).', &enc)')
 endfunction
 
 " s:IsKindOfEmptyLine(lineNo)                                  {{{2
@@ -571,13 +581,21 @@ endfunction
 
 " s:TemplateOnBufNewFile() triggered by BufNewFile event       {{{2
 function! s:TemplateOnBufNewFile()
+  if exists(':SourceLocalVimrc')
+    try 
+      :SourceLocalVimrc
+    catch /.*/
+      echomsg v:exception
+    endtry
+  endif
+
   let s:_mt_templates_dirs = s:TemplateDirs()
   " echomsg 's:TemplateOnBufNewFile'
   let res = s:Template(0)
   if res && s:Option('jump_to_first_markers',1)
     " Register For After Modeline Event
     command! -nargs=0 JumpToStart :call s:JumpToStart()
-    call lh#event#RegisterForOneExecutionAt('BufWinEnter', ':JumpToStart', 'MuT_AfterModeline')
+    call lh#event#register_for_one_execution_at('BufWinEnter', ':JumpToStart', 'MuT_AfterModeline')
   endif
   " No more ':startinsert'. It seems useless and redundant with !jump!
   " startinsert
@@ -627,7 +645,7 @@ function! s:Template(NeedToJoin, ...)
 	if has('multi_byte') 
 	  call s:Reencode()
 	else
-	  call lh#common#WarningMsg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
+	  call lh#common#warning_msg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
 	endif
       endif
       " Insert
@@ -683,14 +701,14 @@ function! s:JumpToStart()
   " let therewasamarker = 0
   " echomsg (pos).','.(last).'g/'.Marker_Txt('.\{-}')."/let therewasamarker=1"
   " silent! exe (pos).','.(last).'g/'.Marker_Txt('.\{-}')."/let therewasamarker=1"
-  let marker_line = lh#list#Match(s:content.lines, Marker_Txt('.\{-}'))
+  let marker_line = lh#list#match(s:content.lines, Marker_Txt('.\{-}'))
   let therewasamarker = -1 != marker_line
   if therewasamarker
     " echomsg "jump from ".(marker_line+s:content.start)
     exe (marker_line+s:content.start)
     " normal! zO
     try
-      let save_gscf = lh#option#Get('marker_select_current_fwd', 1)
+      let save_gscf = lh#option#get('marker_select_current_fwd', 1)
       let g:marker_select_current_fwd = 1
       normal !jump!
     finally
@@ -729,7 +747,7 @@ function! s:GetTemplateFilesMatching(word, filetype)
   try
     let l:wildignore = &wildignore
     let &wildignore  = ""
-    let files = lh#path#GlobAsList(s:_mt_templates_dirs, gpatterns)
+    let files = lh#path#glob_as_list(s:_mt_templates_dirs, gpatterns)
     return files
   finally
     let &wildignore = l:wildignore
@@ -740,7 +758,7 @@ endfunction
 function! s:ShortenTemplateFilesNames(list)
   :let g:list =a:list
   " 1- Strip path part from s:_mt_templates_dirs
-  call map(a:list, 'lh#path#StripStart(v:val, s:_mt_templates_dirs)')
+  call map(a:list, 'lh#path#strip_start(v:val, s:_mt_templates_dirs)')
   " 2- simplify filename to keep only the non "template" part
   "NAMES WERE: call map(a:list, 'substitute(v:val, "\\<template\.", "", "")')
   call map(a:list, 'substitute(v:val, "\.template\\>", "", "")')
@@ -769,7 +787,7 @@ function! s:SearchTemplates(word)
   let nbChoices = len(files)
   " call confirm(nbChoices."\n".files, '&ok', 1)
   if (nbChoices == 0) 
-    call lh#common#WarningMsg("muTemplate: No template file matching <".w."> for ".&ft." files")
+    call lh#common#warning_msg("muTemplate: No template file matching <".w."> for ".&ft." files")
     return ""
   elseif (nbChoices > 1)
     let choice = confirm("Which template do you wish to use ?", 
@@ -889,8 +907,8 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
   let s:wildignore = &wildignore
   let &wildignore  = ""
   let ftlist = s:ShortenTemplateFilesNames(
-        \ lh#path#GlobAsList(s:_mt_templates_dirs, ArgLead.'*.template'))
-        "NAMES WERE: \ lh#path#GlobAsList(s:_mt_templates_dirs, 'template.'.ArgLead.'*'))
+        \ lh#path#glob_as_list(s:_mt_templates_dirs, ArgLead.'*.template'))
+        "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.'.ArgLead.'*'))
   let &wildignore = s:wildignore
   call extend(ftlist, s:GetShortListOfTFMatching(ArgLead.'*', &ft))
   let res = join(ftlist, "\n")
@@ -959,7 +977,7 @@ function! s:BuildMenu(doRebuild)
 	\     "priority": s:menu_prio.'600',
 	\     "name": s:menu_name.'&Options.&Automatic Expansion'}
 	\}
-  call lh#menu#DefToggleItem(s:AutoInsertMenu)
+  call lh#menu#def_toggle_item(s:AutoInsertMenu)
 
   " 4- New File                       {{{3
   try
@@ -967,8 +985,8 @@ function! s:BuildMenu(doRebuild)
     let &wildignore  = ""
     let s:_mt_templates_dirs = s:TemplateDirs()
     let new_list = s:ShortenTemplateFilesNames(
-          \ lh#path#GlobAsList(s:_mt_templates_dirs, '*.template'))
-          "NAMES WERE: \ lh#path#GlobAsList(s:_mt_templates_dirs, 'template.*'))
+          \ lh#path#glob_as_list(s:_mt_templates_dirs, '*.template'))
+          "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.*'))
     call s:AddMenu('&New.&', '100.10', new_list)
 
     " 5- contructs                    {{{3

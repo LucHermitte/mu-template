@@ -2,7 +2,7 @@ VimL: " $Id$
 VimL: " C++ Typical Header File-Template, Luc Hermitte
 <+Include+>
 
-VimL: let s:ns = lh#option#Get('cpp_project_namespace', "<+namespace+>")
+VimL: let s:ns = lh#option#get('cpp_project_namespace', "<+namespace+>")
 namespace ¡s:ns¡ {
    <+Definitions here+>
 } // namespace ¡s:ns¡

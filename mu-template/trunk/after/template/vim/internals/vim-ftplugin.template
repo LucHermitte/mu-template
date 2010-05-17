@@ -1,12 +1,15 @@
 VimL: " $Id$
 VimL: "«Vim» ft-plugins Template File, Luc Hermitte
 VimL: let s:filetype = matchstr(expand('%:p'), 'ftplugin/\zs.\{-}\ze\%(\.vim\|[_/\\]\)')
+let s:k_version = <+001+>
 " Buffer-local Definitions {{{1
 " Avoid local reinclusion {{{2
-if &cp || (exists("b:loaded_ftplug_¡s:fn¡") && !exists('g:force_reload_ftplug_¡s:fn¡'))
+if &cp || (exists("b:loaded_ftplug_¡s:fn¡")
+      \ && (b:loaded_ftplug_¡s:fn¡ >= s:k_version)
+      \ && !exists('g:force_reload_ftplug_¡s:fn¡'))
   finish
 endif
-let b:loaded_ftplug_¡s:fn¡ = <+version+>
+let b:loaded_ftplug_¡s:fn¡ = s:k_version
 let s:cpo_save=&cpo
 set cpo&vim
 " Avoid local reinclusion }}}2
@@ -24,11 +27,13 @@ command! -b -nargs=<++> <+CommandName+> <+Action+>
 "=============================================================================
 " Global Definitions {{{1
 " Avoid global reinclusion {{{2
-if &cp || (exists("g:loaded_ftplug_¡s:fn¡") && !exists('g:force_reload_ftplug_¡s:fn¡'))
+if &cp || (exists("g:loaded_ftplug_¡s:fn¡")
+      \ && (g:loaded_ftplug_¡s:fn¡ >= s:k_version)
+      \ && !exists('g:force_reload_ftplug_¡s:fn¡'))
   let &cpo=s:cpo_save
   finish
 endif
-let g:loaded_ftplug_¡s:fn¡ = <+version+>
+let g:loaded_ftplug_¡s:fn¡ = s:k_version
 " Avoid global reinclusion }}}2
 "------------------------------------------------------------------------
 " Functions {{{2
@@ -37,7 +42,4 @@ let g:loaded_ftplug_¡s:fn¡ = <+version+>
 " Keep here only the functions are are required when the ftplugin is
 " loaded, like functions that help building a vim-menu for this
 " ftplugin.
-
-<+Global definitions -- like functions+>
-
 " Functions }}}2

@@ -6,20 +6,6 @@ VimL: "
 let s:cpo_save=&cpo
 set cpo&vim
 "------------------------------------------------------------------------
+VimL: call s:Include('vim-autoload-debug', 'vim/internals')
 
-" ## Functions {{{1
-" # Debug {{{2
-function! ¡s:function_prefix¡verbose(level)
-  let s:verbose = a:level
-endfunction
-
-function! s:Verbose(expr)
-  if exists('s:verbose') && s:verbose
-    echomsg a:expr
-  endif
-endfunction
-
-function! ¡s:function_prefix¡debug(expr)
-  return eval(a:expr)
-endfunction
 
