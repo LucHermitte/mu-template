@@ -39,8 +39,8 @@
 "=============================================================================
 "
 " Avoid reinclusion
-if exists('b:loaded_ftplug_c__template_vim') | finish | endif
-let b:loaded_ftplug_c__template_vim = 1
+if exists('b:loaded_ftplug__template_vim') | finish | endif
+let b:loaded_ftplug__template_vim = 1
 "
 let s:cpo_save=&cpo
 set cpo&vim
