@@ -1,0 +1,23 @@
+VimL: " $Id$
+VimL:" ``VimL debug functions for autoload plugins (internals)'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
+VimL: "
+VimL: call s:Include('vim-autoload-function', 'vim/internals')
+VimL: "
+" ## Functions {{{1
+" # Debug {{{2
+let s:verbose = 0
+function! ¡s:function_prefix¡verbose(...)
+  if a:0 > 0 | let s:verbose = a:1 | endif
+  return s:verbose
+endfunction
+
+function! s:Verbose(expr)
+  if s:verbose
+    echomsg a:expr
+  endif
+endfunction
+
+function! ¡s:function_prefix¡debug(expr)
+  return eval(a:expr)
+endfunction
+

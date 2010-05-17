@@ -1,0 +1,13 @@
+VimL: " $Id$
+VimL: "C++ TU Header File-Template, Luc Hermitte
+VimL: let s:TUName = expand('%:t:r')
+
+class ¡s:TUName¡ : public CppUnit::TestFixture
+{
+    CPPUNIT_TEST_SUITE(¡s:TUName¡);
+    CPPUNIT_TEST(Test_<+fct+>);
+    CPPUNIT_TEST_SUITE_END();
+public:
+    void Test_<+fct+>();
+};
+
