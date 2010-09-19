@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.0.3
+" Version:	2.0.4
 "
 " Initial Author:		Gergely Kontra <kgergely@mcl.hu>
 " Last Official Version:	0.11
@@ -210,6 +210,10 @@
 " 	v2.0.3
 " 	<*) Use :SourceLocalVimrc to import project local settings before
 " 	    expanding templates
+" 	v2.0.4
+" 	(*) It's now possible to inject variables into s:data
+" 	(*) VimL functions can be defined. However, nested function are not
+" 	supported (Issue#29)
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -240,7 +244,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 203
+let s:k_version = 204
 if exists("g:mu_template") 
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -450,7 +454,26 @@ endfunction
 " Back-Door to trojans !!!
 function! s:InterpretCommand(what)
   try
-    exe a:what
+    if empty(s:_function) 
+      if a:what =~ '^:\?fu\%[nction]'
+	let s:_function += [a:what]
+      elseif a:what =~ '^:\?endf\%[unction]'
+	throw 'not within the definition of a function'
+      else
+	exe a:what
+    endif
+    else
+      if a:what =~ '^:\?fu\%[nction]'
+	throw 'already within the definition of a function (nested functions are not supported (yet))'
+      else
+	let s:_function += [a:what]
+	if a:what =~ '^:\?endf\%[unction]'
+	  let fn_def = join(s:_function, "\n")
+	  let s:_function = []
+	  exe fn_def
+	endif " :endfunction
+      endif " != :function
+    endif
   catch /.*/
     call lh#common#warning_msg("muTemplate: Cannot execute `".a:what."': ".v:exception)
     throw "muTemplate: Cannot execute `".a:what."': ".v:exception
@@ -458,6 +481,11 @@ function! s:InterpretCommand(what)
 endfunction
 
 function! s:InterpretValues(line)
+  " @pre must not be defining VimL functions
+  if !empty(s:_function)
+    throw 'already within the definition of a function (no non-VimL code authorized)'
+  endif
+
   let res = ''
   let tail = a:line
   let re =  '\(.\{-}\)'.s:Value('\(.\{-}\)').'\(.*\)'
@@ -500,7 +528,7 @@ function! s:InterpretLines(first_line)              " {{{2
     let the_line = s:content.lines[s:content.crt] 
     if the_line =~ pat_command
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
-      call s:InterpretCommand( matchstr(the_line, '\c'.s:Command('').'\zs.*'))
+      call s:InterpretCommand( matchstr(the_line, '\c'.s:Command('\s*').'\zs.*'))
     elseif the_line !~ '^\s*$'
       " NB 1- We must know the expression characters before any interpretation.
       "    2- :r inserts an empty line before the template loaded
@@ -628,6 +656,8 @@ function! s:Template(NeedToJoin, ...)
     "NAMES WERE: call  s:LoadTemplate(0, dir.'template.'.ft)
     call  s:LoadTemplate(0, dir.ft.'.template')
 
+    " clear any function definition
+    let s:_function = []
     " Default values for placeholder characters (they can be overridden in each
     " template file). 
     let s:marker_open  = '<+'
@@ -648,6 +678,11 @@ function! s:Template(NeedToJoin, ...)
 	  call lh#common#warning_msg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
 	endif
       endif
+      " @post: :functions must be fully defined 
+      if !empty(s:_function)
+	throw 'function definition not terminated (:enfunction expected)'
+      endif
+
       " Insert
       call append(pos, s:content.lines)
       let last=pos + len(s:content.lines)
@@ -1025,6 +1060,12 @@ endfunction
 "========================================================================
 " [auto]commands {{{1
 command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call <sid>TemplateAndJump(0, <f-args>)
+
+function! MuTemplate(template, data)
+  silent! unlet s:data " required as its type may change
+  let s:data = a:data
+  call s:TemplateAndJump(0, a:template)
+endfunction
 
 function! s:AutomaticInsertion()
   if !exists('g:mt_IDontWantTemplatesAutomaticallyInserted') ||
