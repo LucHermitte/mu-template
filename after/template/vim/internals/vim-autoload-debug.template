@@ -3,8 +3,14 @@ VimL:" ``VimL debug functions for autoload plugins (internals)'' File Template, 
 VimL: "
 VimL: call s:Include('vim-autoload-function', 'vim/internals')
 VimL: "
-" ## Functions {{{1
-" # Debug {{{2
+" ## Misc Functions     {{{1
+" # Version {{{2
+let s:k_version = <+001+>
+function! ¡s:function_prefix¡version()
+  return s:k_version
+endfunction
+
+" # Debug   {{{2
 let s:verbose = 0
 function! ¡s:function_prefix¡verbose(...)
   if a:0 > 0 | let s:verbose = a:1 | endif

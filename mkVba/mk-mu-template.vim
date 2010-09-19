@@ -3,8 +3,8 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.0.3
-let s:version = '2.0.3'
+" Version:	2.0.4
+let s:version = '2.0.4'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,7 @@ finally
   let &rtp = save_rtp
 endtry
 finish
+mu-template.README
 after/plugin/mu-template.vim
 after/template/c/do.template
 after/template/c/for.template
@@ -71,8 +72,8 @@ after/template/xslt/xsl-template-match.template
 after/template/xslt/xsl-template-name.template
 after/template/xslt/xsl-value-of.template
 after/template/xslt/xsl-when.template
+autoload/lh/cpp/file.vim
 doc/mu-template.txt
 ftplugin/template.vim
 mkVba/mk-mu-template.vim
-mu-template.README
 syntax/2html.vim
