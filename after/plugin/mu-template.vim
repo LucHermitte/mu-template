@@ -4,18 +4,18 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.0.4
+" Version:	2.1.0
 "
-" Initial Author:		Gergely Kontra <kgergely@mcl.hu>
-" Last Official Version:	0.11
+" Initial Author:	Gergely Kontra <kgergely@mcl.hu>
+" Forked at version:	0.11
 "
-" Description:	Micro vim template file loader
+" Description:	Micro vim template file expander
 " Installation:	{{{2
 " 	Drop it into your plugin directory.
 "	If you have some bracketing macros predefined, install this plugin in
 "	<{runtimepath}/after/plugin/>
-"	Needs: searchInRuntime.vim, bracketing.base.vim (i_CTRL-R_TAB),
-"	lh-vim-lib, Vim7+
+"	Needs: bracketing.base.vim (i_CTRL-R_TAB), lh-vim-lib, Vim7+
+"	Exploits: searchInRuntime, stakeholders
 "
 " Usage:	{{{2
 " 	When a new file is created, a template file is loaded ; the name of
@@ -131,8 +131,8 @@
 "
 "	v0.30
 "	(*) big changes regarding the funky characters used as delimiters
-"	    "¿...¿" abandonned to "VimL:..."
-"	    "¡...¡" abandonned to ... WILL BE DONE IN v0.32
+"	    "¿...¿" abandoned to "VimL:..."
+"	    "¡...¡" abandoned to ... WILL BE DONE IN v0.32
 "	(*) little bug with Vim 6.1.362 -> s/firstline/first_line/
 "
 "	v0.30 bis
@@ -174,7 +174,7 @@
 "	(*) Merging of empty lines, (and lines of empty comments) on CTRL-R_TAB
 "
 "	v1.0.0
-"	(*) SVN + new versionning
+"	(*) SVN + new versioning
 "	(*) Bug fix in rebuild menu
 "	(*) Marker/placeholders can be set with <++>, instead of
 "	    ¡Marker_Txt()¡. This is customizable with |s:marker_open| and
@@ -214,6 +214,12 @@
 " 	(*) It's now possible to inject variables into s:data
 " 	(*) VimL functions can be defined. However, nested function are not
 " 	supported (Issue#29)
+" 	v2.0.5
+" 	(*) Imports filetype definitions when opening template-files
+" 	(*) s:_mt_templates_dirs was not updated dynamically when calling
+" 	:MuTemplate
+" 	v2.1.0
+" 	(*) Exploits Tom Link's stakeholders plugin, when installed
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -238,13 +244,13 @@
 "	  call to s:Include. Will be useful with s:fileencoding, s:marker_open,
 "	  ...
 "	- :SourceLocalVimrc hook shall be overidable from $HOME/.vimrc
-"	- See how the :SourceLocalVimrc idea could be adapeted to the plugin
+"	- See how the :SourceLocalVimrc idea could be adapted to the plugin
 "	  project.vim.
 "	- Move the functions to an autoload plugin
 "
 "}}}1
 "========================================================================
-let s:k_version = 204
+let s:k_version = 210
 if exists("g:mu_template") 
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -270,9 +276,9 @@ endfunction
 "========================================================================
 " Dependancies {{{1
 if   
-      \    !s:CheckDeps(':SearchInVar',    'searchInRuntime.vim', 'plugin/')
-      \ || !s:CheckDeps('*GetCurrentWord', 'words_tools.vim',     'plugin/')
+      \ !s:CheckDeps('*GetCurrentWord', 'words_tools.vim',     'plugin/')
   let &cpo=s:cpo_save
+      " \    !s:CheckDeps(':SearchInVar',    'searchInRuntime.vim', 'plugin/')
   finish
 endif
 " }}}1
@@ -385,7 +391,7 @@ function! s:Line()
 endfunction
 
 " {[bg]:mt_jump_to_first_markers}                          {{{2
-" Boolean: specifies weither we want to jump to the first marker in the file.
+" Boolean: specifies whether we want to jump to the first marker in the file.
 
 " How to join with next line : {[bg]:mt_how_to_join}       {{{2
 "   Used only with i_CTRL-R_TAB
@@ -598,6 +604,7 @@ endfunction
 " s:TemplateAndJump() called by :MuTemplate and imapping       {{{2
 function! s:TemplateAndJump(needToJoin, ...)
   " echomsg "s:TemplateAndJump"
+  let s:_mt_templates_dirs = s:TemplateDirs()
   let res = (a:0>0)
 	\ ? s:Template(a:needToJoin, a:1)
 	\ : s:Template(a:needToJoin)
@@ -695,6 +702,31 @@ function! s:Template(NeedToJoin, ...)
 	silent exe pos."normal! J!0"
       endif
       let last -= 1
+      " Activate Tom Link's Stakeholders in case it is installed
+      if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1)
+	if !exists('#stakeholders') " Stakeholder not enabled for all buffers
+	  if !exists('b:stakeholders') || exists('b:stakeholders_range')
+	    " previously activated on a range, or never activated
+	    " echomsg "try EnableInRange(".pos.','.last.')'
+	    " Reset previous range
+	    call stakeholders#DisableBuffer()
+	    " Set new range in case there is no global activation
+	    call stakeholders#EnableInRange(pos, last)
+	  else
+	    " echomsg "already activated for the current buffer ?"
+	  endif
+	else " Stakeholders Enabled for all buffers
+	  if exists('b:stakeholders')
+	    " Relaunch for the new global range
+	    call stakeholders#DisableBuffer()
+	    call stakeholders#EnableBuffer()
+	  else
+	    " echomsg "leave it to autocmds?"
+	    call stakeholders#EnableBuffer()
+	  endif
+	endif
+      endif " Stakeholders installed
+
       " Reindent
       if exists('s:reindent') && s:reindent
 	silent exe (pos).','.(last).'normal! =='
@@ -1024,7 +1056,7 @@ function! s:BuildMenu(doRebuild)
           "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.*'))
     call s:AddMenu('&New.&', '100.10', new_list)
 
-    " 5- contructs                    {{{3
+    " 5- constructs                   {{{3
     let ft_list = s:GetShortListOfTFMatching('*', '*')
     call s:AddMenu('&', '300.10', ft_list)
 
@@ -1080,11 +1112,36 @@ function! s:AutomaticInsertion()
   endif
 endfunction
 
+function! s:FTDetection4Templates(filename)
+  let dir = fnamemodify(a:filename, ':h')
+  let reldir = lh#path#strip_start(dir, s:_mt_templates_dirs)
+  if reldir == dir
+    " echo "Not a MutTemplate template-file"
+    return 
+  endif
+
+  if empty(reldir)
+    let ft = fnamemodify(a:filename, ':t:r')
+  else
+    let ft = matchstr(reldir, '^[^/\\]\+')
+  endif
+  if strlen(ft)
+    exe 'set ft='.ft
+  else
+    exe ("doau filetypedetect BufRead " . a:filename)
+  endif
+  let g:ft = &ft
+  set ft=template
+endfunction
+
 augroup MuTemplate
   au!
   au BufNewFile * if s:AutomaticInsertion() | call <SID>TemplateOnBufNewFile() | endif
   "au BufWritePre * echon 'TODO'
   "au BufWritePre * normal ,last
+
+  " Syntax HL & ft detection of template files
+  au BufNewFile,BufRead *.template  call<sid>FTDetection4Templates(expand('<afile>:p'))
 augroup END
 " }}}1
 "------------------------------------------------------------------------

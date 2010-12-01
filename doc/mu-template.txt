@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 15th Feb 2008
+*mu-template.vim*       For Vim version 7+      Last change: 26th Nov 2010
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 2.0.3
+                    Version 2.1.0
 
 
 ==============================================================================
@@ -266,9 +266,9 @@ FEATURES                                    *MuT-features*     {{{1
     |g:mt_jump_to_first_markers|, which must be set to 0.
 
     So, when a new buffer is created, we can prevent µTemplate from jumping to
-    the first marker. For instance, my |lh-cpp|-ftplugins detects µTemplate
-    presence on the system, and sets off this options while generating code. If
-    you are using such a tool unable to work with µTemplate, patch it
+    the first marker. For instance, |lh-cpp|-ftplugins detects µTemplate
+    presence on the system, and sets off this options while generating code.
+    If you are using such a tool unable to work with µTemplate, patch it
     (contacting the author is even better) to integrate something like: >
       if exists('g:mu_template') && 
             \ (   !exists('g:mt_jump_to_first_markers') 
@@ -506,7 +506,7 @@ particular task.
 Finally, in your template-files, you'll be able to refer to this variable thanks
 to the muT-function |s:path_from_root()|.
 
-Remark: |lh-vim-lib| provides functions that helps manipulate and tranform
+Remark: |lh-vim-lib| provides functions that helps manipulate and transform
 pathnames (see |lhvl#path|)
 
 Q: "How may I now the line number of the current line in the final buffer?" *s:Line()*
@@ -532,7 +532,7 @@ So far, this approach has been successfully tested on:
 - a Windows XP box, with vim compiled with |+multi_byte|, in latin1 as well as
   in utf-8 
 - a Sun Solaris system, with vim not compiled with |+multi_byte|
-- «test on Linux -> Zdenek feedback»
+- Linux systems
 
 I had partially successful results on my French XP box, with vim running in
 latin2. 
@@ -558,7 +558,7 @@ non-ASCII characters.
 
                                                             *s:fileencoding*
 If you need to insert non-ASCII characters with a template-file, tell
-mu-emplate to convert all the lines expanded to the current encoding by
+mu-template to convert all the lines expanded to the current encoding by
 setting: >
     VimL: let s:fileencoding = 'utf-8'
 However ...
@@ -632,9 +632,9 @@ DESIGN CONSIDERATIONS                       *MuT-design*       {{{1
 Out there, there are several other template-expander plugins that use a
 predefined set of "expandable" tags.
 µTemplate, on the contrary, does not use any predefined set of tags. Instead,
-it expands VimL |expression|s and interpret VimL commands. Thus, we can expand
-almost any kind of tags we wish to. Our possibilities are limited only by
-VimL.
+it expands VimL |expression|s and interprets VimL commands. Thus, we can
+expand almost any kind of tags we wish to. Our possibilities are limited only
+by VimL.
 
 
 mu-Template.vim is best placed in a {rtp}/after/ directory. This way, several
@@ -660,13 +660,28 @@ FILES                                       *MuT-files*        {{{1
 Mu-Template depends on:
 - |lh-vim-lib|
 - |lh-map-tools|
+Mu-Template take advantage of:
 - |searchInRuntime|
+- |stakeholders|
 
 All the corresponding |vimball|s can be obtained from
-<http://code.google.com/p/lh-vim>.
+<http://code.google.com/p/lh-vim> or |MuT-stakeholders|.
 
 ==============================================================================
 OTHER PLUGINS OF INTEREST                   *MuT-external-plugins* {{{1
+
+|stakeholders.txt|                              *MuT-stakeholders*
+<http://www.vim.org/scripts/script.php?script_id=3326>
+<https://github.com/tomtom/stakeholders_vim/>
+stakeholders is the plugin that will change your mu-template experience.
+Thanks to it identical placeholders will be modified simustaneously.
+Just install it and enjoy. The template-file c/fori exploits Tom Link's
+plugin.
+If you don't want to take advantage of stakeholders and yet install it, just
+set *g:mt_use_stakeholders* to 0 in your .vimrc.
+In case you are using several template/snippets expanders plugins that exploit
+stakeholders, be sure to use the same syntax for the placeholders (see
+|:SetMarker|)
 
 |local_vimrc|                                   *MuT-local_vimrc*
 <http://code.google.com/p/lh-vim/source/browse/misc/trunk/plugin/local_vimrc.vim>
@@ -714,15 +729,15 @@ CREDITS                                     *MuT-credits*      {{{1
 Gergely Kontra:         Author of the first version of µTemplate
 Luc Hermitte (LH):      Author of this enhanced version and this documentation
 Robert Kelly IV:        For his insight and the ideas he gave me (LH)
-
         * Robert Kelly IV's |fte.txt| proposes a nice way to post process the
           skeleton inserted. ie. mu-template.vim can be used for immediate GUI
           interactions, and |:FTE| to treat delayed expansions that need more
           attention from the developper.
+Tom Link		For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2008, <http://hermitte.free.fr/vim/>              {{{1
+ © Luc Hermitte, 2001-2010, <http://code.google.com/p/lh-vim/>          {{{1
  $Id$
  VIM: let b:VS_language = 'american' 
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
