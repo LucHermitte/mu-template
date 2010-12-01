@@ -1,5 +1,5 @@
 			  --------------------
-			   mu-template v2.0.4
+			   mu-template v2.1.0
 			  --------------------
 
 mu-template is a template-files expander for Vim.
@@ -15,3 +15,5 @@ More Help At   : http://code.google.com/p/lh-vim/wiki/muTemplate
 Vim script#??? : http://www.vim.org/scripts/script.php?script_id=???
 Repository     :
 	svn checkout http://lh-vim.googlecode.com/svn/mu-template/trunk mu-template
+VAM           :
+	http://code.google.com/p/lh-vim/source/browse/mu-template/trunk/lh-vim-lib-addon-info.txt
