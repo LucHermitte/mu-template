@@ -1,0 +1,27 @@
+VimL: " $Id$
+VimL: "«Vim» scripts header Template File, Luc Hermitte
+"=============================================================================
+" ¡'$'¡Id$
+VimL: let s:root = IF(s:localvimrc, (exists('g:root')?resolve(g:root).','.g:root.',' : '').$HOME , &rtp)
+VimL: let s:path  = lh#path#strip_start(expand('%:p'), s:root)
+VimL: "let s:path  = lh#path#strip_start(expand('%:p'), &rtp)
+VimL: let s:align = repeat(' ', 49-strlen(s:path))
+" File:         ¡s:path.s:align¡ {{{1
+" Author:       ¡Author()¡
+" Version:      <+0.0.1+>
+" Created:      ¡DateStamp()¡
+" Last Update:  ¡'$'¡Date$
+"------------------------------------------------------------------------
+" Description:
+"       <+description+>
+" 
+"------------------------------------------------------------------------
+" Installation:
+"       Drop this file into {rtp}/¡fnamemodify(s:path, ':h')¡
+"       Requires Vim7+
+"       <+install details+>
+" History:      <+history+>
+" TODO:         <+missing features+>
+" }}}1
+"=============================================================================
+
