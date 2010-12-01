@@ -3,7 +3,7 @@
 " File:		autoload/lh/cpp/file.vim                           {{{1
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:	2.0.4
+" Version:	2.1.0
 " Created:	12th Feb 2008
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -60,7 +60,7 @@ function! lh#cpp#file#HeaderName(file)
 
     let l_allfiles = split(allfiles, ',')
     let l_matches  = filter(l_allfiles, 'filereadable(v:val) || bufexists(v:val)')
-    call map(l_matches, 'lh#path#simplify(v:val)')
+    call map(l_matches, 'lh#path#simplify(v:val, 0)')
     let l_matches = lh#list#unique_sort(l_matches)
     let inc_paths = lh#cpp#file#IncludedPaths()
     call map(l_matches, 'lh#path#strip_start(v:val, inc_paths)')
