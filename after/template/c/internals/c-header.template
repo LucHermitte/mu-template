@@ -2,16 +2,10 @@ VimL: " $Id$
 VimL: "C/C++ Header File-Template, Luc Hermitte
 VimL: let s:filename = s:path_from_root(expand('%:p'))
 VimL: call s:Include('c-file-header', 'c/internals')
-VimL: "
-VimL: " If you prefer to use a uuid, you can instead set s:guard with 
-VimL: "    :let s:guard = matchstr(system('uuidgen'), "[^\n\r]*")
-VimL: " I recommend you to do this by overiding this file as explained in
-VimL: " |MuT-paths-override|
-VimL: let s:guard = substitute(toupper(s:filename),'\c[^a-z0-1_]','_','g')
-
-#ifndef ¡s:guard¡__
-#define ¡s:guard¡__
+VimL: call s:Include('c-header-guard', 'c/internals')
+#ifndef <+¡s:guard¡__+>
+#define <+¡s:guard¡__+>
 
 <+Definitions here+>
 
-#endif // ¡s:guard¡__
+#endif // <+¡s:guard¡__+>
