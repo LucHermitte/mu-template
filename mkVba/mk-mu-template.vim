@@ -3,8 +3,8 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.1.0
-let s:version = '2.1.0'
+" Version:	2.1.1
+let s:version = '2.1.1'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -26,12 +26,15 @@ after/template/c/for.template
 after/template/c/fori.template
 after/template/c/if.template
 after/template/c/internals/c-file-header.template
+after/template/c/internals/c-header-guard.template
 after/template/c/internals/c-header-typical.template
 after/template/c/internals/c-header.template
 after/template/c/internals/c-imp.template
+after/template/c/main.template
 after/template/c/switch.template
 after/template/c/while.template
 after/template/c.template
+after/template/cmake/if.template
 after/template/cpp.template
 after/template/cpptu-header.template
 after/template/cppunit-header.template
@@ -41,6 +44,7 @@ after/template/MyProject-file-header.template
 after/template/perl.template
 after/template/tcl.template
 after/template/template.template
+after/template/template/include.template
 after/template/test-included.template
 after/template/test.template
 after/template/tex/center.template
