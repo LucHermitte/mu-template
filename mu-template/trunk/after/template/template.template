@@ -1,12 +1,14 @@
-VimL: " $Id$
-VimL: "Templates Definition File Template, Luc Hermitte
+VimL:" $Id$
+VimL:" Templates Definition File Template, Luc Hermitte
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-¡s:Comment('<+'.expand('%:e').'+>'.' File Template, '.Author(1).', '.DateStamp())¡
+¡'VimL:" $'¡Id$
+¡s:Comment('<+'.expand('%:t:r').'+>'.' File Template, '.Author(1).', '.DateStamp())¡
 ¡'VimL:'¡ let s:value_start = '¡'
 ¡'VimL:'¡ let s:value_start = '¡'
 ¡'VimL:'¡ let s:value_end   = s:value_start
 ¡'VimL:'¡ let s:marker_open  = '<+'
 ¡'VimL:'¡ let s:marker_close = '+>'
+<++>

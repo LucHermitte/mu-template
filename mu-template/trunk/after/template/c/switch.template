@@ -7,9 +7,9 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 switch¡C_nl_before_bracket()¡(<+expr+>)¡C_nl_before_curlyB()¡{
     case <+case+>:
-	<+code+>
+	<+code1+>
 	break;
     default:
-	<+code+>
+	<+default-code+>
 	break;
 }<++>
