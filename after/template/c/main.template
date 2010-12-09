@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:"{main(){...}} Template-File, Luc Hermitte
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+int main (<+int argc, char **argv+>)
+{
+    <+code+>
+}
