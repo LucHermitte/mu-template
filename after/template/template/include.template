@@ -1,0 +1,10 @@
+VimL:" $Id$
+VimL:" s:Include() call Template File, Luc Hermitte, 06th Dec 2010
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:ft = expand('%:t:r')
+¡'VimL:'¡ call s:Include('¡s:ft¡-<+name+>', '¡s:ft¡/<+internals+>')
+<++>
