@@ -1,0 +1,11 @@
+VimL: " $Id
+VimL: " MyProject-C/C++-File-header File-Template, Luc Hermitte
+VimL: " If you have one file to set specific header in your project
+VimL: " files, then override this file
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+/*
+ * ¡'$'¡Id$
+ */

@@ -1,0 +1,17 @@
+VimL: " $Id$
+VimL: "«Vim» Template File, Luc Hermitte
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: call s:Include('get-script-kind', 'vim/internals')
+VimL: call s:Include('vim-header', 'vim/internals')
+VimL: let s:fn = substitute(expand("%:t:r"),'\W', '_', 'g') 
+VimL: if s:ftplug | call s:Include('vim-ftplugin', 'vim/internals') | endif
+VimL: if s:alplug | call s:Include('vim-autoload-plugin', 'vim/internals') | endif
+VimL: if s:plugin | call s:Include('vim-plugin', 'vim/internals') | endif
+VimL: if s:localvimrc | call s:Include('vim-rc-local', 'vim/internals') | endif
+VimL: if s:mkvba | call s:Include('vim-mkvba', 'vim/internals') | endif
+VimL: if !s:plugin &&!s:ftplug &&!s:alplug &&!s:mkvba | call s:Include('vim-other-scripts', 'vim/internals') | endif
+VimL: " let s:ftplug = CONFIRM("Is this script an ftplugin ?", "&Yes\n&No", s:ftplug)==1
+VimL: if !s:mkvba | call s:Include('vim-footer', 'vim/internals') | endif
