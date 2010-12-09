@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.1.0
+" Version:	2.1.1
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -220,6 +220,10 @@
 " 	:MuTemplate
 " 	v2.1.0
 " 	(*) Exploits Tom Link's stakeholders plugin, when installed
+" 	v2.1.1
+" 	(*) The template-file for new template-files is now loaded
+" 	(*) issue#30, mt_IDontWantTemplatesAutomaticallyInserted set in .vimrc
+" 	    is ignored.
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -247,10 +251,11 @@
 "	- See how the :SourceLocalVimrc idea could be adapted to the plugin
 "	  project.vim.
 "	- Move the functions to an autoload plugin
+"	- Syntax to support hints
 "
 "}}}1
 "========================================================================
-let s:k_version = 210
+let s:k_version = 211
 if exists("g:mu_template") 
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -278,7 +283,6 @@ endfunction
 if   
       \ !s:CheckDeps('*GetCurrentWord', 'words_tools.vim',     'plugin/')
   let &cpo=s:cpo_save
-      " \    !s:CheckDeps(':SearchInVar',    'searchInRuntime.vim', 'plugin/')
   finish
 endif
 " }}}1
@@ -337,8 +341,6 @@ endif
 let s:value_start = '¡'
 let s:value_end   = '¡'
 function! s:Value(text)            " {{{3
-  " :call Dfunc("s:Value(".a:text.')')
-  " :call Dret("s:Value ".s:value_start . a:text . s:value_end)
   return '\%('.s:value_start . a:text . s:value_end.'\)'
 endfunction
 
@@ -969,13 +971,13 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
 
   " let ArgLead = substitute(ArgLead, '.*/', '', '')
   " if stridx(ArgLead, '/') == -1
-    " let ArgLead = 
+  " let ArgLead = 
   " endif«»
   let s:wildignore = &wildignore
   let &wildignore  = ""
   let ftlist = s:ShortenTemplateFilesNames(
-        \ lh#path#glob_as_list(s:_mt_templates_dirs, ArgLead.'*.template'))
-        "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.'.ArgLead.'*'))
+	\ lh#path#glob_as_list(s:_mt_templates_dirs, ArgLead.'*.template'))
+  "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.'.ArgLead.'*'))
   let &wildignore = s:wildignore
   call extend(ftlist, s:GetShortListOfTFMatching(ArgLead.'*', &ft))
   let res = join(ftlist, "\n")
@@ -1035,16 +1037,18 @@ function! s:BuildMenu(doRebuild)
 	\ ' :call <sid>Help()<CR>'
 
   " 3- Options                        {{{3
-  let s:AutoInsertMenu = {
-	\ "variable": "mt_IDontWantTemplatesAutomaticallyInserted",
-	\ "idx_crt_value": 1,
-	\ "texts": [ 'no', 'yes' ],
-	\ "values": [ 1, 0],
-	\ "menu": {
-	\     "priority": s:menu_prio.'600',
-	\     "name": s:menu_name.'&Options.&Automatic Expansion'}
-	\}
-  call lh#menu#def_toggle_item(s:AutoInsertMenu)
+  if !exists('s:AutoInsertMenu')
+    " not setting idx_crt_value keeps the default value
+    let s:AutoInsertMenu = {
+	  \ "variable": "mt_IDontWantTemplatesAutomaticallyInserted",
+	  \ "texts": [ 'yes', 'no' ],
+	  \ "values": [ 0, 1],
+	  \ "menu": {
+	  \     "priority": s:menu_prio.'600',
+	  \     "name": s:menu_name.'&Options.&Automatic Expansion'}
+	  \}
+    call lh#menu#def_toggle_item(s:AutoInsertMenu)
+  endif
 
   " 4- New File                       {{{3
   try
@@ -1112,7 +1116,7 @@ function! s:AutomaticInsertion()
   endif
 endfunction
 
-function! s:FTDetection4Templates(filename)
+function! s:FTDetection4Templates(filename, event)
   let dir = fnamemodify(a:filename, ':h')
   let reldir = lh#path#strip_start(dir, s:_mt_templates_dirs)
   if reldir == dir
@@ -1132,6 +1136,10 @@ function! s:FTDetection4Templates(filename)
   endif
   let g:ft = &ft
   set ft=template
+  " Finally run mu-template
+  if a:event == 'new' && s:AutomaticInsertion()
+    call <SID>TemplateOnBufNewFile()
+  endif
 endfunction
 
 augroup MuTemplate
@@ -1141,7 +1149,8 @@ augroup MuTemplate
   "au BufWritePre * normal ,last
 
   " Syntax HL & ft detection of template files
-  au BufNewFile,BufRead *.template  call<sid>FTDetection4Templates(expand('<afile>:p'))
+  au BufRead    *.template  call <sid>FTDetection4Templates(expand('<afile>:p'), 'read')
+  au BufNewFile *.template  call <sid>FTDetection4Templates(expand('<afile>:p'), 'new')
 augroup END
 " }}}1
 "------------------------------------------------------------------------
