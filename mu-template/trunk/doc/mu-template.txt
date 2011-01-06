@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 26th Nov 2010
+*mu-template.vim*       For Vim version 7+      Last change: 04th Jan 2011
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 2.1.1
+                    Version 2.2.0
 
 
 ==============================================================================
@@ -142,6 +142,7 @@ There are several ways to load template-files:
                                         
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 {{{3 Insert-mode expansion of template-files                   ~
+					*MuT-snippets*
                                         *i_CTRL-R_SPACE* *i_CTRL-R_TAB*
     This plugin defines two default insert-mode mappings:
     (*) i_CTRL-R_SPACE 
@@ -159,7 +160,7 @@ There are several ways to load template-files:
       NB: template-files may come from the ones inherited from another
           filetype (see |g:mt_inherited_ft_for_{filetype}|.
     - If there are several matches, the user will have to choose one template-
-      file.
+      file. See |g:mt_chooseWith|.
     - The template-file thus selected is inserted in place of the (key)word
       before the cursor.
 
@@ -172,6 +173,15 @@ There are several ways to load template-files:
 
 <   In order to replace these mapping keybindings with some you found more
     ergonomic, see |<Plug>MuT_ckword|.
+
+						    *g:mt_chooseWith*
+    mu-template offers two ways to choose the template-file to expand when
+    several match:
+    - When g:mt_chooseWith values "complete", the choices are displayed with a
+      |ins-completion-menu|. A hint about the snippet will be displayed (if
+      available). This is the default behaviour (since v2.2.0).
+    - When g:mt_chooseWith values "confirm", the choices are displayed with a
+      |confirm()| box.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 {{{3 Through the menu                                          ~
@@ -351,6 +361,11 @@ TEMPLATE FILES SYNTAX                       *MuT-syntax*       {{{1
         Note however that this command must not attempt to modify the current
         buffer, or directly change the |s:content| of the lines being added.
         This may lead to an undefined behaviour.
+
+    VimL: hint: {snippet-hint}                          *MuT-hint*
+	{snippet-hint} is a textual hint intended to summarize what the
+	snippet will be expanded into. So far hints serve only with
+	|MuT-snippets|.
 
 ------------------------------------------------------------------------------
 {{{2 How-To                            ~
@@ -585,7 +600,7 @@ The (non) exhaustive list of the reserved symbols is:
 - s:CheckDeps(), s:Option().
 - s:NoRegex(), s:Marker(), s:Value(), s:Command(), s:Comment()
 
-@todo all variables starting will a double underscore will be reserved.
+Moreover, all variables starting will a double underscore will be reserved.
 
 ==============================================================================
 CONFIGURATION                               *MuT-config*       {{{1
@@ -613,6 +628,10 @@ CONFIGURATION                               *MuT-config*       {{{1
             let g:mt_menu_priority = '40.700'
             let g:mt_menu_name     = '&Tools.Templates'
 <       Must be set once before mu-template.vim is sourced -> .vimrc
+
+    |g:mt_chooseWith| (string; "complete"/"confirm"; default: "complete")
+	Specifies how the user will choose which snippet must be inserted when
+	there is an ambiguity.
 
 ------------------------------------------------------------------------------
 {{{2 Mappings                          ~
@@ -737,7 +756,7 @@ Tom Link		For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2010, <http://code.google.com/p/lh-vim/>          {{{1
+ © Luc Hermitte, 2001-2011, <http://code.google.com/p/lh-vim/>          {{{1
  $Id$
  VIM: let b:VS_language = 'american' 
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:

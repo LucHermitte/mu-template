@@ -1,5 +1,6 @@
 VimL:" $Id$
 VimL:"{for i=0...} Template-File, Luc Hermitte
+VimL:" hint: for (i=0;i!=N;++i) { action }
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1 

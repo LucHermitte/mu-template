@@ -1,5 +1,6 @@
 VimL:" $Id$
 VimL:"{do-while} Template-File, Luc Hermitte
+VimL:" hint: do { action } while (cond);
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1 

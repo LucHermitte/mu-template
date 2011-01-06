@@ -3,8 +3,8 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.1.1
-let s:version = '2.1.1'
+" Version:	2.2.0
+let s:version = '2.2.0'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -42,6 +42,7 @@ after/template/help.template
 after/template/html.template
 after/template/MyProject-file-header.template
 after/template/perl.template
+after/template/sh.template
 after/template/tcl.template
 after/template/template.template
 after/template/template/include.template
@@ -67,6 +68,7 @@ after/template/vim/internals/vim-plugin.template
 after/template/vim/internals/vim-rc-local.template
 after/template/vim/loop-arg.template
 after/template/vim/plugmap.template
+after/template/vim/snr.template
 after/template/vim.template
 after/template/xslt/xsl-attribute.template
 after/template/xslt/xsl-for-each.template
@@ -77,6 +79,8 @@ after/template/xslt/xsl-template-name.template
 after/template/xslt/xsl-value-of.template
 after/template/xslt/xsl-when.template
 autoload/lh/cpp/file.vim
+autoload/lh/mut.vim
+autoload/lh/mut/dirs.vim
 doc/mu-template.txt
 ftplugin/template.vim
 mkVba/mk-mu-template.vim

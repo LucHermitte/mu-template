@@ -1,11 +1,12 @@
 VimL:" $Id$
 VimL:" ``VimL for-int loop'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
+VimL:" hint: <+i+>=0; while i<N ; actions ; ++i ; endwhile
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:name = INPUT('Name of the iterator: ')
+VimL: let s:name = INPUT('Name of the index: ', Marker_Txt('i'))
 VimL: if "" != s:name | let s:max = INPUT('Number of iterations: ') | endif
 let ¡s:name¡ = 0
 while ¡s:name¡ != ¡s:max¡

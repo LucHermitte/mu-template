@@ -1,5 +1,6 @@
 VimL:" $Id$
 VimL:"{xsl:template} Template File, Luc Hermitte
+VimL:" hint: <xsl:template name="name"></xsl:template>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1 

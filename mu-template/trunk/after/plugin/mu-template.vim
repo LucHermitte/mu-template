@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.1.1
+" Version:	2.2.0
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -22,7 +22,7 @@
 " 	the template beeing of the form {runtimepath}/template/&ft.template,
 " 	&ft being the filetype of the new file.
 "
-" 	We can also volontarily invoke a template construction with 
+" 	We can also volontarily invoke a template construction with
 " 		:MuTemplate id
 " 	that will loads {runtimepath}/template/id.template ; cf. for instance
 " 	cpp-class.template.
@@ -52,7 +52,7 @@
 "		- add '¿vimExpr¿' to define areas of VimL, ideal to compute
 "		  variables
 "
-"	v0.1bis&ter not included in 0.11, 
+"	v0.1bis&ter not included in 0.11,
 "	(*) default value for g:author as it is used in some templates
 "	    -> $USERNAME (windows specific ?)
 "	(*) extend '¡.\{-}¡' and s:Exec() in order to clear empty lines after
@@ -64,10 +64,10 @@
 "	(*) s:Template() changed in consequence
 "
 "	v0.20bis
-"	(*) correct search(...,'W') to search(...,&ws?'w':'W') 
+"	(*) correct search(...,'W') to search(...,&ws?'w':'W')
 "	    ie.: the 'wrapscan' option is used.
 "	(*) search policy of the template files improved :
-"	    1- search in $VIMTEMPLATES if defined 
+"	    1- search in $VIMTEMPLATES if defined
 "	    2- true search in 'runtimepath' with :SearchInRuntime if
 "	       <searchInRUntime.vim> installed.
 "	    3- search of the first $$/template/ directory found to define
@@ -97,7 +97,7 @@
 "	    In case there are several matches, the choice is given to the user
 "	    through a menu.
 "	    For instance, try:
-"	    - in a C++ file:  
+"	    - in a C++ file:
 "		clas^R\t
 "	    - in a XSLT file:
 "		xsl:i^R\t!jump!xsl:t^R\t
@@ -125,7 +125,7 @@
 "
 "	v0.28
 "	(*) some dead code cleaned
-"	
+"
 "	v0.29
 "	(*) quick fixes for file encodings
 "
@@ -138,7 +138,7 @@
 "	v0.30 bis
 "	(*) no more problems when expanding a multi-lines text (like
 "	    g:Author="foo\nbarr")
-"	(*) New function s:Include() that be be used from template files, 
+"	(*) New function s:Include() that be be used from template files,
 "	    cf.: template.c, template.c-imp and template.c-header
 "	    As a result, a single template-file (associated to a specific
 "	    filetype) can load different other template-files.
@@ -163,7 +163,7 @@
 "	(*) s:Include accept a second and optional argument: where to look for
 "	    the template-file. ex.:
 "           VimL: call s:Include('stream-signature', 'cpp/internals')
-"           It can be used from global and ft-templates. 
+"           It can be used from global and ft-templates.
 "
 "	v0.35
 "	(*) New function: s:path_from_root()
@@ -206,7 +206,7 @@
 " 	    characters in non ASCII encodings
 " 	v2.0.2
 " 	(*) Defect #6: g:mt_templates_dirs is not defined when menus are not active
-" 	    NB: g:mt_templates_dirs becomes s:_mt_templates_dirs
+" 	    NB: g:mt_templates_dirs becomes s:__mt_templates_dirs
 " 	v2.0.3
 " 	<*) Use :SourceLocalVimrc to import project local settings before
 " 	    expanding templates
@@ -216,7 +216,7 @@
 " 	supported (Issue#29)
 " 	v2.0.5
 " 	(*) Imports filetype definitions when opening template-files
-" 	(*) s:_mt_templates_dirs was not updated dynamically when calling
+" 	(*) s:__mt_templates_dirs was not updated dynamically when calling
 " 	:MuTemplate
 " 	v2.1.0
 " 	(*) Exploits Tom Link's stakeholders plugin, when installed
@@ -224,6 +224,16 @@
 " 	(*) The template-file for new template-files is now loaded
 " 	(*) issue#30, mt_IDontWantTemplatesAutomaticallyInserted set in .vimrc
 " 	    is ignored.
+" 	    TODO: def_togle_item should use preexisting values when set
+" 	    «TBT»
+" 	v2.2.0
+" 	(*) When several template-files match a snippet name, the choice can be
+" 	    done with |ins-completion-menu| instead of |confirm()| box thanks
+" 	    to: g:mt_chooseWith. When using "complete" a hint is provided with
+" 	    each snippet.
+"	(*) The list of options is displayed in a (toggle-) menu
+"	(*) Break undo history just before the template is expanded -> |i_CTRL-g_u|
+"	(*) Functions moved to autoload plugins
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -232,34 +242,39 @@
 " TODO:	{{{2
 " 	- Re-executing commands. (Can be useful for Last Modified fields).
 "	- Change <cword> to alternatives because of 'xsl:i| toto'.
-"	- Check it doesn't mess with search history, or registers.
-"	- Documentation: finish. ;
+"	- Check it doesn't mess with:
+"	   - search history, (NOK)
+"	   - or registers.   (OK)
+"	- Documentation: variability points in the standard template-files ;
 "	- Menu: enable/disable submenus according the current &filetype.
 "	  +--> buffermenu.vim
-"	- Menu: display the list of options
 "	- |:undojoin| for interactive template (see cpp/for-iterator)
-"	- Popup menu like the one used by omnicomplete
-"	- syntax highlight for templates
+"	  (it seems that the new engine (v2) has fixed the isssue)
 "	- Hint for latin2/etc encoding issues: have a s:IncludeConv() that
 "	  takes the encoding of the file to load as a parameter. Or play with
 "	  iconv() in |MuT-expression|s.
-"	- Change the names of internal variables to something like s:__{variable} 
+"	- Change the names of all internal variables to something like s:__{variable}
 "	- Find some way to push/pop values into variables for the scope of a
 "	  call to s:Include. Will be useful with s:fileencoding, s:marker_open,
 "	  ...
 "	- :SourceLocalVimrc hook shall be overidable from $HOME/.vimrc
 "	- See how the :SourceLocalVimrc idea could be adapted to the plugin
 "	  project.vim.
-"	- Move the functions to an autoload plugin
-"	- Syntax to support hints
+"	- Option to see whether the user prefers vim ask question about names,
+"	..., or whether he prefers to rely on stakeholder (if installed)
+"	- With g:mt_chooseWith="complete", using the default choice will
+"	  trigger an error => find a way to force a real selection of the
+"	  default choice
+"	- Write a helper plugin that will help us navigate in the tree of
+"	  included templates.
 "
 "}}}1
 "========================================================================
-let s:k_version = 211
-if exists("g:mu_template") 
+let s:k_version = 220
+if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
-  finish 
+  finish
 endif
 let g:mu_template = s:k_version
 let s:cpo_save=&cpo
@@ -267,7 +282,7 @@ set cpo&vim
 " scriptencoding latin1
 
 " Debugging purpose
-command! -nargs=1 MUEcho :echo s:<args> 
+command! -nargs=1 MUEcho :echo s:<args>
 
 "========================================================================
 " Low level functions {{{1
@@ -280,7 +295,7 @@ endfunction
 " }}}1
 "========================================================================
 " Dependancies {{{1
-if   
+if
       \ !s:CheckDeps('*GetCurrentWord', 'words_tools.vim',     'plugin/')
   let &cpo=s:cpo_save
   finish
@@ -293,24 +308,6 @@ function! s:Option(name, default)                        " {{{2
   elseif exists('g:mt_'.a:name) | return g:mt_{a:name}
   else                          | return a:default
   endif
-endfunction
-
-" Define directories to search for templates               {{{2
-function! s:TemplateDirs()
-  " NB: template_dirs is computed every time as it can be changed between two
-  " uses of mu-template.
-  let template_dirs = substitute(&runtimepath, ',\|$', '/template\0', 'g')
-  if exists('$VIMTEMPLATES') 
-    " $VIMTEMPLATES is used if defined
-    " This must be a list of directories separated by ';' or ','
-    " Note: $VIMTEMPLATES has precedence over 'runtimepath'
-    let result = $VIMTEMPLATES . ',' . template_dirs
-  else
-    let result = template_dirs
-  endif
-  let result = substitute(result, '\([/\\]\)\1', '\1', 'g')
-  let result = substitute(result, '[/\\]\(,\|$\)', '\1', 'g')
-  return result
 endfunction
 
 " g:author : recurrent special variable                    {{{2
@@ -335,574 +332,32 @@ if !exists('*DateStamp')
   endfunction
 endif
 
-" Tools functions                                          {{{2
-" let s:value_start = '%%%('
-" let s:value_end   = ')'
-let s:value_start = '¡'
-let s:value_end   = '¡'
-function! s:Value(text)            " {{{3
-  return '\%('.s:value_start . a:text . s:value_end.'\)'
-endfunction
-
-function! s:Command(text)          " {{{3
-  return 'VimL:' . a:text
-endfunction
-
-function! s:Comment(text)          " {{{3
-  return s:Command('" '.a:text)
-endfunction
-
-" function! s:Include()              {{{3
-function! s:Include(template, ...)
-  let pos = s:content.crt
-  " let correction = s:NeedToJoin > 0
-  let correction = 0
-  let dir = fnamemodify(a:template, ':h')
-  if dir != "" | let dir .= '/' | endif
-  if a:0>0
-    let dir .= a:1 . '/'
-  endif
-  "NAMES WERE: if 0 == s:LoadTemplate(pos-correction, dir.'template.'.a:template)
-  "NAMES WERE:   call lh#common#warning_msg("muTemplate: No template file matching <".dir.'template.'.a:template.">")
-  if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
-    call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
-  endif
-endfunction
-
-function! s:path_from_root(path)   " {{{3
-  let path = a:path
-  if exists('b:sources_root')
-    let s = strlen(b:sources_root)
-    if b:sources_root[s-1] !~ '/\|\\'
-      let b:sources_root .=
-	    \ ((!exists('shellslash')||&shellslash)?'/':'\')
-      let s += 1
-    endif
-    let p = stridx(path, b:sources_root)
-    if 0 == p
-      let path = strpart(path, s)
-    endif
-  endif
-  return path
-endfunction
-
-" function s:Line()                  {{{3
-" Returns current line
-function! s:Line()
-  return s:content.crt + s:content.start
-endfunction
-
-" {[bg]:mt_jump_to_first_markers}                          {{{2
-" Boolean: specifies whether we want to jump to the first marker in the file.
-
-" How to join with next line : {[bg]:mt_how_to_join}       {{{2
-"   Used only with i_CTRL-R_TAB
-"   == 0 : "{pattern}^r\t foo" -> "{the template}\nfoo"
-"   == 1 : "{pattern}^r\t foo" -> "{the template} foo"
-"   == 2 : "{pattern}^r\t foo" -> "{the template}«» foo"
-
-" Filetypes inheritance                                    {{{2
-if !exists('g:mt_inherited_ft_for_cpp')
-  let g:mt_inherited_ft_for_cpp    = 'c'
-endif
-if !exists('g:mt_inherited_ft_for_csharp')
-  let g:mt_inherited_ft_for_csharp = 'c'
-endif
-if !exists('g:mt_inherited_ft_for_java')
-  let g:mt_inherited_ft_for_java   = 'c'
-endif
-
 " }}}1
 "========================================================================
 " Core Functions {{{1
-let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0}
-
-function! s:LoadTemplate(pos, templatepath)                      " {{{2
-  " echomsg "s:LoadTemplate(".a:pos.", '".a:templatepath."')"
-  try
-    let s:wildignore = &wildignore
-    let &wildignore  = ""
-
-    let matching_filenames = lh#path#glob_as_list(s:_mt_templates_dirs, a:templatepath)
-    if len(matching_filenames) == 0
-      return 0 " NB: the finally block is still executed
-      " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
-    else
-      if &verbose >= 1
-	echo "Loading <".matching_filenames[0].">"
-      endif
-      let lines = readfile(matching_filenames[0])
-      call extend(s:content.lines, lines, a:pos)
-      " echomsg string(s:content)
-    endif
-  finally
-    let &wildignore = s:wildignore
-  endtry
-  return len(s:content.lines)
-endfunction
-
-" s:InterpretValue() will interpret a sequence between ¡.\{-}¡ {{{2
-" ... and return the computed value.
-" To possibly expand a sequence into an empty string, use the 
-" 'bool_expr ?  act1 : act2' VimL operator ; cf vim.template for examples of
-" use.
-function! s:InterpretValue(what)
-  try
-    exe 'let s:r = ' . a:what
-    " NB: cannot use a local variable, hence the "s:xxxx"
-    return s:r
-  catch /.*/
-    call lh#common#warning_msg("muTemplate: Cannot interpret `".a:what."': ".v:exception)
-    return a:what
-  endtry
-endfunction
-
-" s:InterpretCommand() will interpret a sequence "VimL:.*"     {{{2
-" ... and return nothing
-" Back-Door to trojans !!!
-function! s:InterpretCommand(what)
-  try
-    if empty(s:_function) 
-      if a:what =~ '^:\?fu\%[nction]'
-	let s:_function += [a:what]
-      elseif a:what =~ '^:\?endf\%[unction]'
-	throw 'not within the definition of a function'
-      else
-	exe a:what
-    endif
-    else
-      if a:what =~ '^:\?fu\%[nction]'
-	throw 'already within the definition of a function (nested functions are not supported (yet))'
-      else
-	let s:_function += [a:what]
-	if a:what =~ '^:\?endf\%[unction]'
-	  let fn_def = join(s:_function, "\n")
-	  let s:_function = []
-	  exe fn_def
-	endif " :endfunction
-      endif " != :function
-    endif
-  catch /.*/
-    call lh#common#warning_msg("muTemplate: Cannot execute `".a:what."': ".v:exception)
-    throw "muTemplate: Cannot execute `".a:what."': ".v:exception
-  endtry
-endfunction
-
-function! s:InterpretValues(line)
-  " @pre must not be defining VimL functions
-  if !empty(s:_function)
-    throw 'already within the definition of a function (no non-VimL code authorized)'
-  endif
-
-  let res = ''
-  let tail = a:line
-  let re =  '\(.\{-}\)'.s:Value('\(.\{-}\)').'\(.*\)'
-  let may_merge = 0
-  while strlen(tail)!=0
-    let split = matchlist(tail, re)
-    if len(split) <2 || strlen(split[0]) == 0
-      " nothing found
-      let res .= tail
-      let tail = ''
-      " let may_merge = 0
-    else
-      let value = s:InterpretValue(split[2])
-      let res .= split[1] . value 
-      let tail = split[3]
-      let may_merge = 1
-    endif
-  endwhile
-  " echomsg "may_merge=".may_merge."  ---  ".res
-  return { 'line' : res, 'may_merge' : may_merge }
-endfunction
-
-function! s:NoRegex(text)
-  return escape(a:text, '\.*/')
-endfunction
-
-function! s:Marker(regex)
-  return s:NoRegex(s:marker_open) . a:regex . s:NoRegex(s:marker_close)
-endfunction
-
-function! s:InterpretLines(first_line)              " {{{2
-  " Constants
-  let markerCharacters = Marker_Txt('')
-
-  let s:content.crt = 0
-  " let pat_command = '\c^'.s:Command('.*')
-  let pat_command = '\c^'.s:Command('')
-  while s:content.crt < len(s:content.lines)
-    " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt] 
-    let the_line = s:content.lines[s:content.crt] 
-    if the_line =~ pat_command
-      call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
-      call s:InterpretCommand( matchstr(the_line, '\c'.s:Command('\s*').'\zs.*'))
-    elseif the_line !~ '^\s*$'
-      " NB 1- We must know the expression characters before any interpretation.
-      "    2- :r inserts an empty line before the template loaded
-      "    => We do not interpret empty lines
-      "    => s:value_start and s:value_end must always be specified!
-
-      if s:Marker('') != markerCharacters
-	" Replaces plain marker characters into current marker characters.
-	let the_line = substitute(the_line, s:Marker('\(.\{-}\)'), Marker_Txt('\1'), 'g')
-      endif
-
-      " Replaces expressions by their interpreted value
-      let line = s:InterpretValues(the_line)
-      let the_line = line.line
-      if the_line =~ '^\s*$' && line.may_merge
-	" The line becomes empty after the evaluation of the expression => strip it
-	call remove(s:content.lines, s:content.crt) " implicit next
-      else
-	" Put back the interpreted lines in the content buffer
-	if match(the_line, "[\n\r]")
-	  " Split the line into several lines if it contains "\n" or "\r"
-	  " characters
-	  let lines = split(the_line, "[\r\n]")
-	  call remove(s:content.lines, s:content.crt)
-	  call extend(s:content.lines, lines, s:content.crt)
-	  let s:content.crt += len(lines) " next
-	else
-	  " Nominal case: only one line
-	  let s:content.lines[s:content.crt] = the_line
-	  let s:content.crt += 1 " next
-	endif
-      endif
-    else
-      let s:content.crt += 1 " next
-    endif
-  endwhile
-endfunction
-
-function! s:Reencode()
-  call map(s:content.lines, 'lh#encoding#iconv(v:val, '.string(s:fileencoding).', &enc)')
-endfunction
-
-" s:IsKindOfEmptyLine(lineNo)                                  {{{2
-" @return true on empty lines or on lines containing an empty comment
-function! s:IsKindOfEmptyLine(lineNo)
-  let line = getline(a:lineNo)
-  if     line =~ '^\s*$' 
-    return 1
-  elseif version >= 700
-    let comments = split(&comments, ',')
-    let i = 0
-    while i != len(comments)
-      if     comments[i] =~ '^m\|^[nbf]\=-\=\d*:'
-	" Never consider start or end of three-piece comment as empty comment
-	let comment = escape(matchstr(comments[i], '^.\{-}:\zs.*'), '\*')
-	" call confirm('##'.comment.'##', '&Ok', 1)
-	if line =~ '^\s*'.comment.(strlen(comment)?'\s*':'').'$'
-	  return 1
-	endif
-      endif
-      let i += 1
-    endwhile
-    return 0
-  endif
-endfunction
-
-" s:TemplateAndJump() called by :MuTemplate and imapping       {{{2
-function! s:TemplateAndJump(needToJoin, ...)
-  " echomsg "s:TemplateAndJump"
-  let s:_mt_templates_dirs = s:TemplateDirs()
-  let res = (a:0>0)
-	\ ? s:Template(a:needToJoin, a:1)
-	\ : s:Template(a:needToJoin)
-  if res && s:Option('jump_to_first_markers',1)
-    call s:JumpToStart()
-  endif
-  return res
-endfunction
 
 " s:TemplateOnBufNewFile() triggered by BufNewFile event       {{{2
 function! s:TemplateOnBufNewFile()
   if exists(':SourceLocalVimrc')
-    try 
+    try
       :SourceLocalVimrc
     catch /.*/
       echomsg v:exception
     endtry
   endif
 
-  let s:_mt_templates_dirs = s:TemplateDirs()
+  call lh#mut#dirs#update()
   " echomsg 's:TemplateOnBufNewFile'
-  let res = s:Template(0)
+  " let res = s:Template(0)
+  let res = lh#mut#expand(0)
   if res && s:Option('jump_to_first_markers',1)
     " Register For After Modeline Event
-    command! -nargs=0 JumpToStart :call s:JumpToStart()
+    command! -nargs=0 JumpToStart :call lh#mut#jump_to_start()
     call lh#event#register_for_one_execution_at('BufWinEnter', ':JumpToStart', 'MuT_AfterModeline')
   endif
   " No more ':startinsert'. It seems useless and redundant with !jump!
   " startinsert
   return res
-endfunction
-
-" s:Template() is the main function                            {{{2
-function! s:Template(NeedToJoin, ...)
-  " echomsg 's:Template('.a:NeedToJoin.string(a:000).')'
-  " 1- Determine the name of the template file expected {{{3
-  let pos = line('.')
-  let s:content.start = pos
-  let s:content.lines = []
-  let s:NeedToJoin = a:NeedToJoin
-  if a:0 > 0 
-    let dir = fnamemodify(a:1, ':h')
-    if dir != "" | let dir .= '/' | endif
-    let ft  = fnamemodify(a:1, ':t')
-    " first option : the template file is specified ; cf. cpp.template-class
-  else       
-    let ft=strlen(&ft) ? &ft : 'unknown'
-    let dir = ''
-    " otherwise (default) : the template file is function of the current
-    " filetype
-  endif
-  " 2- Load the associated template {{{3
-  let foldenable=&foldenable
-  silent! set nofoldenable
-  try
-    "NAMES WERE: call  s:LoadTemplate(0, dir.'template.'.ft)
-    call  s:LoadTemplate(0, dir.ft.'.template')
-
-    " clear any function definition
-    let s:_function = []
-    " Default values for placeholder characters (they can be overridden in each
-    " template file). 
-    let s:marker_open  = '<+'
-    let s:marker_close = '+>'
-    " Default fileencoding to override in template files
-    let s:fileencoding = &enc
-
-    " Note: last is the number of the last line inserted
-    " 3- If successful, interpret it {{{3
-    if len(s:content.lines) > 0 " {{{4
-      " Interpret
-      call s:InterpretLines(pos)
-      " Reencode
-      if s:fileencoding != &enc
-	if has('multi_byte') 
-	  call s:Reencode()
-	else
-	  call lh#common#warning_msg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
-	endif
-      endif
-      " @post: :functions must be fully defined 
-      if !empty(s:_function)
-	throw 'function definition not terminated (:enfunction expected)'
-      endif
-
-      " Insert
-      call append(pos, s:content.lines)
-      let last=pos + len(s:content.lines)
-      " echomsg 'last='.last
-
-      " Goto the first line and delete it (because :r insert one useless line)
-      if "" == getline(pos)
-	silent exe pos."normal! dd0"
-      else
-	silent exe pos."normal! J!0"
-      endif
-      let last -= 1
-      " Activate Tom Link's Stakeholders in case it is installed
-      if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1)
-	if !exists('#stakeholders') " Stakeholder not enabled for all buffers
-	  if !exists('b:stakeholders') || exists('b:stakeholders_range')
-	    " previously activated on a range, or never activated
-	    " echomsg "try EnableInRange(".pos.','.last.')'
-	    " Reset previous range
-	    call stakeholders#DisableBuffer()
-	    " Set new range in case there is no global activation
-	    call stakeholders#EnableInRange(pos, last)
-	  else
-	    " echomsg "already activated for the current buffer ?"
-	  endif
-	else " Stakeholders Enabled for all buffers
-	  if exists('b:stakeholders')
-	    " Relaunch for the new global range
-	    call stakeholders#DisableBuffer()
-	    call stakeholders#EnableBuffer()
-	  else
-	    " echomsg "leave it to autocmds?"
-	    call stakeholders#EnableBuffer()
-	  endif
-	endif
-      endif " Stakeholders installed
-
-      " Reindent
-      if exists('s:reindent') && s:reindent
-	silent exe (pos).','.(last).'normal! =='
-	unlet s:reindent
-      endif
-      " Join with the line after the template that have been inserted
-      if     a:NeedToJoin >= 2
-	silent exe last."normal! A".Marker_Txt('')."\<esc>J!"
-	let s:moveto = 'call cursor('.last.','.virtcol('.').')'
-      elseif a:NeedToJoin >= 1
-	"Here: problem when merging empty &comments
-	if s:IsKindOfEmptyLine(last+1)
-	  silent exe (last+1).'delete _'
-	  let s:moveto = last.'normal! $'
-	else
-	  " exe last."normal! J!"
-	  exe last
-	  let s:moveto = 'call cursor('.last.','.virtcol('$').')'
-	  silent exe last."normal! gqj"
-	endif
-      else " NeedToJoin == 0
-	let s:moveto = 'call cursor('.pos.',1)'
-      endif
-      return 1
-    else " {{{4
-      return 0
-    endif
-  finally
-    let &foldenable=foldenable
-  endtry
-  " }}}3
-endfunction
-
-" s:JumpToStart()                                              {{{2
-function! s:JumpToStart()
-  " echomsg 's:JumpToStart'
-  " set foldopen+=insert,jump
-  " Need to be sure there was a marker in the text inserted
-  " let therewasamarker = 0
-  " echomsg (pos).','.(last).'g/'.Marker_Txt('.\{-}')."/let therewasamarker=1"
-  " silent! exe (pos).','.(last).'g/'.Marker_Txt('.\{-}')."/let therewasamarker=1"
-  let marker_line = lh#list#match(s:content.lines, Marker_Txt('.\{-}'))
-  let therewasamarker = -1 != marker_line
-  if therewasamarker
-    " echomsg "jump from ".(marker_line+s:content.start)
-    exe (marker_line+s:content.start)
-    " normal! zO
-    try
-      let save_gscf = lh#option#get('marker_select_current_fwd', 1)
-      let g:marker_select_current_fwd = 1
-      normal !jump!
-    finally
-      let g:marker_select_current_fwd = save_gscf
-    endtry
-  else
-    :exe s:moveto
-  endif
-  silent! delcommand JumpToStart
-endfunction
-
-" s:InheritedFiletypes(filetype)                               {{{2
-function! s:InheritedFiletypes(filetype)
-  if exists('g:mt_inherited_ft_for_'.a:filetype)
-    return g:mt_inherited_ft_for_{a:filetype}
-  else
-    return ''
-  endif
-endfunction
-
-" s:GetTemplateFilesMatching(word, filetype)                   {{{2
-function! s:GetTemplateFilesMatching(word, filetype)
-  " Look for filetypes (C++ -> C, ...)
-  let gpatterns=[]
-  let ft = a:filetype
-  while strlen(ft)
-    "NAMES WERE: call add( gpatterns , ' template.'.ft.'-'.a:word )
-    "NAMES WERE: call add( gpatterns , ft.'/template.'.a:word)
-    call add( gpatterns , ' '.ft.'-'.a:word.'.template' )
-    call add( gpatterns , ft.'/'.a:word.'.template')
-    let ft = s:InheritedFiletypes(ft)
-  endwhile
-
-  " And search
-  let s:_mt_templates_dirs = s:TemplateDirs()
-  try
-    let l:wildignore = &wildignore
-    let &wildignore  = ""
-    let files = lh#path#glob_as_list(s:_mt_templates_dirs, gpatterns)
-    return files
-  finally
-    let &wildignore = l:wildignore
-  endtry
-endfunction
-
-" s:ShortenTemplateFilesNames(list)                            {{{2
-function! s:ShortenTemplateFilesNames(list)
-  :let g:list =a:list
-  " 1- Strip path part from s:_mt_templates_dirs
-  call map(a:list, 'lh#path#strip_start(v:val, s:_mt_templates_dirs)')
-  " 2- simplify filename to keep only the non "template" part
-  "NAMES WERE: call map(a:list, 'substitute(v:val, "\\<template\.", "", "")')
-  call map(a:list, 'substitute(v:val, "\.template\\>", "", "")')
-  return a:list
-endfunction
-
-" s:GetShortListOfTFMatching(word,filetype)                    {{{2
-function! s:GetShortListOfTFMatching(word, filetype)
-  " 1- Build the list of template files matching the current word {{{3
-  let files = s:GetTemplateFilesMatching(a:word, a:filetype)
-
-  " 2- Shorten the template-file names                            {{{3
-  let strings = s:ShortenTemplateFilesNames(files)
-  return strings
-endfunction
-
-" s:SearchTemplates()                                          {{{2
-function! s:SearchTemplates(word)
-  " 1- Build the list of template files matching the current word {{{3
-  let w = substitute(a:word, ':', '-', 'g').'*'
-  " call confirm("w =  #".w."#", '&ok', 1)
-  let files = s:GetShortListOfTFMatching(w, &ft)
-
-  " 2- Select one template file only {{{3
-  let strings = join(files, "\n")
-  let nbChoices = len(files)
-  " call confirm(nbChoices."\n".files, '&ok', 1)
-  if (nbChoices == 0) 
-    call lh#common#warning_msg("muTemplate: No template file matching <".w."> for ".&ft." files")
-    return ""
-  elseif (nbChoices > 1)
-    let choice = confirm("Which template do you wish to use ?", 
-	  \ "&Abort\n".strings, 1)
-    if choice <= 1 | return "" | endif
-  else 
-    let choice = 2
-  endif
-
-  " File <- n^th choice
-  let file = files[choice - 2]
-  " call confirm("choice=".choice."\nfile=".file, '&ok', 1)
-
-  " 3- Template-file to insert ? {{{3
-  if "" != file " 3.A- => YES there is one {{{4
-  " 3.1- Remove the current word {{{5
-    " Note: <esc> is needed to escape from "Visual insertion mode"
-    " TODO: manage a blinking pb
-    let l = strlen(a:word)	" No word to expand ; abort
-    if     0 == l
-    elseif 1 == l		" Select a one-character length word
-      silent exe "normal! \<esc>vc\<esc>"
-    else			" Select a 1_n-characters length word
-      let ew = escape(a:word, '\.*[')
-      call search(ew, 'b')
-      silent exe "normal! \<esc>v/".ew."/e\<cr>c\<esc>"
-      " exe "normal! \<esc>viWc\<esc>"
-    endif
-    " Insert a line break
-    silent exe "normal! i\<cr>\<esc>\<up>$"
-    
-    " 3.2- Insert the template {{{5
-    if &verbose >= 1
-      call confirm("Using the template file: <".file.'>', '&ok', 1)
-    endif
-    " Todo: check what happens with g:mt_jump_to_first_markers off
-    if !s:TemplateAndJump(s:Option('how_to_join',1),file)
-      call s:ErrorMsg("Hum... problem to insert the template: <".file.'>') 
-    endif
-    " Note: <esc> is needed to escape from "Visual insertion mode"
-    " Workaround a change in Vim 7.0 behaviour
-    return "\<c-\>\<c-n>\<c-\>\<c-n>gv\<c-g>"
-    " return "\<esc>\<right>"
-  else          " 3.B- No template file available for the current word {{{4
-    return ""
-  endif " }}}3
 endfunction
 
 " i_CTRL-R stubbs                                              {{{2
@@ -918,9 +373,9 @@ function! s:CTRL_R()
     let complType=nr2char(key)
     if -1 != stridx(" \<tab>",complType) ||
 	  \ (key =~ "\<F1>")
-      if     complType == " "      | return s:SearchTemplates("<cword>")
-      elseif complType == "\<tab>" | return s:SearchTemplates("<cWORD>")
-      elseif key       == "\<F1>" 
+      if     complType == " "      | return lh#mut#search_templates("<cword>")
+      elseif complType == "\<tab>" | return lh#mut#search_templates("<cWORD>")
+      elseif key       == "\<F1>"
 	echohl StatusLineNC
 	echo "\r-- mode ^R (/0-9a-z\"%#*+:.-=/<tab>/<F1>)"
 	echohl None
@@ -932,12 +387,13 @@ function! s:CTRL_R()
   endwhile
 endfunction
 
-  inoremap <silent> <C-R>		<C-R>=<sid>CTRL_R()<cr>
+  " inoremap <silent> <C-R>		<C-R>=<sid>CTRL_R()<cr>
+  inoremap <C-R>		<C-R>=<sid>CTRL_R()<cr>
 else " {{{3
   "Note: expand('<cword>') is not correct when there are characters after the
   "current curpor position
-  inoremap <silent> <Plug>MuT_ckword <C-R>=<sid>SearchTemplates(GetCurrentKeyword())<cr>
-  inoremap <silent> <Plug>MuT_cWORD  <C-R>=<sid>SearchTemplates(GetCurrentWord())<cr>
+  inoremap <silent> <Plug>MuT_ckword <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
+  inoremap <silent> <Plug>MuT_cWORD  <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
   if !hasmapto('<Plug>MuT_ckword', 'i')
     imap <unique> <C-R><space>	<Plug>MuT_ckword
   endif
@@ -955,7 +411,7 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
   let tmp = substitute(a:CmdLine, '\s*\S\+', 'Z', 'g')
   let pos = strlen(tmp)
   let lCmdLine = strlen(a:CmdLine)
-  let fromLast = strlen(a:ArgLead) + a:CursorPos - lCmdLine 
+  let fromLast = strlen(a:ArgLead) + a:CursorPos - lCmdLine
   " The argument to expand, but cut where the cursor is
   let ArgLead = strpart(a:ArgLead, 0, fromLast )
   if 0
@@ -971,15 +427,15 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
 
   " let ArgLead = substitute(ArgLead, '.*/', '', '')
   " if stridx(ArgLead, '/') == -1
-  " let ArgLead = 
+    " let ArgLead =
   " endif«»
   let s:wildignore = &wildignore
   let &wildignore  = ""
-  let ftlist = s:ShortenTemplateFilesNames(
-	\ lh#path#glob_as_list(s:_mt_templates_dirs, ArgLead.'*.template'))
-  "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.'.ArgLead.'*'))
+  let ftlist = lh#mut#dirs#shorten_template_filenames(
+        \ lh#path#glob_as_list(g:lh#mut#dirs#cache, ArgLead.'*.template'))
+        "NAMES WERE: \ lh#path#glob_as_list(g:lh#mut#dirs#cache, 'template.'.ArgLead.'*'))
   let &wildignore = s:wildignore
-  call extend(ftlist, s:GetShortListOfTFMatching(ArgLead.'*', &ft))
+  call extend(ftlist, lh#mut#dirs#get_short_list_of_FT_matching(ArgLead.'*', &ft))
   let res = join(ftlist, "\n")
   return res
 endfunction
@@ -989,7 +445,7 @@ endfunction
 " Menus {{{1
 " Options                                    {{{2
 " Note: must be set before the plugin is loaded -> .vimrc
-let s:menu_prio = exists('g:mt_menu_priority') 
+let s:menu_prio = exists('g:mt_menu_priority')
       \ ? g:mt_menu_priority : 59
 if s:menu_prio !~ '\.$' | let s:menu_prio = s:menu_prio . '.' | endif
 let s:menu_name = exists('g:mt_menu_name')
@@ -1002,7 +458,7 @@ function! s:AddMenu(m_name, m_prio, nameslist)
   let m_name = substitute(m_name, '^\s*\(\S.\{-}\S\)\s*$', '\1', '')
   for name in a:nameslist
     let name = substitute(name, '/', '.\&', 'g')
-    if ! ((name =~ '-') && (name !~ '\.&')) 
+    if ! ((name =~ '-') && (name !~ '\.&'))
       exe 'amenu '.s:menu_prio.a:m_prio.' '
 	    \ .escape(s:menu_name.m_name.name, '\ ')
 	    \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
@@ -1048,20 +504,53 @@ function! s:BuildMenu(doRebuild)
 	  \     "name": s:menu_name.'&Options.&Automatic Expansion'}
 	  \}
     call lh#menu#def_toggle_item(s:AutoInsertMenu)
+
+    let s:ChoicesDisplay = {
+	  \ "variable": "mt_chooseWith",
+	  \ "idx_crt_value": 0,
+	  \ "values": [ 'complete', 'confirm'],
+	  \ "menu": {
+	  \     "priority": s:menu_prio.'610',
+	  \     "name": s:menu_name.'&Options.&Choose'}
+	  \}
+    call lh#menu#def_toggle_item(s:ChoicesDisplay)
+
+    let s:AutoJumpToFirstMarker = {
+	  \ "variable": "mt_jump_to_first_markers",
+	  \ "texts": [ 'yes', 'no' ],
+	  \ "values": [ 1, 0],
+	  \ "idx_crt_value": 0,
+	  \ "menu": {
+	  \     "priority": s:menu_prio.'620',
+	  \     "name": s:menu_name.'&Options.Auto &Jump to 1st placeholder'}
+	  \}
+    call lh#menu#def_toggle_item(s:AutoJumpToFirstMarker)
+
+    let s:HowToJoin = {
+	  \ "variable": "mt_how_to_join",
+	  \ "texts": [ '{snippet}\nfoo', '{snippet} foo', '{snippet}<++> foo' ],
+	  \ "values": [ 0, 1, 2],
+	  \ "idx_crt_value": 1,
+	  \ "menu": {
+	  \     "priority": s:menu_prio.'630',
+	  \     "name": s:menu_name.'&Options.How to join'}
+	  \}
+    call lh#menu#def_toggle_item(s:HowToJoin)
   endif
 
   " 4- New File                       {{{3
   try
     let s:wildignore = &wildignore
     let &wildignore  = ""
-    let s:_mt_templates_dirs = s:TemplateDirs()
-    let new_list = s:ShortenTemplateFilesNames(
-          \ lh#path#glob_as_list(s:_mt_templates_dirs, '*.template'))
-          "NAMES WERE: \ lh#path#glob_as_list(s:_mt_templates_dirs, 'template.*'))
+    call lh#mut#dirs#update()
+    " let s:__mt_templates_dirs = s:TemplateDirs()
+    let new_list = lh#mut#dirs#shorten_template_filenames(
+          \ lh#path#glob_as_list(g:lh#mut#dirs#cache, '*.template'))
+          "NAMES WERE: \ lh#path#glob_as_list(g:lh#mut#dirs#cache, 'template.*'))
     call s:AddMenu('&New.&', '100.10', new_list)
 
     " 5- constructs                   {{{3
-    let ft_list = s:GetShortListOfTFMatching('*', '*')
+    let ft_list = lh#mut#dirs#get_short_list_of_FT_matching('*', '*')
     call s:AddMenu('&', '300.10', ft_list)
 
     let &wildignore = s:wildignore
@@ -1090,24 +579,24 @@ function! s:Help()
       call s:ErrorMsg("Please install the help for mu-template")
     endif
   endif
-  let v:errmsg = errmsg_save    
+  let v:errmsg = errmsg_save
 endfunction
 " Help }}}1
 "========================================================================
 " [auto]commands {{{1
-command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call <sid>TemplateAndJump(0, <f-args>)
+command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
 
 function! MuTemplate(template, data)
   silent! unlet s:data " required as its type may change
   let s:data = a:data
-  call s:TemplateAndJump(0, a:template)
+  call lh#mut#expand_and_jump(0, a:template)
 endfunction
 
 function! s:AutomaticInsertion()
   if !exists('g:mt_IDontWantTemplatesAutomaticallyInserted') ||
 	\ !g:mt_IDontWantTemplatesAutomaticallyInserted
     return 1
-  elseif strlen(&ft) && 
+  elseif strlen(&ft) &&
 	\ (!exists('g:mt_IDontWantTemplatesAutomaticallyInserted_4_'.&ft) ||
 	\ !g:mt_IDontWantTemplatesAutomaticallyInserted_4_{&ft})
     return 1
@@ -1117,11 +606,12 @@ function! s:AutomaticInsertion()
 endfunction
 
 function! s:FTDetection4Templates(filename, event)
+  call lh#mut#dirs#update()
   let dir = fnamemodify(a:filename, ':h')
-  let reldir = lh#path#strip_start(dir, s:_mt_templates_dirs)
+  let reldir = lh#path#strip_start(dir, g:lh#mut#dirs#cache)
   if reldir == dir
     " echo "Not a MutTemplate template-file"
-    return 
+    return
   endif
 
   if empty(reldir)

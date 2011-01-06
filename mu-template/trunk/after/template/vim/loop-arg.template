@@ -1,13 +1,14 @@
 VimL:" $Id$
 VimL:" ``VimL loop on function parameters'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
+VimL:" hint: <+i+>=0; while i<a:0 ; actions ; ++i ; endwhile
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:name = INPUT('Name of the iterator : ')
+VimL: let s:name = INPUT('Name of the index : ', Marker_Txt('i'))
 let ¡s:name¡ = 0
 while ¡s:name¡ != a:0
-	let ¡s:name¡ = ¡s:name¡ + 1
+	let ¡s:name¡ += 1
 	<++>
 endwhile<++>
