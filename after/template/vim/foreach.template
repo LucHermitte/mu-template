@@ -1,5 +1,6 @@
 VimL:" $Id$
 VimL:" ``VimL for-each loop'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
+VimL:" hint: for var in list
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1

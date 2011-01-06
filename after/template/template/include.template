@@ -1,5 +1,6 @@
 VimL:" $Id$
 VimL:" s:Include() call Template File, Luc Hermitte, 06th Dec 2010
+VimL:" hint: VimL: call s:Include(...)
 VimL: let s:value_start = '¡'
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start

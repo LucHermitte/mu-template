@@ -1,12 +1,12 @@
 			  --------------------
-			   mu-template v2.1.1
+			   mu-template v2.2.0
 			  --------------------
 
 mu-template is a template-files expander for Vim.
 
 Audience       : Any vim users, and even ftplugins writers that desire to
 		define wizards
-Requirements   : Vim 7, lh-vim-lib (2.2.0), map-tools (1.0.0), searchInRuntime
+Requirements   : Vim 7, lh-vim-lib (2.2.4), map-tools (1.1.1), searchInRuntime
 Required by    : Only lh-cpp as far as I know
 Initial Author : Gergely Kontra
 Fork Maintainer: Luc Hermitte
