@@ -1,0 +1,8 @@
+VimL: " $Id$
+VimL: "C/C++ "function" that builds header gates, Luc Hermitte
+VimL: "
+VimL: " If you prefer to use a uuid, you can instead set s:guard with 
+VimL: "    :let s:guard = matchstr(system('uuidgen'), "[^\n\r]*")
+VimL: " I recommend you to do this by overiding this file as explained in
+VimL: " |MuT-paths-override|
+VimL: let s:guard = substitute(toupper(s:filename),'\c[^a-z0-1_]','_','g')

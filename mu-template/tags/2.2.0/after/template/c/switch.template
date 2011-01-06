@@ -1,0 +1,16 @@
+VimL:" $Id$
+VimL:"{switch-case} Template-File, Luc Hermitte
+VimL:" hint: switch (cond) { case... default ...}
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+switch¡C_nl_before_bracket()¡(<+expr+>)¡C_nl_before_curlyB()¡{
+VimL: VimL: call s:Include('case', 'cpp')
+    default:
+      {
+	  <+default-code+>;
+	      break;
+      }
+}<++>
