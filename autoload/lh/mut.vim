@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      2.2.0
+" Version:      2.2.1
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -17,7 +17,12 @@
 "       Drop this file into {rtp}/autoload/lh
 "       Requires Vim7+
 "       See plugin/mu-template.vim
-" History:      
+" History:
+" 	2.2.1
+" 	(*) make sure the lines inserted are unfolded
+" 	(*) s:Include() and MuTemplate() supports parameters
+" 	(*) Bug in embedded functions support: ":endfor" was misinterpreted for
+" 	    ":endf\%[unction]"
 " 	v2.2.0
 " 	(*) first version
 " TODO: See plugin/mu-template.vim
@@ -29,7 +34,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 220
+let s:k_version = 221
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -104,7 +109,6 @@ function! lh#mut#expand(NeedToJoin, ...)
   let foldenable=&foldenable
   silent! set nofoldenable
   try
-    "NAMES WERE: call  s:LoadTemplate(0, dir.'template.'.ft)
     call  s:LoadTemplate(0, dir.ft.'.template')
 
     " clear any function definition
@@ -200,6 +204,11 @@ function! lh#mut#expand(NeedToJoin, ...)
     endif
   finally
     let &foldenable=foldenable
+    let s:args=[]
+    " and unfold the lines inserted
+    if &foldenable
+      silent! exe (pos).','.(last).'foldopen!'
+    endif
   endtry
   " }}}3
 endfunction
@@ -231,18 +240,28 @@ endfunction
 " Function: lh#mut#expand_and_jump(needToJoin, ...)        {{{2
 function! lh#mut#expand_and_jump(needToJoin, ...)
   " echomsg "lh#mut#expand_and_jump"
-  call lh#mut#dirs#update()
-  let res = (a:0>0)
-	\ ? lh#mut#expand(a:needToJoin, a:1)
-	\ : lh#mut#expand(a:needToJoin)
-  if res && s:Option('jump_to_first_markers',1)
-    call lh#mut#jump_to_start()
-  endif
-  return res
+  try 
+    call lh#mut#dirs#update()
+    let s:args = []
+    if a:0 > 1
+      call s:PushArgs([a:2])
+      " echomsg 'all: ' . string(s:args)
+    endif
+    let res = (a:0>0)
+	  \ ? lh#mut#expand(a:needToJoin, a:1)
+	  \ : lh#mut#expand(a:needToJoin)
+    if res && s:Option('jump_to_first_markers',1)
+      call lh#mut#jump_to_start()
+    endif
+    return res
+  finally
+    let s:args=[]
+  endtry
 endfunction
 
 " Function: lh#mut#search_templates(word)                      {{{2
 function! lh#mut#search_templates(word)
+  let s:args = []
   " 1- Build the list of template files matching the current word {{{3
   let w = substitute(a:word, ':', '-', 'g').'*'
   " call confirm("w =  #".w."#", '&ok', 1)
@@ -294,6 +313,26 @@ function! s:Comment(text)          " {{{3
   return s:Command('" '.a:text)
 endfunction
 
+" function! s:PushArgs()             {{{3
+function! s:PushArgs(args)
+  call add(s:args, a:args)
+endfunction
+
+" function! s:PopArgs()              {{{3
+function! s:PopArgs()
+  if !empty(s:args)
+    call remove(s:args, -1)
+  endif
+endfunction
+
+" function! s:Args()                 {{{3
+" @returns a list. If the list is empty, this mean no parameter was given.
+let s:args = []
+function! s:Args()
+  " echomsg string(s:args)
+  return empty(s:args) ? [] : s:args[-1]
+endfunction
+
 " function! s:Include()              {{{3
 function! s:Include(template, ...)
   let pos = s:content.crt
@@ -301,11 +340,12 @@ function! s:Include(template, ...)
   let correction = 0
   let dir = fnamemodify(a:template, ':h')
   if dir != "" | let dir .= '/' | endif
-  if a:0>0
+  if a:0>0 && !empty(a:1)
     let dir .= a:1 . '/'
   endif
-  "NAMES WERE: if 0 == s:LoadTemplate(pos-correction, dir.'template.'.a:template)
-  "NAMES WERE:   call lh#common#warning_msg("muTemplate: No template file matching <".dir.'template.'.a:template.">")
+  " pushing a list permit to test the void args case
+  " todo: mark the line where s:Pop should be applied
+  call s:PushArgs(a:0>1 ? [a:2] : [])
   if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
     call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
@@ -363,6 +403,7 @@ function! s:LoadTemplate(pos, templatepath)                  " {{{3
 	echo "Loading <".matching_filenames[0].">"
       endif
       let lines = readfile(matching_filenames[0])
+      let lines += [ 'VimL: call s:PopArgs()']
       call extend(s:content.lines, lines, a:pos)
       " echomsg string(s:content)
     endif
@@ -400,13 +441,13 @@ function! s:InterpretCommand(what)
 	throw 'not within the definition of a function'
       else
 	exe a:what
-    endif
+      endif
     else
       if a:what =~ '^:\?fu\%[nction]'
 	throw 'already within the definition of a function (nested functions are not supported (yet))'
       else
 	let s:__function += [a:what]
-	if a:what =~ '^:\?endf\%[unction]'
+	if a:what !~ '^:\?endfo\%[r]' && a:what =~ '^:\?endf\%[unction]'
 	  let fn_def = join(s:__function, "\n")
 	  let s:__function = []
 	  exe fn_def
