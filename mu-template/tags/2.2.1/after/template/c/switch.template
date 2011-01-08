@@ -1,0 +1,31 @@
+VimL:" $Id$
+VimL:"{switch-case} Template-File, Luc Hermitte
+VimL:" hint: switch (cond) { case... default ...}
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: function! s:_LoopOverCases()
+VimL:"  echomsg "switch args -> " .string(s:Args())
+VimL:   if empty(s:Args())
+VimL:     call s:Include('case', 'c')
+VimL:   else
+VimL:     let args = s:Args()[0].values
+VimL:     for arg in args
+VimL:       if arg !~ 'MAX__$'
+VimL:         call s:Include('case', 'c', arg)
+VimL:       endif
+VimL:     endfor
+VimL:   endif
+VimL: endfunction
+VimL: "
+VimL: let s:_expr = empty(s:Args()) ? Marker_Txt('expr') : s:Args()[0].name
+switch¡C_nl_before_bracket()¡(¡s:_expr¡)¡C_nl_before_curlyB()¡{
+VimL: call s:_LoopOverCases()
+    default:
+      {
+	  <+default-code+>;
+	  break;
+      }
+}<++>

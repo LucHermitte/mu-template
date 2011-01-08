@@ -1,0 +1,8 @@
+VimL: " $Id
+VimL: " muTemplate Test File-Template, Luc Hermitte
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:times = exists('s:times') ? (s:times+1) : 1
+This part has been included¡s:msg¡ ¡((s:times==1)?'once':(s:times==2 ? 'twice' : (s:times.' times')))¡.
+VimL: if s:times <= 4 | call s:Include('test-included') | endif 
+VimL: silent! unlet s:times
