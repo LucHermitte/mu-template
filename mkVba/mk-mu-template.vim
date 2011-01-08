@@ -3,8 +3,8 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.2.0
-let s:version = '2.2.0'
+" Version:	2.2.1
+let s:version = '2.2.1'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -21,6 +21,7 @@ endtry
 finish
 mu-template.README
 after/plugin/mu-template.vim
+after/template/c/case.template
 after/template/c/do.template
 after/template/c/for.template
 after/template/c/fori.template
