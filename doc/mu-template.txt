@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 04th Jan 2011
+*mu-template.vim*       For Vim version 7+      Last change: 08th Jan 2011
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 2.2.0
+                    Version 2.2.1
 
 
 ==============================================================================
@@ -444,11 +444,30 @@ A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
 <   Examples: check */*.template.
 
 Q:  "How can I load another skeleton?"                  *s:Include()*
-A:  This can be achieved with the special function |s:Include()|.  >
-        VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
+A:  This can be achieved with the special function |s:Include()|. 
 <   Examples: check c.template that loads the template-file for C header
     files, or C implementation files according to the current buffer's file
-    extension (.h or .c)
+    extension (.h or .c) >
+        VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
+<   Or lh-cpp {swith}-template that loads {case}-template with an argument: >
+	VimL: call s:Include('case', 'c', arg)
+
+Q:  "How can I pass parameters to imported skeletons?"	*s:Args()* *s:PushArgs()*
+A:  Three API functions are provided for this purpose:
+    - |s:PushArgs()| permits to push arguments to the skeleton
+    - |s:Include()| which takes an optional third parameter to push arguments
+      to the imported skeleton.
+    - |s:Args()|permits to fetch the arguments passed.
+    In order to support optional arguments, the arguments passed (to
+    |s:PushArgs()|, not to |s:Include()|), and fetched, shall be wrapped in a
+    |List|.  An empty list will be equivalent the C void argument.
+
+    Beware of the non conventional behaviour when including skeletons one after
+    the other (and not one from within another): The arguments will be
+    resolved in reverse order. NB: This is not a feature, but a side-effect of
+    the dirty hack behing these functions. It's likelly to change to the far
+    future. I'd advice you to use recursivity instead of iteration when loop
+    are required. See the implementation of lh-cpp switch and case snippets.
 
 Q:  "How can I change the expression delimiters?"       *s:value_start* *s:value_end*
 A:  Just change the special variables |s:value_start| and |s:value_end|.
