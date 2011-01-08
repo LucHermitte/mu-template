@@ -1,0 +1,15 @@
+VimL:" $Id$
+VimL:" {case:} File Template, Luc Hermitte, 05th Jan 2011
+VimL:" hint: case {tag: ...; break;}
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL:"  echomsg "case -> " .(empty(s:Args()) ? 'empty' : string(s:Args()))
+VimL: let s:case = empty(s:Args()) ? Marker_Txt('case') : (s:Args()[0])
+case ¡s:case¡:
+{
+    <+¡substitute(s:case, Marker_Txt('\(.\{-}\)'), '\1', '')¡-code+>;
+    break;
+}
