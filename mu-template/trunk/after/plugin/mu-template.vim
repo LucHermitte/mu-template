@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.2.0
+" Version:	2.2.1
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -270,7 +270,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 220
+let s:k_version = 221
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -583,14 +583,15 @@ function! s:Help()
 endfunction
 " Help }}}1
 "========================================================================
-" [auto]commands {{{1
-command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
-
+" API for Wizards {{{1
 function! MuTemplate(template, data)
   silent! unlet s:data " required as its type may change
   let s:data = a:data
-  call lh#mut#expand_and_jump(0, a:template)
+  return lh#mut#expand_and_jump(0, a:template, a:data)
 endfunction
+
+" [auto]commands {{{1
+command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
 
 function! s:AutomaticInsertion()
   if !exists('g:mt_IDontWantTemplatesAutomaticallyInserted') ||

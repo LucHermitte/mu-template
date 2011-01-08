@@ -449,7 +449,7 @@ A:  This can be achieved with the special function |s:Include()|.
     files, or C implementation files according to the current buffer's file
     extension (.h or .c) >
         VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
-<   Or lh-cpp {swith}-template that loads {case}-template with an argument: >
+<   Or {swith}-template that loads {case}-template with an argument: >
 	VimL: call s:Include('case', 'c', arg)
 
 Q:  "How can I pass parameters to imported skeletons?"	*s:Args()* *s:PushArgs()*
@@ -467,7 +467,7 @@ A:  Three API functions are provided for this purpose:
     resolved in reverse order. NB: This is not a feature, but a side-effect of
     the dirty hack behing these functions. It's likelly to change to the far
     future. I'd advice you to use recursivity instead of iteration when loop
-    are required. See the implementation of lh-cpp switch and case snippets.
+    are required. See the implementation of {switch} and {case} snippets.
 
 Q:  "How can I change the expression delimiters?"       *s:value_start* *s:value_end*
 A:  Just change the special variables |s:value_start| and |s:value_end|.
