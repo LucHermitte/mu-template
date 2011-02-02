@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" «stderr» File Template, Luc Hermitte, 24th Jan 2011
+VimL:" hint: fprintf(stderr,...)
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+fprintf(stderr, "<++>\n", <++>);<++>
