@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:" for File Template, Luc Hermitte, 12th Jan 2011
+VimL:" hint: for i in ist ; do ... ; done
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+for <+i+> in $<+list+> ; do
+    <+code+>
+done
