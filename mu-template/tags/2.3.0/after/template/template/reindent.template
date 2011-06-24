@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" reindent File Template, Luc Hermitte, 22nd Feb 2011
+VimL:" hint: VimL: let s:reindent=1
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+¡'V'¡imL: let s:reindent     = 1

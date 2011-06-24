@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" \frac File Template, Luc Hermitte, 15th Apr 2011
+VimL:" hint: \frac{}{}
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+\frac{<++>}{<++>}<++>

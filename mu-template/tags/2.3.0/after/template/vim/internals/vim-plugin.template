@@ -1,0 +1,24 @@
+VimL: " $Id$
+VimL: "«Vim» plugins Template File, Luc Hermitte
+" Avoid global reinclusion {{{1
+let s:k_version = <+001+>
+if &cp || (exists("g:loaded_¡s:fn¡")
+      \ && (g:loaded_¡s:fn¡ >= s:k_version)
+      \ && !exists('g:force_reload_¡s:fn¡'))
+  finish
+endif
+let g:loaded_¡s:fn¡ = s:k_version
+let s:cpo_save=&cpo
+set cpo&vim
+" Avoid global reinclusion }}}1
+"------------------------------------------------------------------------
+" Commands and Mappings {{{1
+<+Global definitions -- like functions+>
+" Commands and Mappings }}}1
+"------------------------------------------------------------------------
+" Functions {{{1
+" Note: most functions are best placed into
+" autoload/<+your-initials+>/<+¡s:fn¡+>.vim
+" Keep here only the functions are are required when the plugin is loaded,
+" like functions that help building a vim-menu for this plugin.
+" Functions }}}1

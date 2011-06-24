@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:"{xsl:attribute} Template File, Luc Hermitte
+VimL:" hint: <xsl:attribut name="cond"></xsl:attribut>
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+<xsl:attribute name="<+condition+>">
+<++>
+</xsl:attribute>

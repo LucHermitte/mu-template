@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:"{if} Template-File, Luc Hermitte
+VimL:" hint: if (cond) { action }
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+if¡C_nl_before_bracket()¡(¡s:Surround(2, '<+cond+>')¡)¡C_nl_before_curlyB()¡{
+    ¡s:Surround(1, '<+code+>')¡
+}<++>

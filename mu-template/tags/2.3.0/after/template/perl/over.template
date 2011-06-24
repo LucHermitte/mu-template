@@ -1,0 +1,14 @@
+VimL:" $Id$
+VimL:" =over File Template, Luc Hermitte, 02nd Mar 2011
+VimL:" hint: =over ... =back
+VimL: let s:value_start  = '¡'
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+=over <+8+>
+
+<++>
+
+=back
