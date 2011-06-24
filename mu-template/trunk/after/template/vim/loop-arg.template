@@ -9,6 +9,6 @@ VimL: let s:marker_close = '+>'
 VimL: let s:name = INPUT('Name of the index : ', Marker_Txt('i'))
 let ¡s:name¡ = 0
 while ¡s:name¡ != a:0
-	let ¡s:name¡ += 1
-	<++>
+  let ¡s:name¡ += 1
+  ¡s:Surround(1, '<+code+>')¡
 endwhile<++>

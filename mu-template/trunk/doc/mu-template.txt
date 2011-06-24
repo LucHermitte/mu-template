@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 08th Jan 2011
+*mu-template.vim*       For Vim version 7+      Last change: 24th Jun 2011
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 2.2.1
+                    Version 2.3.0
 
 
 ==============================================================================
@@ -99,7 +99,8 @@ its name must not be changed)
 There are several ways to load template-files:
 - Automatic expansion .... |MuT-autoload|
 - Explicit expansion ..... |:MuTemplate|
-- Insert-mode expansion .. |i_CTRL-R_TAB|
+- Insert-mode expansion .. |Mut-snippets|
+- Visual-mode expansion .. |MuT-surround|
 - Through the menu ....... |MuT-menu|
 
 
@@ -182,6 +183,43 @@ There are several ways to load template-files:
       available). This is the default behaviour (since v2.2.0).
     - When g:mt_chooseWith values "confirm", the choices are displayed with a
       |confirm()| box.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+{{{3 Visual-mode expansion of template-files                   ~
+					*MuT-surround*
+                                        *v_CTRL-R_TAB*
+    This plugin defines one default visual-mode mapping:
+    (*) v_CTRL-R_TAB
+        asks the user which snippet to use,
+        and surrounds the selected text with the snippet selected.
+
+    The work of the mappings consists in:
+    - listing all the template-files whose names match the snippet-name typed:
+         {path}/{filetype}-{pattern}.template 
+      or {path}/template/{filetype}/{pattern}.template
+      NB: template-files may come from the ones inherited from another
+          filetype (see |g:mt_inherited_ft_for_{filetype}|.
+    - If there are several matches, the user will have to choose one template-
+      file.
+    - The template-file thus selected is inserted around the text selected.
+
+    In order to replace these mapping keybindings with some you found more
+    ergonomic, see |<Plug>MuT_ckword|.
+
+    Some snippets may put the selected text in various places, see for
+    instance the various control-statements shipped with mu-template. To
+    select where the selected-text goes, enter a |count| before executing the
+    mapping, the count is optional and considered to be 1 by default. The
+    default control-statement snippets use the following policy:
+    - {1} is for the code,
+    - {2} is for the condition
+    e.g.: >
+        while ({2}) {
+            {1}
+        }<++>
+
+<  See |s:Surround()| to know how to define a snippet that can surround the
+current selection.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 {{{3 Through the menu                                          ~
@@ -543,7 +581,7 @@ to the muT-function |s:path_from_root()|.
 Remark: |lh-vim-lib| provides functions that helps manipulate and transform
 pathnames (see |lhvl#path|)
 
-Q: "How may I now the line number of the current line in the final buffer?" *s:Line()*
+Q: "How may I know the line number of the current line in the final buffer?" *s:Line()*
 A: This information can be obtained thanks to a call to |s:Line()|
 
 Q: "How may I know the content of the lines being expanded?" *s:content*
@@ -554,6 +592,17 @@ those that will be. Its fields are:
      inserted,
    - "crt": number of the line being currently interpreted.
    NB: This is an implementation detail. This can be deprecated at moment.
+
+Q: "How can I define a snippet able to surround the current selection?" *s:Surround()*
+A: You can use the s:Surround() function that takes two parameters: 
+   - an surround-id tied to the count passed to the mapping (see |MuT-surround|),
+   - and a default text in case no surrounding is done (snippet used in
+     INSERT-mode, or with an incompatible count).
+For instance, C-is snippet looks like:
+  >
+    if (¡s:Surround(2,'<+cond+>')¡) {
+        ¡s:Surround(1,'<+code+>')¡
+    }<++>
 
 ------------------------------------------------------------------------------
 {{{2 Encoding issues                   ~
@@ -619,7 +668,7 @@ The (non) exhaustive list of the reserved symbols is:
 - s:CheckDeps(), s:Option().
 - s:NoRegex(), s:Marker(), s:Value(), s:Command(), s:Comment()
 
-Moreover, all variables starting will a double underscore will be reserved.
+Moreover, all s: variables starting will a double underscore will be reserved.
 
 ==============================================================================
 CONFIGURATION                               *MuT-config*       {{{1
@@ -656,12 +705,16 @@ CONFIGURATION                               *MuT-config*       {{{1
 {{{2 Mappings                          ~
     *<Plug>MuT_ckword* 
     *<Plug>MuT_cWORD*
+    *<Plug>MuT_Surround*
 
-To override the default INSERT-mode mappings used to insert and expand
-template-files, choose a key sequence that suits you best, and :imaps it to
-|<Plug>MuT_ckword| or |<Plug>MuT_cWORD| in your |.vimrc|. e.g. >
-    imap ` <Plug>MuT_cWORD
-    imap ² <Plug>MuT_ckword
+To override the default INSERT-mode, and VISUAL-mode mappings used to insert
+and expand template-files, choose a key sequence that suits you best, and map
+it to:
+|<Plug>MuT_ckword|,|<Plug>MuT_cWORD|, or |<Plug>MuT_Surround| in your |.vimrc|.
+ e.g. >
+    imap `         <Plug>MuT_cWORD
+    imap ²         <Plug>MuT_ckword
+    vmap <c-space> <Plug>MuT_Surround
 
 
 ==============================================================================
@@ -698,7 +751,7 @@ FILES                                       *MuT-files*        {{{1
 Mu-Template depends on:
 - |lh-vim-lib|
 - |lh-map-tools|
-Mu-Template take advantage of:
+Mu-Template takes advantage of:
 - |searchInRuntime|
 - |stakeholders|
 
@@ -712,7 +765,7 @@ OTHER PLUGINS OF INTEREST                   *MuT-external-plugins* {{{1
 <http://www.vim.org/scripts/script.php?script_id=3326>
 <https://github.com/tomtom/stakeholders_vim/>
 stakeholders is the plugin that will change your mu-template experience.
-Thanks to it identical placeholders will be modified simustaneously.
+Thanks to it, identical placeholders will be modified simustaneously.
 Just install it and enjoy. The template-file c/fori exploits Tom Link's
 plugin.
 If you don't want to take advantage of stakeholders and yet install it, just

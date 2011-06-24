@@ -8,5 +8,5 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 int main (<+int argc, char **argv+>)
 {
-    <+code+>
+    ¡s:Surround(1, '<+code+>')¡
 }

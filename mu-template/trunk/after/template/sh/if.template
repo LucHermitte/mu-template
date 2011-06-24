@@ -6,6 +6,6 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-if [ <+cond+> ] ; then
-    <+code+>
+if [ ¡s:Surround(2, '<+cond+>')¡ ] ; then
+    ¡s:Surround(1, '<+code+>')¡
 fi

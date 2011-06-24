@@ -11,5 +11,5 @@ VimL: if s:alplug | call s:Include('vim-autoload-function', 'vim/internals') | e
 VimL: "
 " Function: ¡s:function_prefix¡<+funcname+>(<+params+>) {{{<+3+>
 function! ¡s:function_prefix¡<+funcname+>(<+params+>)
-<++>
+  ¡s:Surround(1, '<+code+>')¡
 endfunction

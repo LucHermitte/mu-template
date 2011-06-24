@@ -10,6 +10,6 @@ VimL: let s:name = INPUT('Name of the index: ', Marker_Txt('i'))
 VimL: if "" != s:name | let s:max = INPUT('Number of iterations: ') | endif
 let ¡s:name¡ = 0
 while ¡s:name¡ != ¡s:max¡
-	<++>
-	let ¡s:name¡ += 1
+    ¡s:Surround(1, '<+code+>')¡
+    let ¡s:name¡ += 1
 endwhile<++>

@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      2.2.1
+" Version:      2.3.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -18,6 +18,10 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v2.3.0
+"	(*) Surrounding functions
+"	v2.2.2
+"	(*) new :MUEdit command to open the template-file
 " 	2.2.1
 " 	(*) make sure the lines inserted are unfolded
 " 	(*) s:Include() and MuTemplate() supports parameters
@@ -34,7 +38,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 221
+let s:k_version = 222
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -59,31 +63,36 @@ endfunction
 
 "------------------------------------------------------------------------
 " ## Exported functions {{{1
-" Function: lh#mut#jump_to_start() {{{2
-function! lh#mut#jump_to_start()
-  " echomsg 's:JumpToStart'
-  " set foldopen+=insert,jump
-  " Need to be sure there was a marker in the text inserted
-  " let therewasamarker = 0
-  " echomsg (pos).','.(last).'g/'.Marker_Txt('.\{-}')."/let therewasamarker=1"
-  " silent! exe (pos).','.(last).'g/'.Marker_Txt('.\{-}')."/let therewasamarker=1"
-  let marker_line = lh#list#match(s:content.lines, Marker_Txt('.\{-}'))
-  let therewasamarker = -1 != marker_line
-  if therewasamarker
-    " echomsg "jump from ".(marker_line+s:content.start)
-    exe (marker_line+s:content.start)
-    " normal! zO
-    try
-      let save_gscf = lh#option#get('marker_select_current_fwd', 1)
-      let g:marker_select_current_fwd = 1
-      normal !jump!
-    finally
-      let g:marker_select_current_fwd = save_gscf
-    endtry
-  else
-    :exe s:moveto
-  endif
-  silent! delcommand JumpToStart
+" Function: lh#mut#edit(path) {{{2
+function! lh#mut#edit(path)
+  call lh#mut#dirs#update()
+  let dir = fnamemodify(a:path, ':h')
+  if dir != "" | let dir .= '/' | endif
+  let ft  = fnamemodify(a:path, ':t')
+  let path =  dir.ft.'.template'
+
+  try
+    let wildignore = &wildignore
+    let &wildignore  = ""
+
+    " let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, path)
+    let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, path)
+    if len(matching_filenames) == 0
+      call lh#common#error_msg("No template file matching `".a:path."'")
+      let choice = -1
+    elseif len(matching_filenames) == 1
+      let choice = 0
+    else
+      let short_names = lh#mut#dirs#shorten_template_filenames(copy(matching_filenames))
+      let strings = join(short_names, "\n")
+      let choice = confirm("Which template do you wish to edit?",
+            \ "&Abort\n".strings, 1) - 2
+    endif
+    if choice < 0 | return | endif
+    call lh#buffer#jump(matching_filenames[choice], 'sp')
+  finally
+    let &wildignore = wildignore
+  endtry
 endfunction
 
 " Function: lh#mut#expand(NeedToJoin, ...) {{{2
@@ -259,6 +268,48 @@ function! lh#mut#expand_and_jump(needToJoin, ...)
   endtry
 endfunction
 
+" Function: lh#mut#surround()                                  {{{2
+function! lh#mut#surround()
+  try 
+    " 1- ask which template to execute {{{3
+    let which = INPUT("which snippet?")
+    let files = lh#mut#dirs#get_short_list_of_FT_matching(which.'*', &ft)
+
+    let nbChoices = len(files)
+    " call confirm(nbChoices."\n".files, '&ok', 1)
+    if (nbChoices == 0)
+      call lh#common#error_msg("muTemplate: No template file matching <".which."> for ".&ft." files")
+      return ""
+    elseif (nbChoices > 1)
+      let save_choose_method = g:mt_chooseWith
+      try 
+        let g:mt_chooseWith = 'confirm'
+        let choice = s:ChooseTemplateFile(files, which)
+      finally
+        let g:mt_chooseWith = save_choose_method
+      endtry
+      if choice <= 1 | return "" | endif
+    else
+      let choice = 2
+    endif
+    " File <- n^th choice
+    let file = files[choice - 2]
+
+    " 2- extract the thing to be surrounded {{{3
+    let surround_id = 'surround'.v:count1
+    let s:content[surround_id] = lh#visual#cut()
+
+    " 3- insert the template {{{3
+    " return s:InsertTemplateFile(a:word,file)
+    if !lh#mut#expand_and_jump(0,file)
+      call lh#common#error_msg("muTemplate: Problem to insert the template: <".a:file.'>')
+    endif
+    return ''
+  finally
+    silent! unlet s:content[surround_id]
+  endtry
+endfunction
+"------------------------------------------------------------------------
 " Function: lh#mut#search_templates(word)                      {{{2
 function! lh#mut#search_templates(word)
   let s:args = []
@@ -368,6 +419,15 @@ function! s:path_from_root(path)   " {{{3
   return path
 endfunction
 
+" function s:Surround(id, default)   {{{3
+function! s:Surround(id, default)
+  let key = 'surround'.a:id
+  return has_key(s:content,key)
+        \ ? (s:content[key])
+        \ : (a:default)
+  endif
+endfunction
+
 " function s:Line()                  {{{3
 " Returns current line
 function! s:Line()
@@ -391,7 +451,7 @@ let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0}
 function! s:LoadTemplate(pos, templatepath)                  " {{{3
   " echomsg "s:LoadTemplate(".a:pos.", '".a:templatepath."')"
   try
-    let s:wildignore = &wildignore
+    let wildignore = &wildignore
     let &wildignore  = ""
 
     let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, a:templatepath)
@@ -408,7 +468,7 @@ function! s:LoadTemplate(pos, templatepath)                  " {{{3
       " echomsg string(s:content)
     endif
   finally
-    let &wildignore = s:wildignore
+    let &wildignore = wildignore
   endtry
   return len(s:content.lines)
 endfunction
@@ -672,7 +732,7 @@ function! s:InsertTemplateFile(word,file)
     " return "\<esc>\<right>"
   else          " 3.B- No template file available for the current word {{{4
     return ""
-  endif " }}}3
+  endif " }}}4
 endfunction
 " }}}1
 "------------------------------------------------------------------------
