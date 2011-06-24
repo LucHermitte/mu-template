@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut/dirs.vim                          {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      220
+" Version:      2.3.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -78,6 +78,7 @@ function! lh#mut#dirs#update()
 endfunction
 
 " Function: lh#mut#dirs#get_templates_for([pattern]) {{{2
+" unused
 function! lh#mut#dirs#get_templates_for(...)
   if a:0 > 0
     let dir = fnamemodify(a:1, ':h')
@@ -91,8 +92,8 @@ function! lh#mut#dirs#get_templates_for(...)
     " filetype
   endif
   let templatepath = dir.ft.'.template'
-  let matching_filenames = lh#path#glob_as_list(lh#mut#dirs#cache, templatepath)
-
+  let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, templatepath)
+  return matching_filenames
 endfunction
 
 " Function: lh#mut#dirs#shorten_template_filenames(list)       {{{2
