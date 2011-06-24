@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.2.1
+" Version:	2.3.0
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -234,6 +234,10 @@
 "	(*) The list of options is displayed in a (toggle-) menu
 "	(*) Break undo history just before the template is expanded -> |i_CTRL-g_u|
 "	(*) Functions moved to autoload plugins
+"	v2.2.2
+"	(*) new :MUEdit command to open the template-file
+"	v2.3.0
+"	(*) Surrounding functions
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -270,7 +274,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 221
+let s:k_version = 230
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -392,18 +396,23 @@ endfunction
 else " {{{3
   "Note: expand('<cword>') is not correct when there are characters after the
   "current curpor position
-  inoremap <silent> <Plug>MuT_ckword <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
-  inoremap <silent> <Plug>MuT_cWORD  <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
+  inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
+  inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
+  " takes a count to specify where the selected texte goes (see while-snippets)
+  vnoremap <silent> <Plug>MuT_Surround :call lh#mut#surround()<cr>
   if !hasmapto('<Plug>MuT_ckword', 'i')
     imap <unique> <C-R><space>	<Plug>MuT_ckword
   endif
   if !hasmapto('<Plug>MuT_cWORD', 'i')
     imap <unique> <C-R><tab>	<Plug>MuT_cWORD
   endif
+  if !hasmapto('<Plug>MuT_Surround', 'v')
+    vmap <unique> <C-R><tab>	<Plug>MuT_Surround
+  endif
 endif
 
 " auto completion                                              {{{2
-let s:commands = 'MuT\%[emplate]'
+let s:commands = 'MuT\%[emplate]\|MUEd\%[it]'
 function! s:Complete(ArgLead, CmdLine, CursorPos)
   let cmd = matchstr(a:CmdLine, s:commands)
   let cmdpat = '^'.cmd
@@ -423,12 +432,12 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
 	  \, '&Ok', 1)
   endif
 
-  if 'MuTemplate' != cmd | return '' | endif
+  if cmd !~ s:commands | return '' | endif
 
   " let ArgLead = substitute(ArgLead, '.*/', '', '')
   " if stridx(ArgLead, '/') == -1
     " let ArgLead =
-  " endif«»
+  " endif
   let s:wildignore = &wildignore
   let &wildignore  = ""
   let ftlist = lh#mut#dirs#shorten_template_filenames(
@@ -592,6 +601,7 @@ endfunction
 
 " [auto]commands {{{1
 command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
+command! -nargs=? -complete=custom,<sid>Complete MUEdit     :call lh#mut#edit(<f-args>)
 
 function! s:AutomaticInsertion()
   if !exists('g:mt_IDontWantTemplatesAutomaticallyInserted') ||

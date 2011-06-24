@@ -1,0 +1,12 @@
+VimL:" $Id$
+VimL:" augroup File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 17th Jan 2011
+VimL:" hint: augroup {group} | au! | augroup END
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+augroup <+group-name+>
+  au!
+  ¡s:Surround(1, '<++>')¡
+augroup END

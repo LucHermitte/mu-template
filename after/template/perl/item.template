@@ -1,11 +1,12 @@
 VimL:" $Id$
-VimL:" for File Template, Luc Hermitte, 12th Jan 2011
-VimL:" hint: for i in ist ; do ... ; done
+VimL:" =item File Template, Luc Hermitte, 02nd Mar 2011
+VimL:" hint: =item + =over
 VimL: let s:value_start = '¡'
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-for <+i+> in $<+list+> ; do
-    ¡s:Surround(1, '<+code+>')¡
-done
+VimL: let s:reindent     = 1
+=item <++>
+
+VimL: call s:Include('over', 'perl')
