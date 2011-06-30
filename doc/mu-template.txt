@@ -574,7 +574,7 @@ A:  Be sure the expression to expand does not end with a "\n". You may want to
     even use |s:Include()| recursively or not.
     
 
-Q:  "How can I make CVS/Subversion ignore special tags  *MuT-$Id$*
+Q:  "How can I make CVS/Subversion ignore special tags  *MuT-RC-tag$*
     in a template-file?"
 A:  There is a nasty trick accomplished with |MuT-expression|: >
         ¡'$'¡Id$
