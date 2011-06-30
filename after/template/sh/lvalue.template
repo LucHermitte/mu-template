@@ -1,0 +1,8 @@
+VimL:" $Id$
+VimL:" lvalue File Template, Luc Hermitte, 29th Jun 2011
+VimL:" hint: extracts foo from foo=bar
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+${<+var+>%=*}

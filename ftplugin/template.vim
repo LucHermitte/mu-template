@@ -47,13 +47,13 @@ if &cp || (exists("b:loaded_ftplug_template")
       \ && !exists('g:force_reload_ftplug_template'))
   finish
 endif
-let b:loaded_ftplug_template_vim = 1
+let b:loaded_ftplug_template_vim = s:k_version
 "
 let s:cpo_save=&cpo
 set cpo&vim
 
 "------------------------------------------------------------------------
-if strlen(g:ft)
+if exists('g:ft') && strlen(g:ft) && g:ft != 'template'
   exe 'runtime! syntax/'.g:ft.'.vim'
   exe 'runtime! ftplugin/'.g:ft.'.vim ftplugin/'.g:ft.'_*.vim ftplugin/'.g:ft.'/*.vim'
 endif

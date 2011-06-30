@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      2.3.0
+" Version:      2.4.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -18,6 +18,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v2.3.0
+"	(*) expressions can be expanded from placeholders (Issue#37)
 "	v2.3.0
 "	(*) Surrounding functions
 "	v2.2.2
@@ -120,12 +122,15 @@ function! lh#mut#expand(NeedToJoin, ...)
   try
     call  s:LoadTemplate(0, dir.ft.'.template')
 
+    " 2.0 Reset default settings
     " clear any function definition
     let s:__function = []
     " Default values for placeholder characters (they can be overridden in each
     " template file).
     let s:marker_open  = '<+'
     let s:marker_close = '+>'
+    " Default support for evaluation of placeholder-text
+    silent! unlet s:dont_eval_markers 
     " Default fileencoding to override in template files
     let s:fileencoding = &enc
 
@@ -480,9 +485,10 @@ endfunction
 " use.
 function! s:InterpretValue(what)
   try
-    exe 'let s:r = ' . a:what
+    " todo: can we use eval() now?
+    exe 'let s:__r = ' . a:what
     " NB: cannot use a local variable, hence the "s:xxxx"
-    return s:r
+    return s:__r
   catch /.*/
     call lh#common#warning_msg("muTemplate: Cannot interpret `".a:what."': ".v:exception)
     return a:what
@@ -549,6 +555,41 @@ function! s:InterpretValues(line)
   return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
+" s:InterpretMarkers(line) ~ eval markers as expr in {line}    {{{3
+" todo merge with s:InterpretValues
+function! s:InterpretMarkers(line)
+  " @pre must not be defining VimL functions
+  if !empty(s:__function)
+    throw 'already within the definition of a function (no non-VimL code authorized)'
+  endif
+
+  let res = ''
+  let tail = a:line
+  let re =  '\(.\{-}\)'.s:Marker('\(.\{-}\)').'\(.*\)'
+  let may_merge = 0
+  while strlen(tail)!=0
+    let split = matchlist(tail, re)
+    if len(split) <2 || strlen(split[0]) == 0
+      " nothing found
+      let res .= tail
+      let tail = ''
+      " let may_merge = 0
+    else
+      try 
+        let value = eval(split[2])
+      catch /.*/
+        let value = Marker_Txt(split[2])
+      endtry
+      let res .= split[1] . value
+      let tail = split[3]
+      let may_merge = 1
+    endif
+  endwhile
+  " echomsg "may_merge=".may_merge."  ---  ".res
+  return res
+  " return { 'line' : res, 'may_merge' : may_merge }
+endfunction
+
 " s:NoRegex(text)                                              {{{3
 function! s:NoRegex(text)
   return escape(a:text, '\.*/')
@@ -580,7 +621,11 @@ function! s:InterpretLines(first_line)                       " {{{3
 
       if s:Marker('') != markerCharacters
 	" Replaces plain marker characters into current marker characters.
-	let the_line = substitute(the_line, s:Marker('\(.\{-}\)'), Marker_Txt('\1'), 'g')
+        if exists('s:dont_eval_markers') && s:dont_eval_markers
+          let the_line = substitute(the_line, s:Marker('\(.\{-}\)'), Marker_Txt('\1'), 'g')
+        else
+          let the_line = s:InterpretMarkers(the_line)
+        endif
       endif
 
       " Replaces expressions by their interpreted value

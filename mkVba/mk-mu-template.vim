@@ -3,8 +3,8 @@
 " File:		mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.3.0
-let s:version = '2.3.0'
+" Version:	2.4.0
+let s:version = '2.4.0'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -50,6 +50,8 @@ after/template/sh.template
 after/template/sh/for.template
 after/template/sh/if-nb-args.template
 after/template/sh/if.template
+after/template/sh/lvalue.template
+after/template/sh/rvalue.template
 after/template/tcl.template
 after/template/template.template
 after/template/template/include.template
