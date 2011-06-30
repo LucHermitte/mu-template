@@ -3,7 +3,7 @@
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 2.3.0
+                    Version 2.4.0
 
 
 ==============================================================================
@@ -273,6 +273,9 @@ FEATURES                                    *MuT-features*     {{{1
     The text will be expanded into "«{parameter}»", "<+{parameter}+>" or
     whatever according to your configuration and your environment. See
     |marker|.
+    Note that if the text within a marker can be is a valid VimL expression,
+    the marker will be replaced with the result of the evalution -- unless
+    |s:dont_eval_markers| is set.
 
     Almost every default template-files are already relying on this feature.
     
@@ -426,18 +429,21 @@ A:  There are two ways to accomplish that.
         VimL: let s:marker_close ='<<<'
         Some text <<<the placeholder to replace>>> other text.
 
-Q:  "How can I insert the current date?"
+
+Q:  "How can I insert the current date?"                *MuT-date*
 A:  Use |MuT-expression| with a VimL function that returns the current date. >
         ¡strftime({format})¡
 <   check |strftime()|, and |DateStamp()|
 
-Q:  "How can I insert the name of the current file?"
+
+Q:  "How can I insert the name of the current file?"    *MuT-filename*
 A:  Use |MuT-expression| with a VimL function that returns the name of the
     current file. >
         ¡expand('%:t')¡
 <   check |expand()|
 
-Q:  "How can I insert my name?"
+
+Q:  "How can I insert my name?"                         *MuT-whoami*
 A:  Have it stored in a VimL variable and use a |MuT-expression|.
     Note that mu-template tries to deduce it, the result is stored in
     |g:author|. If you only need one version of your name in a given project
@@ -448,7 +454,8 @@ A:  Have it stored in a VimL variable and use a |MuT-expression|.
     ... >
         Maintainer: ¡Author()¡
 
-Q:  "How can I store the result of a expression into a variable?"
+
+Q:  "How can I store the result of a expression into a variable?"  *MuT-:let*
 A:  Use the VimL instruction |:let|, and make the scope of the variable to be
     either |s:var|, |b:var|, |w:var| or |g:var|. 
     |local-variables| can not be used. 
@@ -457,7 +464,8 @@ A:  Use the VimL instruction |:let|, and make the scope of the variable to be
 <   However, note that some script-symbol are reserved and must not be used. See
     |MuT-reserved-symbols|.
 
-Q:  "How can I interactively insert things?"
+
+Q:  "How can I interactively insert things?"            *MuT-UI*
 A:  Use interactive functions like |confirm()|, |input()|, ..., or their
     wrappers from |ui-functions.vim|. >
         VimL: let s:choice = CONFIRM('prompt', "&Yes\n&No", 2)
@@ -467,13 +475,15 @@ A:  Use interactive functions like |confirm()|, |input()|, ..., or their
         The name chosen is ¡s:name¡
 <   Examples: check cpp/class.template
 
-Q:  "How can I select which group of lines to insert depending on a given
-    criteria?"
+
+Q:  "How can I select which group of lines to insert    *MuT-control-flow*
+    depending on a given criteria?"
 A:  If you want to insert a lot of lines according to a given case (for
     instance, vim ftplugins, plugins, syntax files, etc. are quite different
     and required specialized skeletons), you'd better use |s:Include()|
     instead of |IF()|.
     Examples: check c.template, vim.template
+
 
 Q:  "How can I re-indent the lines inserted?"           *s:reindent*
 A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
@@ -481,16 +491,18 @@ A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
         VimL: let s:reindent = 1
 <   Examples: check */*.template.
 
+
 Q:  "How can I load another skeleton?"                  *s:Include()*
 A:  This can be achieved with the special function |s:Include()|. 
-<   Examples: check c.template that loads the template-file for C header
+    Examples: check c.template that loads the template-file for C header
     files, or C implementation files according to the current buffer's file
     extension (.h or .c) >
         VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
 <   Or {swith}-template that loads {case}-template with an argument: >
 	VimL: call s:Include('case', 'c', arg)
 
-Q:  "How can I pass parameters to imported skeletons?"	*s:Args()* *s:PushArgs()*
+
+Q:  "How can I pass parameters to imported skeletons?" *s:Args()* *s:PushArgs()*
 A:  Three API functions are provided for this purpose:
     - |s:PushArgs()| permits to push arguments to the skeleton
     - |s:Include()| which takes an optional third parameter to push arguments
@@ -507,7 +519,8 @@ A:  Three API functions are provided for this purpose:
     future. I'd advice you to use recursivity instead of iteration when loop
     are required. See the implementation of {switch} and {case} snippets.
 
-Q:  "How can I change the expression delimiters?"       *s:value_start* *s:value_end*
+
+Q:  "How can I change the expression delimiters?"  *s:value_start* *s:value_end*
 A:  Just change the special variables |s:value_start| and |s:value_end|.
     Doing so can help us release the default latin1 character used (¡ ==
     Spanish inverted exclamation mark). I must admit I do not know how the
@@ -523,13 +536,29 @@ A:  Just change the special variables |s:value_start| and |s:value_end|.
         VimL: let s:value_end    = '%)))'
         Creation date: %(((strftime(%c)%)))
 
-Q:  "How comments are written in the template-file?"
+<    Note: You can also embed expression into placeholders/marker as long as
+     they are a valid expression -- this feature can be disabled with
+     |s:dont_eval_markers|
+
+
+Q: "How can I disable the evaluation of expressions within *s:dont_eval_markers*
+   markers/placeholders?"
+A: In the template-files where you don't want marker-texts to be evaluated (as
+   VimL-|expression|, set |s:dont_eval_markers| to 1. You may want to reset it
+   to its previous value at the end of the template file (in case it is
+   included by another template that requires the support of that kind of
+   evaluation)
+
+
+Q:  "How comments are written in the template-file?"    *MuT-comments*
 A:  "VimL:" introduces Ex commands (|MuT-intruction|).  This means comments
     are lines starting with a double |:quote|. >
         VimL:" This is a comment that won't be inserted.
 
-Q:  "I want to use expressions that expands on several lines, but mu-template
-    keeps doing funny things: it joins lines that should not"
+
+Q:  "I want to use expressions that expands on several  *MuT-multilines*
+    lines, but mu-template keeps doing funny things: it joins lines that
+    should not"
 A:  Be sure the expression to expand does not end with a "\n". You may want to
     append a neutral space. >
         VimL: let s:expr = "first line\nsecond line\n "
@@ -544,17 +573,21 @@ A:  Be sure the expression to expand does not end with a "\n". You may want to
     You'd better define complex functions in |autoload| plugins instead, or
     even use |s:Include()| recursively or not.
     
-Q:  "How can I make CVS/Subversion ignore special tags in a template-file?"
+
+Q:  "How can I make CVS/Subversion ignore special tags  *MuT-$Id$*
+    in a template-file?"
 A:  There is a nasty trick accomplished with |MuT-expression|: >
         ¡'$'¡Id$
 
-Q:  "How can I use template-files from another filetype?"
+
+Q:  "How can I use template-files from another filetype?"      *MuT-inherit-ft*
 A:  Set the corresponding |g:mt_inherited_ft_for_{filetype}| variable in your
     |.vimrc|.
     Example, to accept all xml template-files when editing xslt files: >
         let g:mt_inherited_ft_for_xslt = 'xml'
 
-Q:  "When I expand my template-file, I get funny characters"
+
+Q:  "When I expand my template-file, I get funny characters" *MuT-funny-chars*
 A:  If your |MuT-expression|s are not expanded, be sure to:
     - explicitly set |s:value_start| and |s:value_end|
     - save your template-file in utf-8 (see next Q/A)
@@ -562,38 +595,42 @@ A:  If your |MuT-expression|s are not expanded, be sure to:
     are not working in latin1, nor in utf-8. I'm afraid I have no answer yet.
     Anyway, let me know.
 
-Q:  "I want to write a template-file, but I do not succeed to have a utf-8
-     file."
+
+Q:  "I want to write a template-file, but I do not succeed to   *MuT-encoding*
+    have a utf-8 file."
 A:  To save your template-file in utf-8, save it with >
         :w ++enc=utf-8
 <   See |++enc|, 'encoding', and |MuT-encodings| 
 
+
 Q: "How can I refer to the root of my current project?"  *s:path_from_root()*
 A: First you'll need a way to define project-specific informations. Plugins
-like |project.vim| or |MuT-local_vimrc| will help you define the
-project-specific variable *b:sources_root* -- note: so far only
-|MuT-local_vimrc| will be able to set that variable before the template-file
-is expanded, hence I recommend its use over |project.vim| regarding this
-particular task. 
-Finally, in your template-files, you'll be able to refer to this variable thanks
-to the muT-function |s:path_from_root()|.
+   like |project.vim| or |MuT-local_vimrc| will help you define the
+   project-specific variable *b:sources_root* -- note: so far only
+   |MuT-local_vimrc| will be able to set that variable before the
+   template-file is expanded, hence I recommend its use over |project.vim|
+   regarding this particular task. 
+   Finally, in your template-files, you'll be able to refer to this variable
+   thanks to the muT-function |s:path_from_root()|.
 
-Remark: |lh-vim-lib| provides functions that helps manipulate and transform
-pathnames (see |lhvl#path|)
+   Remark: |lh-vim-lib| provides functions that helps manipulate and transform
+   pathnames (see |lhvl#path|)
 
-Q: "How may I know the line number of the current line in the final buffer?" *s:Line()*
+
+Q: "Which is the line number of the current line in the final buffer?" *s:Line()*
 A: This information can be obtained thanks to a call to |s:Line()|
 
 Q: "How may I know the content of the lines being expanded?" *s:content*
 A: The |Dictionary| |s:content| contains the lines already interpreted, and
-those that will be. Its fields are:
+   those that will be. Its fields are:
    - "lines": a |List| of all the lines,
    - "start": line number where the first line of a:content.lines will be
      inserted,
    - "crt": number of the line being currently interpreted.
    NB: This is an implementation detail. This can be deprecated at moment.
 
-Q: "How can I define a snippet able to surround the current selection?" *s:Surround()*
+
+Q: "How to define a snippet that surrounds the current selection?" *s:Surround()*
 A: You can use the s:Surround() function that takes two parameters: 
    - an surround-id tied to the count passed to the mapping (see |MuT-surround|),
    - and a default text in case no surrounding is done (snippet used in

@@ -442,7 +442,6 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
   let &wildignore  = ""
   let ftlist = lh#mut#dirs#shorten_template_filenames(
         \ lh#path#glob_as_list(g:lh#mut#dirs#cache, ArgLead.'*.template'))
-        "NAMES WERE: \ lh#path#glob_as_list(g:lh#mut#dirs#cache, 'template.'.ArgLead.'*'))
   let &wildignore = s:wildignore
   call extend(ftlist, lh#mut#dirs#get_short_list_of_FT_matching(ArgLead.'*', &ft))
   let res = join(ftlist, "\n")
