@@ -6,4 +6,4 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-\frac{<++>}{<++>}<++>
+\frac{¡s:Surround(1,'<++>')¡}{<++>}<++>
