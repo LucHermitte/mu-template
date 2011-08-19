@@ -25,7 +25,7 @@ PRESENTATION                            *<+plugin+>-presentation* {{{1
 <++>
 
 ------------------------------------------------------------------------------
- � ¡Author(1)¡, ¡strftime('%Y')¡, ¡lh#option#get('url', '<+URL+>')¡
+ © ¡Author(1)¡, ¡strftime('%Y')¡, ¡lh#option#get('url', '<+URL+>')¡
  ¡'$'¡Id$
 VimL:" This trick with ¡ and $ is used to distract SVN/CVS
  VIM: let b:VS_language = 'american' 
