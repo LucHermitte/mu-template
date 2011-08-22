@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.3.0
+" Version:	2.3.1
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -238,6 +238,8 @@
 "	(*) new :MUEdit command to open the template-file
 "	v2.3.0
 "	(*) Surrounding functions
+"	v2.3.1
+"	(*) "MuT: if" & co conditionals
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -271,10 +273,11 @@
 "	  default choice
 "	- Write a helper plugin that will help us navigate in the tree of
 "	  included templates.
+"	- support named parameters in s:Args() 
 "
 "}}}1
 "========================================================================
-let s:k_version = 230
+let s:k_version = 231
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -283,7 +286,6 @@ endif
 let g:mu_template = s:k_version
 let s:cpo_save=&cpo
 set cpo&vim
-" scriptencoding latin1
 
 " Debugging purpose
 command! -nargs=1 MUEcho :echo s:<args>
