@@ -18,7 +18,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
-"	v2.3.0
+"	v2.3.1
+"	(*) "MuT: if" & co conditionals
 "	(*) expressions can be expanded from placeholders (Issue#37)
 "	v2.3.0
 "	(*) Surrounding functions
@@ -40,7 +41,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 222
+let s:k_version = 231
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -104,6 +105,7 @@ function! lh#mut#expand(NeedToJoin, ...)
   let pos = line('.')
   let s:content.start = pos
   let s:content.lines = []
+  let s:content.scope = [1]
   let s:NeedToJoin = a:NeedToJoin
   if a:0 > 0
     let dir = fnamemodify(a:1, ':h')
@@ -365,6 +367,10 @@ function! s:Command(text)          " {{{3
   return 'VimL:' . a:text
 endfunction
 
+function! s:Special(text)          " {{{3
+  return 'MuT:' . a:text
+endfunction
+
 function! s:Comment(text)          " {{{3
   return s:Command('" '.a:text)
 endfunction
@@ -451,7 +457,7 @@ endfunction
 " }}}2
 "------------------------------------------------------------------------
 " Core Functions {{{2
-let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0}
+let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1]}
 
 function! s:LoadTemplate(pos, templatepath)                  " {{{3
   " echomsg "s:LoadTemplate(".a:pos.", '".a:templatepath."')"
@@ -468,7 +474,7 @@ function! s:LoadTemplate(pos, templatepath)                  " {{{3
 	echo "Loading <".matching_filenames[0].">"
       endif
       let lines = readfile(matching_filenames[0])
-      let lines += [ 'VimL: call s:PopArgs()']
+      let lines += [s:Command( 'call s:PopArgs()')]
       call extend(s:content.lines, lines, a:pos)
       " echomsg string(s:content)
     endif
@@ -600,16 +606,55 @@ function! s:Marker(regex)
   return s:NoRegex(s:marker_open) . a:regex . s:NoRegex(s:marker_close)
 endfunction
 
+" s:InterpretLines(the_line)                                   {{{3
+function! s:InterpretMuTCommand(the_line)
+  let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
+  if     special_cmd == 'if'
+    let is_true = eval(cond)
+    call insert(s:content.scope, is_true) 
+  elseif special_cmd == 'elseif'
+    if len(s:content.scope) <= 1
+      throw "'MuT: elseif' used, but there was no if"
+    endif
+    let is_true = eval(cond)
+    let s:content.scope[0] = is_true 
+  elseif special_cmd == 'else'
+    if len(s:content.scope) <= 1
+      throw "'MuT: else' used, but there was no if"
+    endif
+    let s:content.scope[0] = ! s:content.scope[0]
+  elseif special_cmd == 'endif'
+    if len(s:content.scope) <= 1
+      throw "'MuT: else' used, but there was no if"
+    endif
+    call remove(s:content.scope, 0)
+  else
+    throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
+  endif
+endfunction
+
 function! s:InterpretLines(first_line)                       " {{{3
   " Constants
   let markerCharacters = Marker_Txt('')
 
   let s:content.crt = 0
-  " let pat_command = '\c^'.s:Command('.*')
   let pat_command = '\c^'.s:Command('')
+  let pat_special = '\c^'.s:Special('')
   while s:content.crt < len(s:content.lines)
     " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt]
     let the_line = s:content.lines[s:content.crt]
+    
+    " MuT: lines
+    if the_line =~ pat_special
+      call s:InterpretMuTCommand(the_line)
+      call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
+      continue
+    elseif ! s:content.scope[0]
+      call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
+      continue
+    endif
+
+    " In all cases
     if the_line =~ pat_command
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
       call s:InterpretCommand( matchstr(the_line, '\c'.s:Command('\s*').'\zs.*'))
