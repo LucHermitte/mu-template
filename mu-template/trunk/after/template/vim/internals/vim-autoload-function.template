@@ -3,5 +3,5 @@ VimL: "«Vim» autoload functions Template File, Luc Hermitte
 VimL: "
 VimL: " Obtain the autoload plugin full name
 VimL: let s:relpathname = lh#path#strip_start(expand('%:p:r'), &rtp)
-VimL: let s:relpathname = matchstr(s:relpathname, '^\(after.\)\=autoload.\zs.*')
+VimL: let s:relpathname = matchstr(s:relpathname, '^\=autoload.\zs.*')
 VimL: let s:function_prefix = substitute(s:relpathname, '[/\\]', '#', 'g') . '#'

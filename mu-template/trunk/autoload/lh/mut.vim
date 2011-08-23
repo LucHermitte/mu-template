@@ -235,8 +235,8 @@ function! lh#mut#jump_to_start()
   " set foldopen+=insert,jump
   " Need to be sure there was a marker in the text inserted
   let marker_line = lh#list#match(s:content.lines, Marker_Txt('.\{-}'))
-  let therewasamarker = -1 != marker_line
-  if therewasamarker
+  let s:therewasamarker = -1 != marker_line
+  if s:therewasamarker
     " echomsg "jump from ".(marker_line+s:content.start)
     exe (marker_line+s:content.start)
     " normal! zO
@@ -280,7 +280,7 @@ function! lh#mut#surround()
   try 
     " 1- ask which template to execute {{{3
     let which = INPUT("which snippet?")
-    let files = lh#mut#dirs#get_short_list_of_FT_matching(which.'*', &ft)
+    let files = lh#mut#dirs#get_short_list_of_TF_matching(which.'*', &ft)
 
     let nbChoices = len(files)
     " call confirm(nbChoices."\n".files, '&ok', 1)
@@ -323,7 +323,7 @@ function! lh#mut#search_templates(word)
   " 1- Build the list of template files matching the current word {{{3
   let w = substitute(a:word, ':', '-', 'g').'*'
   " call confirm("w =  #".w."#", '&ok', 1)
-  let files = lh#mut#dirs#get_short_list_of_FT_matching(w, &ft)
+  let files = lh#mut#dirs#get_short_list_of_TF_matching(w, &ft)
 
   " 2- Select one template file only {{{3
   let nbChoices = len(files)
@@ -818,7 +818,11 @@ function! s:InsertTemplateFile(word,file)
     endif
     " Note: <esc> is needed to escape from "Visual insertion mode"
     " Workaround a change in Vim 7.0 behaviour
-    return "\<c-\>\<c-n>\<c-\>\<c-n>gv\<c-g>"
+    if s:therewasamarker
+      return "\<c-\>\<c-n>\<c-\>\<c-n>gv\<c-g>"
+    else
+      return "\<c-\>\<c-n>"
+    endif
     " return "\<esc>\<right>"
   else          " 3.B- No template file available for the current word {{{4
     return ""
