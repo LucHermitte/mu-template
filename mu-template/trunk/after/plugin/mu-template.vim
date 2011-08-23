@@ -445,7 +445,7 @@ function! s:Complete(ArgLead, CmdLine, CursorPos)
   let ftlist = lh#mut#dirs#shorten_template_filenames(
         \ lh#path#glob_as_list(g:lh#mut#dirs#cache, ArgLead.'*.template'))
   let &wildignore = s:wildignore
-  call extend(ftlist, lh#mut#dirs#get_short_list_of_FT_matching(ArgLead.'*', &ft))
+  call extend(ftlist, lh#mut#dirs#get_short_list_of_TF_matching(ArgLead.'*', &ft))
   let res = join(ftlist, "\n")
   return res
 endfunction
@@ -560,7 +560,7 @@ function! s:BuildMenu(doRebuild)
     call s:AddMenu('&New.&', '100.10', new_list)
 
     " 5- constructs                   {{{3
-    let ft_list = lh#mut#dirs#get_short_list_of_FT_matching('*', '*')
+    let ft_list = lh#mut#dirs#get_short_list_of_TF_matching('*', '*')
     call s:AddMenu('&', '300.10', ft_list)
 
     let &wildignore = s:wildignore

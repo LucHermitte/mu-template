@@ -6,7 +6,6 @@ VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: call s:Include('get-script-kind', 'vim/internals')
-VimL: let function_name = 's:'
 VimL: if s:alplug | call s:Include('vim-autoload-function', 'vim/internals') | else | let s:function_prefix='s:' | endif
 VimL: "
 " Function: ¡s:function_prefix¡<+funcname+>(<+params+>) {{{<+3+>
