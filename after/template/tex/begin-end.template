@@ -1,0 +1,10 @@
+VimL:" $Id$
+VimL:" begin-end File Template, Luc Hermitte, 25th Jul 2011
+VimL:" hint: \begin{env}-\end{env}
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+VimL: let s:env = s:Surround(2,'<+environment+>')
+\begin{{+s:env+}}
+  {+s:Surround(1,'<++>')+}
+\end{{+s:env+}}{++}
