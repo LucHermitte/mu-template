@@ -107,8 +107,8 @@ function! lh#mut#dirs#shorten_template_filenames(list)
   return a:list
 endfunction
 
-" Function: lh#mut#dirs#get_short_list_of_FT_matching(word, filetype) {{{2
-function! lh#mut#dirs#get_short_list_of_FT_matching(word, filetype)
+" Function: lh#mut#dirs#get_short_list_of_TF_matching(word, filetype) {{{2
+function! lh#mut#dirs#get_short_list_of_TF_matching(word, filetype)
   " 1- Build the list of template files matching the current word {{{3
   let files = s:GetTemplateFilesMatching(a:word, a:filetype)
 
