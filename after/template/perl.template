@@ -7,3 +7,18 @@ VimL: let s:marker_close = '+>'
 # Author:	¡Author()¡
 # Purpose:	<+enter here+>
 # Created:	¡strftime("%c")¡
+
+### Code {{{1
+## Includes   {{{2
+use strict                ;
+use Pod::Usage            ; # pod2usage()
+use Getopt::Long          ; # Getoptions()
+# use File::Spec            ; # catfile
+
+## Globals    {{{2
+## Functions  {{{2
+## Main       {{{2
+
+# ======================================================================
+# vim600: set foldmethod=marker:
+# vim:et:ts=4:tw=79:
