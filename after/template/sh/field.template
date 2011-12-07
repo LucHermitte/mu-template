@@ -1,0 +1,6 @@
+VimL:" $Id$
+VimL:" field File Template, Luc Hermitte, 07th Dec 2011
+VimL:" hint: extract a field from a line
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+| awk '{print $<+field-number+>}'
