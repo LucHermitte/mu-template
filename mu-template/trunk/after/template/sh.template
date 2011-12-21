@@ -1,9 +1,7 @@
 VimL:" $Id$
 VimL:" ซshป File Template, Luc Hermitte, 02nd Jan 2011
-VimL: let s:value_start = 'ยก'
-VimL: let s:value_start = 'ยก'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-#!/usr/bin/<+ba+>sh
+#!<+system('which bash')+>
 <++>

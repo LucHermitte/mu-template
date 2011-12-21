@@ -1,0 +1,13 @@
+VimL:" $Id$
+VimL:" case File Template, Luc Hermitte, 21st Dec 2011
+VimL:" hint: case word in [ [(] pattern [ | pattern ] ... ) list ;; ] ... esac
+VimL: let s:value_start = '¡'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+case $<+i+> in 
+    ¡s:Surround(2, '<+pattern+>')¡)
+        ¡s:Surround(1, '<+code+>')¡
+        ;;
+esac
