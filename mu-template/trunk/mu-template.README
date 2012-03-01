@@ -10,7 +10,8 @@ Requirements   : Vim 7, lh-vim-lib (2.2.5), map-tools (1.1.2), searchInRuntime
 Required by    : Only lh-cpp as far as I know
 Initial Author : Gergely Kontra
 Fork Maintainer: Luc Hermitte
-License        : GPL2 ? (see with Gergely)
+License        : plugin: GPL2 ? (see with Gergely)
+                 generated codes: public domain unless specified otherwise
 More Help At   : http://code.google.com/p/lh-vim/wiki/muTemplate
 Vim script#??? : http://www.vim.org/scripts/script.php?script_id=???
 Repository     :

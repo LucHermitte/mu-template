@@ -865,7 +865,7 @@ Tom Link		For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2011, <http://code.google.com/p/lh-vim/>          {{{1
+ © Luc Hermitte, 2001-2012, <http://code.google.com/p/lh-vim/>          {{{1
  $Id$
  VIM: let b:VS_language = 'american' 
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
