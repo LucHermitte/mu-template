@@ -21,3 +21,4 @@ finally
   let &rtp = save_rtp
 endtry
 finish
+<+join(sort(copy(lh#vim#mkvba#files(expand('%:p:h:h')))), "\n")+>
