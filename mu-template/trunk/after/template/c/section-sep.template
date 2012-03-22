@@ -1,0 +1,12 @@
+VimL:" $Id$
+VimL:" section-sep File Template, Luc Hermitte, 22nd Mar 2012
+VimL:" hint: /*===[ section ]===*/
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:title = empty(s:Args()) ? Marker_Txt('section') : (s:Args()[0])
+VimL: let s:title_len = lh#encoding#strlen(s:title)+4
+/*===========================================================================*/
+/*<+repeat('=', 37-s:title_len/2)+>[ <+s:title+> ]<+repeat('=', 38-(s:title_len+1)/2)+>*/
+/*===========================================================================*/
+VimL: " <+empty(s:Args()) ? (s:title) : Marker_Txt(s:title)+>
+<+empty(s:Args()) ? (s:title) : ""+>

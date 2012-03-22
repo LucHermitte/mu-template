@@ -1,22 +1,17 @@
 VimL:" $Id$
 VimL:"C/C++ Definition File-Template, Luc Hermitte
 VimL: " The following include is meant to be overriden
-VimL: let s:filename = s:path_from_root(expand('%:p'))
-VimL: call s:Include('c-file-header', 'c/internals')
+VimL: let s:filename = s:path_from_root(expand("%:p"))
+VimL: call s:Include("c-file-header", "c/internals")
 
-/*===========================================================================*/
-/*===============================[ Includes ]================================*/
-/*===========================================================================*/
+VimL: call s:Include("section-sep", "c", "Includes")
 VimL: " Deduce the name (and relative path) to the associated header file
-VimL: let s:header = lh#cpp#file#HeaderName(expand('%:p'))
+VimL: let s:header = lh#cpp#file#HeaderName(expand("%:p"))
 VimL: " Include this associated header file, if found
 ¡strlen(s:header)>0  ? '#include "'.s:header.'"'  :""¡
 VimL: " Include the associated inline file, if found
 ¡filereadable(expand("%:p:r").'.inl')? '#include "'.expand('%:t:r').'.inl"':""¡
-<+Includes+>
+<+other includes+>
 
-
-/*===========================================================================*/
-/*==================================[ <++> ]===================================*/
-/*===========================================================================*/
+VimL: call s:Include("section-sep", "c", "other stuff")
 <+other stuff+>
