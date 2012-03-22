@@ -1,10 +1,10 @@
 "=============================================================================
 " $Id$
-" File:		mk-mu-template.vim
+" File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	2.4.0
-let s:version = '2.4.0'
+" Version:	3.0.0
+let s:version = '3.0.0'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -33,6 +33,7 @@ after/template/c/internals/c-header-typical.template
 after/template/c/internals/c-header.template
 after/template/c/internals/c-imp.template
 after/template/c/main.template
+after/template/c/section-sep.template
 after/template/c/stderr.template
 after/template/c/switch.template
 after/template/c/while.template
