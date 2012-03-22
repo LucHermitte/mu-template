@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	2.3.1
+" Version:	3.0.0
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -240,6 +240,10 @@
 "	(*) Surrounding functions
 "	v2.3.1
 "	(*) "MuT: if" & co conditionals
+"       v3.0.0
+"       (*) GPLv3
+"       (*) :MuTemplate passes its arguments to the template inserted:
+"           -> :MuTemplate c/section-sep foobar
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -277,7 +281,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 231
+let s:k_version = 300
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -601,7 +605,7 @@ function! MuTemplate(template, data)
 endfunction
 
 " [auto]commands {{{1
-command! -nargs=? -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
+command! -nargs=* -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
 command! -nargs=? -complete=custom,<sid>Complete MUEdit     :call lh#mut#edit(<f-args>)
 
 function! s:AutomaticInsertion()
