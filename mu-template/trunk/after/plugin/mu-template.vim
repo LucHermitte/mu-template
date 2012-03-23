@@ -244,6 +244,7 @@
 "       (*) GPLv3
 "       (*) :MuTemplate passes its arguments to the template inserted:
 "           -> :MuTemplate c/section-sep foobar
+"	(*) s:Inject() to add lines to the generated code from VimL code.
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
