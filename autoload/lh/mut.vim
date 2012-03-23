@@ -18,6 +18,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.0
+"	(*) s:Inject() to add lines to the generated code from VimL code.
 "	v2.3.1
 "	(*) "MuT: if" & co conditionals
 "	(*) expressions can be expanded from placeholders (Issue#37)
@@ -41,7 +43,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 231
+let s:k_version = 300
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -411,6 +413,12 @@ function! s:Include(template, ...)
   if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
     call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
+endfunction
+
+" function! s:Inject(lines)          {{{3
+function! s:Inject(lines)
+  let pos = s:content.crt
+  call extend(s:content.lines, a:lines, s:content.crt+0)
 endfunction
 
 function! s:path_from_root(path)   " {{{3

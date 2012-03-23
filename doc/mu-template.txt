@@ -3,7 +3,7 @@
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 2.4.0
+                    Version 3.0.0
 
 
 ==============================================================================
@@ -568,10 +568,10 @@ A:  Be sure the expression to expand does not end with a "\n". You may want to
 
                                         *MuT-loops* *MuT-instruction-injection* 
     You can also inject text (or even |MuT-instruction|) into |s:content| with: >
-        VimL: call extend(s:content.crt, {'first line', 'VimL: echomsg "foo"}, s:content.crt+1)
-<   but I wouldn't advice such practices as they can get deprecated at anytime.
-    You'd better define complex functions in |autoload| plugins instead, or
-    even use |s:Include()| recursively or not.
+        VimL: call s:Inject(["list", "of", "lines"]
+<   You can also define complex functions in |autoload| plugins instead, or
+    even use |s:Include()| recursively or not, but that would be code
+    obfuscation.
     
 
 Q:  "How can I make CVS/Subversion ignore special tags  *MuT-RC-tag$*
@@ -865,7 +865,7 @@ Tom Link		For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2012, <http://code.google.com/p/lh-vim/>          {{{1
+ © Luc Hermitte, 2001-2012 <http://code.google.com/p/lh-vim/>, CC by SA 3.0 {{{1
  $Id$
  VIM: let b:VS_language = 'american' 
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
