@@ -1,5 +1,5 @@
 {
-  "name" : "mu-template",
+  "name" : "mu-template.lh",
   "version" : "dev",
   "author" : "Luc Hermitte <http://code.google.com/p/lh-vim/wiki/contact>",
   "maintainer" : "Luc Hermitte <http://code.google.com/p/lh-vim/wiki/contact>",
