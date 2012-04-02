@@ -3,9 +3,9 @@ VimL: "C/C++ Header File-Template, Luc Hermitte
 VimL: let s:filename = s:path_from_root(expand('%:p'))
 VimL: call s:Include('c-file-header', 'c/internals')
 VimL: call s:Include('c-header-guard', 'c/internals')
-#ifndef <+¡s:guard¡__+>
-#define <+¡s:guard¡__+>
+#ifndef <+¡s:guard¡+>
+#define <+¡s:guard¡+>
 
-<+Definitions here+>
+VimL: call s:Include('c-header-content', 'c/internals', Marker_Txt("Definitions here"))
 
-#endif // <+¡s:guard¡__+>
+#endif // <+¡s:guard¡+>

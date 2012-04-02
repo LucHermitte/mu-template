@@ -1,0 +1,4 @@
+VimL:" $Id$
+VimL:" default content for header-files File Template, Luc Hermitte, 02nd Apr 2012
+VimL: let s:default_text = empty(s:Args()) ? "" : (s:Args()[0])
+<+s:default_text+>
