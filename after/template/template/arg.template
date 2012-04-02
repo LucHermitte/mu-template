@@ -1,0 +1,6 @@
+VimL:" $Id$
+VimL:" Argument fetching snippet, Luc Hermitte, 02nd Apr 2012
+VimL:" hint: let s:arg = fetch(s:Args[0])
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+<+'VimL:'+> let s:<+arg0+> = empty(s:Args()) ? <+default+> : (s:Args()[0])
