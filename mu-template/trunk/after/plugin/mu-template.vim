@@ -245,6 +245,10 @@
 "       (*) :MuTemplate passes its arguments to the template inserted:
 "           -> :MuTemplate c/section-sep foobar
 "	(*) s:Inject() to add lines to the generated code from VimL code.
+" 	(*) new option: [bg]:[{ft}_]mt_templates_paths ; requires lh-dev
+" 	(*) :MUEdit will display discriminant pathnames when all existing
+" 	    template files have the same name (happens in the case of
+" 	    overridden templates)
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -347,8 +351,8 @@ endif
 "========================================================================
 " Core Functions {{{1
 
-" s:TemplateOnBufNewFile() triggered by BufNewFile event       {{{2
-function! s:TemplateOnBufNewFile()
+" s:SourceLocalVimrc()                                         {{{2
+function! s:SourceLocalVimrc()
   if exists(':SourceLocalVimrc')
     try
       :SourceLocalVimrc
@@ -356,6 +360,11 @@ function! s:TemplateOnBufNewFile()
       echomsg v:exception
     endtry
   endif
+endfunction
+
+" s:TemplateOnBufNewFile() triggered by BufNewFile event       {{{2
+function! s:TemplateOnBufNewFile()
+  call s:SourceLocalVimrc()
 
   call lh#mut#dirs#update()
   " echomsg 's:TemplateOnBufNewFile'
@@ -477,13 +486,13 @@ function! s:AddMenu(m_name, m_prio, nameslist)
       exe 'amenu '.s:menu_prio.a:m_prio.' '
 	    \ .escape(s:menu_name.m_name.name, '\ ')
 	    \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
-      if &verbose >= 2
+      if lh#mut#verbose() >= 2
 	echomsg 'amenu '.s:menu_prio.a:m_prio.' '
 	      \ .escape(s:menu_name.m_name.name, '\ ')
 	      \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
       endif
     else
-      if &verbose >= 1
+      if lh#mut#verbose() >= 1
 	echomsg "muTemplate#s:AddMenu(): discard ".name
       endif
     endif
@@ -623,11 +632,14 @@ function! s:AutomaticInsertion()
 endfunction
 
 function! s:FTDetection4Templates(filename, event)
+  call s:SourceLocalVimrc() " update project local paths
   call lh#mut#dirs#update()
   let dir = fnamemodify(a:filename, ':h')
   let reldir = lh#path#strip_start(dir, g:lh#mut#dirs#cache)
   if reldir == dir
-    " echo "Not a MutTemplate template-file"
+    if lh#mut#verbose() > 0
+      echomsg "Not a MutTemplate template-file (".a:filename.")"
+    endif
     return
   endif
 

@@ -28,6 +28,7 @@ after/template/c/for.template
 after/template/c/fori.template
 after/template/c/if.template
 after/template/c/internals/c-file-header.template
+after/template/c/internals/c-header-content.template
 after/template/c/internals/c-header-guard.template
 after/template/c/internals/c-header-typical.template
 after/template/c/internals/c-header.template
@@ -57,6 +58,7 @@ after/template/sh/lvalue.template
 after/template/sh/rvalue.template
 after/template/tcl.template
 after/template/template.template
+after/template/template/arg.template
 after/template/template/include.template
 after/template/template/reindent.template
 after/template/test-included.template
