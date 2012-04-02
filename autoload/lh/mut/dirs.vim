@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut/dirs.vim                          {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      2.3.0
+" Version:      3.0.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:      
+" 	v3.0.0
+" 	(*) GPLv3
+" 	(*) new option: [bg]:[{ft}_]mt_templates_paths
 " 	v2.2.0
 " 	(*) first version
 " TODO: See plugin/mu-template.vim
@@ -71,7 +74,16 @@ function! lh#mut#dirs#update()
   else
     let result = template_dirs
   endif
+  if exists('*lh#dev#option#get')
+    let specific_paths = lh#dev#option#get('mt_templates_paths', &ft, [])
+    let sp = type(specific_paths) == type([])
+          \ ? join(specific_paths, ',')
+          \ : specific_paths
+    let result = sp . ',' . result
+  endif
+  " \\ -> \, // -> /
   let result = substitute(result, '\([/\\]\)\1', '\1', 'g')
+  " path/ -> path
   let result = substitute(result, '[/\\]\(,\|$\)', '\1', 'g')
 
   let g:lh#mut#dirs#cache = result
@@ -92,7 +104,7 @@ function! lh#mut#dirs#get_templates_for(...)
     " filetype
   endif
   let templatepath = dir.ft.'.template'
-  let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, templatepath)
+  let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, templatepath, 0)
   return matching_filenames
 endfunction
 

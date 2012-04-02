@@ -89,9 +89,20 @@ function! lh#mut#edit(path)
       let choice = 0
     else
       let short_names = lh#mut#dirs#shorten_template_filenames(copy(matching_filenames))
+      " in case they all have the same name, we must display the provenance
+      if len(short_names) > 1 && short_names[0] == short_names[1]
+        let short_names = copy(matching_filenames)
+        let short_names = lh#path#strip_common(short_names)
+      endif
       let strings = join(short_names, "\n")
-      let choice = confirm("Which template do you wish to edit?",
-            \ "&Abort\n".strings, 1) - 2
+      try 
+        let save_guioptions = &guioptions
+        set guioptions+=v
+        let choice = confirm("Which template do you wish to edit?",
+              \ "&Abort\n".strings, 1) - 2
+      finally
+        let &guioptions = save_guioptions
+      endtry
     endif
     if choice < 0 | return | endif
     call lh#buffer#jump(matching_filenames[choice], 'sp')
@@ -648,6 +659,7 @@ function! s:InterpretLines(first_line)                       " {{{3
   let s:content.crt = 0
   let pat_command = '\c^'.s:Command('')
   let pat_special = '\c^'.s:Special('')
+  let command_extract_re = '\c^'.s:Command('\s*').'\zs.*'
   while s:content.crt < len(s:content.lines)
     " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt]
     let the_line = s:content.lines[s:content.crt]
@@ -665,7 +677,7 @@ function! s:InterpretLines(first_line)                       " {{{3
     " In all cases
     if the_line =~ pat_command
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
-      call s:InterpretCommand( matchstr(the_line, '\c'.s:Command('\s*').'\zs.*'))
+      call s:InterpretCommand( matchstr(the_line, command_extract_re))
     elseif the_line !~ '^\s*$'
       " NB 1- We must know the expression characters before any interpretation.
       "    2- :r inserts an empty line before the template loaded
@@ -817,7 +829,7 @@ function! s:InsertTemplateFile(word,file)
     silent exe "normal! i\<cr>\<esc>\<up>$"
 
     " 3.2- Insert the template {{{5
-    if &verbose >= 1
+    if s:verbose >= 1
       call confirm("Using the template file: <".a:file.'>', '&ok', 1)
     endif
     " Todo: check what happens with g:mt_jump_to_first_markers off

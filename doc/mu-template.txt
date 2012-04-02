@@ -34,13 +34,19 @@ written this documentation.
                                             *MuT-paths*
 
 The template-files are searched within a list of directories specified by
-|{runtimepath}/template/| and by |$VIMTEMPLATES|. 
+|{runtimepath}/template/|, |(bg):[{ft}_]mt_templates_paths| and by
+|$VIMTEMPLATES|. 
 
 *{runtimepath}/template/* refers to 'template/' subdirectories, built from the
 list of directories specified in the 'runtimepath' vim-option. 
 
 *$VIMTEMPLATES* is a comma (or semicolon) separated list of directories. When
 set, it has precedence over paths of the form |{runtimepath}/template/|.
+
+*(bg):[{ft}_]mt_templates_paths* can be either a |List| or a comma (or
+semicolon) separated list of directories. When set, it has precedence over
+paths of the form |{runtimepath}/template/|, or even from |$VIMTEMPLATES|.
+N.B.: this feature requires |lh-dev|
 
 
                                             *MuT-paths-override*
