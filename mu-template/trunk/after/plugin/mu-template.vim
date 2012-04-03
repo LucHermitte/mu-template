@@ -246,9 +246,11 @@
 "           -> :MuTemplate c/section-sep foobar
 "	(*) s:Inject() to add lines to the generated code from VimL code.
 " 	(*) new option: [bg]:[{ft}_]mt_templates_paths ; requires lh-dev
-" 	(*) :MUEdit will display discriminant pathnames when all existing
+" 	(*) fix: :MUEdit will display discriminant pathnames when all existing
 " 	    template files have the same name (happens in the case of
 " 	    overridden templates)
+"	(*) fix: surrounding of line-wise selection
+"	(*) fix: surrounding of several lines shall not loop
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -415,7 +417,7 @@ else " {{{3
   inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
   inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
   " takes a count to specify where the selected texte goes (see while-snippets)
-  vnoremap <silent> <Plug>MuT_Surround :call lh#mut#surround()<cr>
+  vnoremap <silent> <Plug>MuT_Surround <c-\><c-n>:call lh#mut#surround()<cr>
   if !hasmapto('<Plug>MuT_ckword', 'i')
     imap <unique> <C-R><space>	<Plug>MuT_ckword
   endif
