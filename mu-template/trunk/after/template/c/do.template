@@ -8,4 +8,4 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 do¡C_nl_before_curlyB()¡{
     ¡s:Surround(1, '<+code+>')¡
-}¡C_nl_before_curlyB()¡while¡C_nl_before_bracket()¡(¡s:Surround(2, '<+cond+>')¡);<++>
+}¡C_nl_before_curlyB()¡while¡C_nl_before_bracket()¡(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡);<++>
