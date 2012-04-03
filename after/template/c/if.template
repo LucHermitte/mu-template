@@ -6,6 +6,6 @@ VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1 
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-if¡C_nl_before_bracket()¡(¡s:Surround(2, '<+cond+>')¡)¡C_nl_before_curlyB()¡{
+if¡C_nl_before_bracket()¡(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡)¡C_nl_before_curlyB()¡{
     ¡s:Surround(1, '<+code+>')¡
 }<++>
