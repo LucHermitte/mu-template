@@ -2,7 +2,7 @@
 " $Id$
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-"		<URL:http://code.google.com/p/lh-vim/>
+"		<-vim/>
 " Version:      3.0.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
@@ -20,6 +20,7 @@
 " History:
 "	v3.0.0
 "	(*) s:Inject() to add lines to the generated code from VimL code.
+"	(*) fix: surrounding of line-wise selection
 "	v2.3.1
 "	(*) "MuT: if" & co conditionals
 "	(*) expressions can be expanded from placeholders (Issue#37)
@@ -318,6 +319,11 @@ function! lh#mut#surround()
     " 2- extract the thing to be surrounded {{{3
     let surround_id = 'surround'.v:count1
     let s:content[surround_id] = lh#visual#cut()
+    " The following hack is required in line-wise surrounding to not expand the
+    " template-file after the first line after the one surrounded.
+    if s:content[surround_id] =~ "\n$" " line-wise surrounding
+      put!=''
+    endif
 
     " 3- insert the template {{{3
     " return s:InsertTemplateFile(a:word,file)
