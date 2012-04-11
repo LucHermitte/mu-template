@@ -22,6 +22,7 @@
 " 	v3.0.0
 " 	(*) GPLv3
 " 	(*) new option: [bg]:[{ft}_]mt_templates_paths
+" 	(*) C++ template-file list inherits C *and* doxygen templates.
 " 	v2.2.0
 " 	(*) first version
 " TODO: See plugin/mu-template.vim
@@ -139,7 +140,7 @@ endfunction
 " ## Internal functions {{{1
 " Filetypes inheritance                                        {{{2
 if !exists('g:mt_inherited_ft_for_cpp')
-  let g:mt_inherited_ft_for_cpp    = 'c'
+  let g:mt_inherited_ft_for_cpp    = 'c,dox'
 endif
 if !exists('g:mt_inherited_ft_for_csharp')
   let g:mt_inherited_ft_for_csharp = 'c'
@@ -151,9 +152,9 @@ endif
 " s:InheritedFiletypes(filetype)                               {{{2
 function! s:InheritedFiletypes(filetype)
   if exists('g:mt_inherited_ft_for_'.a:filetype)
-    return g:mt_inherited_ft_for_{a:filetype}
+    return split(g:mt_inherited_ft_for_{a:filetype}, ',')
   else
-    return ''
+    return []
   endif
 endfunction
 
@@ -161,13 +162,14 @@ endfunction
 function! s:GetTemplateFilesMatching(word, filetype)
   " Look for filetypes (C++ -> C, ...)
   let gpatterns=[]
-  let ft = a:filetype
-  while strlen(ft)
+  let fts = [a:filetype]
+  while !empty(fts)
+    let ft = remove(fts, 0)
     "NAMES WERE: call add( gpatterns , ' template.'.ft.'-'.a:word )
     "NAMES WERE: call add( gpatterns , ft.'/template.'.a:word)
     call add( gpatterns , ' '.ft.'-'.a:word.'.template' )
     call add( gpatterns , ft.'/'.a:word.'.template')
-    let ft = s:InheritedFiletypes(ft)
+    let fts += s:InheritedFiletypes(ft)
   endwhile
 
   " And search

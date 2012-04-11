@@ -125,7 +125,7 @@ function! lh#mut#expand(NeedToJoin, ...)
     let dir = fnamemodify(a:1, ':h')
     if dir != "" | let dir .= '/' | endif
     let ft  = fnamemodify(a:1, ':t')
-    " first option : the template file is specified ; cf. cpp.template-class
+    " first option : the template file is specified ; cf. cpp/template-class
   else
     let ft=strlen(&ft) ? &ft : 'unknown'
     let dir = ''
@@ -611,7 +611,7 @@ function! s:InterpretMarkers(line)
       catch /.*/
         let value = Marker_Txt(split[2])
       endtry
-      let res .= split[1] . value
+      let res .= split[1] . (type(value)!=type("") ? string(value) : value)
       let tail = split[3]
       let may_merge = 1
     endif

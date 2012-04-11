@@ -251,6 +251,8 @@
 " 	    overridden templates)
 "	(*) fix: surrounding of line-wise selection
 "	(*) fix: surrounding of several lines shall not loop
+" 	(*) C++ template-file list inherits C *and* doxygen templates.
+"	(*) viml expressions can return numbers
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
