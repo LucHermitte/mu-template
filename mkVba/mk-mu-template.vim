@@ -50,6 +50,7 @@ after/template/perl/over.template
 after/template/sh.template
 after/template/sh/case.template
 after/template/sh/current-dir.template
+after/template/sh/does_match.template
 after/template/sh/field.template
 after/template/sh/for.template
 after/template/sh/if-nb-args.template
