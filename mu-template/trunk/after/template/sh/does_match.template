@@ -1,0 +1,6 @@
+VimL:" $Id$
+VimL:" does_match File Template, Luc Hermitte, 26th Apr 2012
+VimL:" hint: "${var/pattern/}" != "$<+var+>"
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+"${<+var+>/<+pattern+>/}" != "$<+var+>"
