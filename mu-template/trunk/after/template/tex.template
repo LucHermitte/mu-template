@@ -1,0 +1,49 @@
+VimL:" $Id$
+VimL:" LaTeX File Template, Luc Hermitte, 11th Jul 2011
+VimL:" hint: LaTeX new document
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:doc_kind = WHICH('CONFIRM', 'Document kind:', ['article', 'book'])
+\documentclass[a4paper]{{+s:doc_kind+}}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage[table]{xcolor}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage{ifpdf}
+\usepackage[bookmarks,colorlinks]{hyperref}
+
+\title{{+title+}}
+\author{{+g:author_short+}}
+\date{\today}
+\ifpdf
+\usepackage{datetime} % \pdfdate
+\makeatletter
+\pdfinfo{
+   /Author (\@author, {+g:company+})
+   /Title  (\@title)
+   /CreationDate (D:{+strftime('%Y%m%d%H%M%S')+})
+   /ModDate (D:\pdfdate)
+   /Subject ({+subject+})
+   /Keywords ({+keywords+})
+}
+\makeatother
+\fi
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\makeatletter
+\lhead{\@author\\ {+g:company+}}
+\rhead{\@title\\\@date}
+\makeatother
+
+\begin{document}
+{++}
+\end{document}
