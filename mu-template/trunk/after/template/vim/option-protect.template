@@ -9,6 +9,7 @@ VimL: let s:marker_close = '+>'
 try
   let <+opt+>_save = &<+opt+>
   let &<+opt+> = <++>
+  ¡s:Surround(1, '<+code+>')¡
 finally
   let &<+opt+> = <+opt+>_save
 endtry
