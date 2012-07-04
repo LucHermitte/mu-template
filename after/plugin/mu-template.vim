@@ -4,7 +4,7 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	3.0.0
+" Version:	3.0.1
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -253,6 +253,8 @@
 "	(*) fix: surrounding of several lines shall not loop
 " 	(*) C++ template-file list inherits C *and* doxygen templates.
 "	(*) viml expressions can return numbers
+"	v3.0.1
+"	(*) Always display the choices vertically when g:mt_chooseWith=="confirm"
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .

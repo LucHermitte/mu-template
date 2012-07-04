@@ -3,7 +3,7 @@
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 3.0.0
+                    Version 3.0.1
 
 
 ==============================================================================

@@ -2,8 +2,7 @@
 " $Id$
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-"		<-vim/>
-" Version:      3.0.0
+" Version:      3.0.1
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -18,6 +17,10 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.1
+"	(*) Always display the choices vertically when g:mt_chooseWith=="confirm"
+"	(*) Issue#46: No longer use default shortcuts with "confirm"
+"	    selection-mode for vim under console.
 "	v3.0.0
 "	(*) s:Inject() to add lines to the generated code from VimL code.
 "	(*) fix: surrounding of line-wise selection
@@ -44,7 +47,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 300
+let s:k_version = 301
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -302,7 +305,7 @@ function! lh#mut#surround()
       call lh#common#error_msg("muTemplate: No template file matching <".which."> for ".&ft." files")
       return ""
     elseif (nbChoices > 1)
-      let save_choose_method = g:mt_chooseWith
+      let save_choose_method = s:Option('chooseWith', 'complete')
       try 
         let g:mt_chooseWith = 'confirm'
         let choice = s:ChooseTemplateFile(files, which)
@@ -794,11 +797,43 @@ endfunction
 
 " s:ChooseTemplateFile(files)                                  {{{3
 function! s:ChooseTemplateFile(files, word)
-  if g:mt_chooseWith == 'confirm'
-    let strings = join(a:files, "\n")
-    let choice = confirm("Which template do you wish to use ?",
-	  \ "&Abort\n".strings, 1)
-  elseif g:mt_chooseWith == 'complete'
+  let mt_chooseWith = s:Option('chooseWith', 'complete')
+  if mt_chooseWith == 'confirm' && len(a:files) >= (10+26+25)
+    call lh#common#error_msg("Too many choices ".len(a:files).
+          \" for the `confirm' mode, the snippet selection-mode is forced to `complete'")
+    try 
+      let g:mt_chooseWith = 'complete'
+      let res = s:ChooseTemplateFile(a:files, a:word)
+    finally
+      let g:mt_chooseWith = 'confirm'
+    endtry
+    return res
+  elseif mt_chooseWith == 'confirm'
+    if has('gui_running')
+      let strings = join(a:files, "\n")
+    else
+      let choices = []
+      let key = '0'
+      for file in a:files
+        let choices += ['&'. key . ' ' .file]
+        let key
+              \ = key == '9' ? 'a' 
+              \ : key == 'z' ? 'B'
+              \ : nr2char(char2nr(key)+1)
+        " after "Z" is not handled...
+      endfor
+      let strings = join(choices, "\n")
+    endif
+    try
+      " Always display the choices vertically
+      let guioptions_save = &guioptions
+      set guioptions+=v 
+      let choice = confirm("Which template do you wish to use ?",
+            \ "&Abort\n".strings, 1)
+    finally
+      let &guioptions = guioptions_save
+    endtry
+  elseif mt_chooseWith == 'complete'
     try
       let s:__complete = {}
       let s:__complete.files = a:files
