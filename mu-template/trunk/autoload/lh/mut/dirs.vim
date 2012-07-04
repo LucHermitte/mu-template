@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut/dirs.vim                          {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      3.0.0
+" Version:      3.0.1
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
