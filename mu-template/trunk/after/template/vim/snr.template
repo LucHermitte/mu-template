@@ -3,15 +3,12 @@ VimL:" <SNR> number accessor Template, Luc Hermitte <hermitte {at} free {dot} fr
 VimL:" hint: <SNR> number accessor
 VimL:" Sometimes scripts need to acces their <SNR> number in order to pass
 VimL:" their internal script-local functions as parameters to other functions.
-VimL: let s:value_start = '¡'
-VimL: let s:value_start = '¡'
-VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-" s:getSNR() {{{<+3+>
-function! s:getSNR()
+" s:getSNR([func_name]) {{{<+3+>
+function! s:getSNR(...)
   if !exists("s:SNR")
     let s:SNR=matchstr(expand('<sfile>'), '<SNR>\d\+_\zegetSNR$')
   endif
-  return s:SNR 
+  return s:SNR . (a:0>0 ? (a:1) : '')
 endfunction
