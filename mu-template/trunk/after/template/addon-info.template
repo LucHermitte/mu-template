@@ -1,0 +1,27 @@
+VimL:" $Id$
+VimL:" vim-addon-info File Template, Luc Hermitte, 22nd Jan 2013
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+VimL: let s:_slash = !exists('+shellslash') || &shellslash ? '/' : '\'
+VimL: let s:_project_name = matchstr(expand('%:p'), '.*'.s:_slash.'addons'.s:_slash.'\zs[^'.escape(s:_slash, '\').']*\ze')
+VimL: " VCSCommandGetVCSType() comes from VCSCommand plugin
+VimL: let s:_repo_type = exists('*VCSCommandGetVCSType') ?  substitute(VCSCommandGetVCSType(bufname('%')), '.', '\l&', 'g') : '<++>'
+MuT:  if s:_repo_type == 'git'
+VimL:   let s:_repo_addr = lh#os#system('git config --get remote.origin.url')
+MuT:  elseif s:_repo_type == 'svn'
+VimL:   let s:_repo_addr = matchstr(filter(split(lh#os#system('cd '.fnameescape(expand('%:p:h')). '&&LANG=C svn info'), "\n"), 'v:val=~"^URL"')[0], '[^:]*: \zs.*')
+MuT:  else
+VimL:   let s:_repo_addr = Marker_Txt('Unsupported repository type')
+MuT:  endif
+{
+"name": "<+s:_project_name+>", 
+"version": "<+dev+>",
+"author" : "<+Author()+>",
+"maintainer" : "<+Author()+>",
+"repository" : {"type": "<+s:_repo_type+>", "url": "<+s:_repo_addr+>"},
+"dependencies" : { <++> },
+"description" : "<++>"
+}
