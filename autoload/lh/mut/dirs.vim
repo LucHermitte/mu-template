@@ -3,7 +3,7 @@
 " File:         autoload/lh/mut/dirs.vim                          {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      3.0.1
+" Version:      3.0.2
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:      
+" 	v3.0.2
+" 	(*) Have doxygen templates available in C
 " 	v3.0.0
 " 	(*) GPLv3
 " 	(*) new option: [bg]:[{ft}_]mt_templates_paths
@@ -139,8 +141,11 @@ endfunction
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
 " Filetypes inheritance                                        {{{2
+if !exists('g:mt_inherited_ft_for_c')
+  let g:mt_inherited_ft_for_c      = 'dox'
+endif
 if !exists('g:mt_inherited_ft_for_cpp')
-  let g:mt_inherited_ft_for_cpp    = 'c,dox'
+  let g:mt_inherited_ft_for_cpp    = 'c'
 endif
 if !exists('g:mt_inherited_ft_for_csharp')
   let g:mt_inherited_ft_for_csharp = 'c'
