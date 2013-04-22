@@ -4,7 +4,9 @@
 " Maintainer:	Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 " 		<URL:http://code.google.com/p/lh-vim/>
 " Last Update:  $Date$
-" Version:	3.0.1
+" License:      GPLv3 with exceptions
+"               <URL:http://code.google.com/p/lh-vim/wiki/License>
+" Version:	3.0.2
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -255,6 +257,9 @@
 "	(*) viml expressions can return numbers
 "	v3.0.1
 "	(*) Always display the choices vertically when g:mt_chooseWith=="confirm"
+"	v3.0.2
+" 	(*) Have doxygen templates available in C
+" 	(*) Compatible with completion plugins like YouCompleteMe
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -292,7 +297,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 300
+let s:k_version = 302
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
