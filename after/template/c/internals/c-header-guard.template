@@ -6,5 +6,5 @@ VimL: "    :let s:guard = matchstr(system('uuidgen'), "[^\n\r]*")
 VimL: " I recommend you to do this by overiding this file as explained in
 VimL: " |MuT-paths-override|
 VimL: " N.B. as a simplified rule: prefixing with "_" is reserved to the standard.
-VimL: " Hence, DO NOT prefix your header-ates with leading underscores.
-VimL: let s:guard = substitute(toupper(s:filename),'\c[^a-z0-1_]','_','g')."__"
+VimL: " Hence, DO NOT prefix your header-gates with leading underscores.
+VimL: let s:guard = substitute(toupper(s:filename),'\c[^a-z0-9_]','_','g')."__"
