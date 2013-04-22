@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.0.1
-let s:version = '3.0.1'
+" Version:	3.0.2
+let s:version = '3.0.2'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -21,11 +21,13 @@ endtry
 finish
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
+after/template/addon-info.template
 after/template/c.template
 after/template/c/case.template
 after/template/c/do.template
 after/template/c/for.template
 after/template/c/fori.template
+after/template/c/header-guard.template
 after/template/c/if.template
 after/template/c/internals/c-file-header.template
 after/template/c/internals/c-header-content.template
