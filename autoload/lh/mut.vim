@@ -2,7 +2,9 @@
 " $Id$
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-" Version:      3.0.1
+" License:      GPLv3 with exceptions
+"               <URL:http://code.google.com/p/lh-vim/wiki/License>
+" Version:      3.0.2
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -17,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.2
+" 	(*) Compatible with completion plugins like YouCompleteMe
 "	v3.0.1
 "	(*) Always display the choices vertically when g:mt_chooseWith=="confirm"
 "	(*) Issue#46: No longer use default shortcuts with "confirm"
@@ -47,7 +51,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 301
+let s:k_version = 302
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -858,16 +862,22 @@ function! s:InsertTemplateFile(word,file)
     " TODO: manage a blinking pb
     let l = strlen(a:word)	" No word to expand ; abort
     if     0 == l
-    elseif 1 == l		" Select a one-character length word
-      silent exe "normal! \<esc>vc\<c-g>u\<esc>"
+    " elseif 1 == l		" Select a one-character length word
+      " silent exe "normal! \<esc>vc\<c-g>u\<esc>"
     else			" Select a 1_n-characters length word
       let ew = escape(a:word, '\.*[/')
       call search(ew, 'b')
-      silent exe "normal! \<esc>v/".ew."/e\<cr>c\<c-g>u\<esc>"
-      " exe "normal! \<esc>viWc\<esc>"
+      let pos = getpos('.')
+      " silent exe "normal! \<esc>v/".ew."/e\<cr>c\<c-g>u\<esc>"
+      " silent exe "normal! \<esc>c".l."\<Right>\<c-g>u\<esc>"
+      let line = getline('.')
+      call setline('.', line[0:pos[2]-2])
+      " Insert a line break
+      call append('.', line[(pos[2]-1+l):])
+      call setpos('.', pos)
     endif
     " Insert a line break
-    silent exe "normal! i\<cr>\<esc>\<up>$"
+    " silent exe "normal! i\<cr>\<esc>\<up>$"
 
     " 3.2- Insert the template {{{5
     if s:verbose >= 1
