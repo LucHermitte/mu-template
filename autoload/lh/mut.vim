@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.0.2
+" Version:      3.0.3
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.3
+"	(*) |MuT-snippets| starting at the beginning of a line were not
+"	correctly removing the expanded snippet-name. 
 "	v3.0.2
 " 	(*) Compatible with completion plugins like YouCompleteMe
 "	v3.0.1
@@ -51,7 +54,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 302
+let s:k_version = 303
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -871,7 +874,12 @@ function! s:InsertTemplateFile(word,file)
       " silent exe "normal! \<esc>v/".ew."/e\<cr>c\<c-g>u\<esc>"
       " silent exe "normal! \<esc>c".l."\<Right>\<c-g>u\<esc>"
       let line = getline('.')
-      call setline('.', line[0:pos[2]-2])
+      " Clear the line from the word to expand
+      if pos[2] > 1
+        call setline('.', line[0:pos[2]-2])
+      else
+        call setline('.', '')
+      endif
       " Insert a line break
       call append('.', line[(pos[2]-1+l):])
       call setpos('.', pos)
