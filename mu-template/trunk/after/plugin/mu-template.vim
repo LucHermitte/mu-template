@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.0.2
+" Version:	3.0.3
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -260,6 +260,10 @@
 "	v3.0.2
 " 	(*) Have doxygen templates available in C
 " 	(*) Compatible with completion plugins like YouCompleteMe
+"	v3.0.3
+"	(*) |MuT-snippets| starting at the beginning of a line were not
+"	    correctly removing the expanded snippet-name -- regression since
+"	    v3.0.2 
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -297,7 +301,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 302
+let s:k_version = 303
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
