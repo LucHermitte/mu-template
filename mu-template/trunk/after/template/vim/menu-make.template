@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" lh#menu#make File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 07th Aug 2013
+VimL:" hint: call lh#menu#make(mode, menu_prio, buffer, menu_text, keybinding, action)
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:is_ftplugin = expand('%:p:h') =~ 'ftplugin' ? '<buffer>' : ''
+call lh#menu#make('<+nic+>',
+    \ <+plugin_menu_priority+>.'.<+10+>', <+plugin_menu_name+>.'.<+&Text+>',
+    \ '<+keybinding+>', '<+s:is_ftplugin+>', ':call <+function+>()<cr>' )
