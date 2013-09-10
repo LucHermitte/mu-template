@@ -264,6 +264,8 @@
 "	(*) |MuT-snippets| starting at the beginning of a line were not
 "	    correctly removing the expanded snippet-name -- regression since
 "	    v3.0.2 
+"	v3.0.4
+"	(*) s:Include() can now forward more than one argument.
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -301,7 +303,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 303
+let s:k_version = 304
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
