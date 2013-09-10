@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.4
+"	(*) s:Include() can now forward more than one argument.
 "	v3.0.3
 "	(*) |MuT-snippets| starting at the beginning of a line were not
 "	correctly removing the expanded snippet-name. 
@@ -54,7 +56,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 303
+let s:k_version = 304
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -436,7 +438,7 @@ function! s:Include(template, ...)
   endif
   " pushing a list permit to test the void args case
   " todo: mark the line where s:Pop should be applied
-  call s:PushArgs(a:0>1 ? [a:2] : [])
+  call s:PushArgs(a:0>1 ? a:000[1:] : [])
   if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
     call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
