@@ -14,18 +14,19 @@ VimL:   else
 VimL:     let args = s:Args()[0].values
 VimL:     for arg in args
 VimL:       if arg !~ 'MAX__$'
-VimL:         call s:Include('case', 'c', arg)
+VimL:         call s:Include('case', 'c', arg, s:_with_block)
 VimL:       endif
 VimL:     endfor
 VimL:   endif
 VimL: endfunction
 VimL: "
 VimL: let s:_expr = empty(s:Args()) ? Marker_Txt('expr') : s:Args()[0].name
-switch¡C_nl_before_bracket()¡(¡s:_expr¡)¡C_nl_before_curlyB()¡{
+VimL: let s:_with_block = len(s:Args()) <= 1 ? INPUT("Insert a block for each case (0/1) ?") : (s:Args()[1])
+switch<+C_nl_before_bracket()+>(<+s:_expr+>)<+C_nl_before_curlyB()+>{
 VimL: call s:_LoopOverCases()
     default:
-      {
-	  <+default-code+>;
-	  break;
-      }
+<+s:_with_block?'{':''+>
+<+default-code+>;
+          break;
+<+s:_with_block?'}':''+>
 }<++>
