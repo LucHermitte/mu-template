@@ -1,14 +1,14 @@
 VimL:" $Id$
 VimL:" ``VimL <Plug> mappings'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
 VimL:" hint: <Plug>mapping + default mapping
-VimL: let s:value_start  = '¡'
-VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:mode = INPUT('Mode (invox)?', Marker_Txt('mode'))
 VimL: let s:plug = INPUT('<Plug>?', Marker_Txt('name'))
-¡s:mode¡noremap <Plug>¡s:plug¡ <+definition+>
-if !hasmapto('<Plug>¡s:plug¡', '¡s:mode¡')
-    ¡s:mode¡map <unique> <+keybinding+> <Plug>¡s:plug¡
+VimL: call s:Include('get-script-kind', 'vim/internals')
+VimL: let s:buffer = s:ftplug ? '<buffer> ' : ''
+<+s:mode+>noremap <+s:buffer+><silent> <Plug><+s:plug+> <+definition+>
+if !hasmapto('<Plug><+s:plug+>', '<+s:mode+>')
+    <+s:mode+>map <+s:buffer+><silent> <unique> <+keybinding+> <Plug><+s:plug+>
 endif
