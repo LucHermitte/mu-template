@@ -53,6 +53,10 @@ after/template/cpptu-header.template
 after/template/cppunit-header.template
 after/template/help.template
 after/template/html.template
+after/template/license/boost-full.template
+after/template/license/boost-short.template
+after/template/license/copying.template
+after/template/license/gplv3-full.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template
@@ -79,6 +83,7 @@ after/template/tex/figure.template
 after/template/tex/frac.template
 after/template/tex/frame-beamer.template
 after/template/tex/frame-vhelp-beamer.template
+after/template/unknown.template
 after/template/vim.template
 after/template/vim/augroup.template
 after/template/vim/autoload-debug.template

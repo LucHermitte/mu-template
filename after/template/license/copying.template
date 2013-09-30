@@ -1,0 +1,20 @@
+VimL:" $Id$
+VimL:" COPYING File Template, Luc Hermitte, 30th Sep 2013
+VimL:" hint: Licence file skeleton
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL:" 
+VimL:" We search for all full licenses installed in mu-template license/ directories
+VimL:" and ask the use to choose one.
+VimL: let s:_licenses = map(lh#mut#dirs#get_short_list_of_TF_matching('*-full', 'license'), 'substitute(v:val, "^license[/\\\\]", "", "")')
+VimL: echomsg string(s:_licenses)
+MuT:  if len(s:_licenses) == 1
+VimL:    let s:_license = s:_licenses[0]
+MuT:  else
+VimL:    let b:mt_chooseWith = 'confirm'
+VimL:    let s:_choice = s:ChooseTemplateFile(s:_licenses, '')
+VimL:    " check choice > 1
+VimL:    let s:_license = s:_licenses[s:_choice - 2]
+MuT:  endif
+VimL: echomsg string(s:_license)
+VimL: call s:Include(s:_license, 'license')
