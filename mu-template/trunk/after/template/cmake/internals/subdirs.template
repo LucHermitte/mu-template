@@ -1,0 +1,22 @@
+VimL:" $Id$
+VimL:" include subdirs snippet, Luc Hermitte, 29th Sep 2013
+VimL:" hint: add_subdirectory(...)
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: "
+VimL: function! s:_LoopOverDirs()
+VimL: " echomsg "dirs -> " .string(s:Args())
+VimL:   if empty(s:Args()) || empty(s:Args()[0])
+VimL:     call s:Include('add_subdirectory', 'cmake')
+VimL:   else
+VimL:     let args = s:Args()[0]
+VimL:     for arg in args
+VimL:       call s:Include('add_subdirectory', 'cmake', arg)
+VimL:     endfor
+VimL:   endif
+VimL: endfunction
+VimL: "
+
+#======================================================================
+# Recurse to subdirectories
+VimL: call s:_LoopOverDirs()

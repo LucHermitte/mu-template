@@ -1,0 +1,100 @@
+VimL:" $Id$
+VimL:" doxygen 4 CMake snippet, Luc Hermitte, 29th Sep 2013
+VimL:" hint: What is needed to integrate Doxygen
+VimL: " Template-file features:
+VimL: " - autodetect Doxyfile presence
+VimL: " - if this is a template-file like Doxyfile.in, adapt automagically to
+VimL: " generate the Doxyfile used by doxygen
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: "
+VimL: " Typical scenario: included by cmake.template => Doxyfile* is provided 
+VimL: " other scenarii: manually included => need to search for Doxyfile* at that time
+VimL: silent! unlet s:_doxyfile
+MuT:  if !empty(s:Args())
+VimL:   let s:_doxyfile = (s:Args()[0].doxyfile)
+MuT:  else
+VimL:   let s:_doxyfiles = lh#mut#cmake#find_doxyfile(s:_here)
+MuT:    if !empty(s:_doxyfiles )
+VimL:       let s:_doxyfile =  s:_doxyfiles[0]
+MuT:    else
+VimL:       let s:_doxyfile =  'Doxyfile' 
+MuT:    endif
+MuT:  endif
+VimL: let s:_doxyfile_is_a_template = s:_doxyfile =~ '\.in$'
+
+#======================================================================
+# Doxygen
+# http://majewsky.wordpress.com/2010/08/14/tip-of-the-day-cmake-and-doxygen/
+# add a target to generate API documentation with Doxygen
+function(do_fix_cygwin_paths convertion)
+    find_program(CYGPATH cygpath)
+    if (NOT CYGPATH)
+        message(FATAL_ERROR "cannot find cygpath: thus cannot use doxygen")
+    endif (NOT CYGPATH)
+    foreach(path_var ${ARGN})
+        execute_process(COMMAND
+            ${CYGPATH} ${convertion} "${${path_var}}"
+            RESULT_VARIABLE cygpath_result
+            ERROR_VARIABLE cygpath_err
+            OUTPUT_VARIABLE ${path_var}
+            )
+        if (cygpath_result OR cygpath_err)
+            message(FATAL_ERROR "*** ${CYGPATH} failed: ***\n${cygpath_err}")
+        endif (cygpath_result OR cygpath_err)
+        string(REGEX REPLACE "[\r\n]" "" ${path_var} "${${path_var}}")
+        # propagate the result to the parent scope
+        set(${path_var} "${${path_var}}" PARENT_SCOPE)
+        # message("converting ${path_var} ${convertion} -> ${${path_var}}")
+    endforeach()
+endfunction()
+
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    find_package(Cygwin)
+MuT: if s:_doxyfile_is_a_template
+    # Variables to substitute in Doxyfile.in
+    set(OUTPUT_DOXYGEN_DIRECTORY ${PROJECT_BINARY_DIR}/<+dox+>)
+    set(INPUT_DOXYGEN_DIRECTORY ${PROJECT_SOURCE_DIR}/<+src+>)
+    set(DOXYFILE ${CMAKE_CURRENT_BINARY_DIR}/<+s:_doxyfile+>)
+MuT: else
+    set(DOXYFILE ${PROJECT_SOURCE_DIR}/<+s:_doxyfile+>)
+MuT: endif
+    # Special case for cygwin when cmake doesn't match doxygen (i.e. when one
+    # of the two is the win32 version while the other one has been compiled
+    # for cygwin)
+    string(REGEX MATCH "cygwin" DOX_CYGWIN_MATCH "${DOXYGEN_EXECUTABLE}")
+    IF (DOX_CYGWIN_MATCH) # todo: it should be simplifiable
+        set(DOX_IS_CYGWIN TRUE)
+    ELSE(DOX_CYGWIN_MATCH)
+        set(DOX_IS_CYGWIN FALSE)
+    ENDIF(DOX_CYGWIN_MATCH)
+    IF (DOX_IS_CYGWIN AND NOT CYGWIN)
+        # convert win32 paths to *nix
+        do_fix_cygwin_paths(-u
+            INPUT_DOXYGEN_DIRECTORY OUTPUT_DOXYGEN_DIRECTORY
+            DOXYFILE)
+    ELSEIF (NOT DOX_IS_CYGWIN AND CYGWIN)
+        # convert *nix paths to win32
+        do_fix_cygwin_paths(-m
+            INPUT_DOXYGEN_DIRECTORY OUTPUT_DOXYGEN_DIRECTORY
+            DOXYFILE)
+    ENDIF(DOX_IS_CYGWIN AND NOT CYGWIN)
+    # message("INTPUT_DOXYGEN_DIRECTORY: ${INPUT_DOXYGEN_DIRECTORY}")
+    # message("OUTPUT_DOXYGEN_DIRECTORY: ${OUTPUT_DOXYGEN_DIRECTORY}")
+
+MuT: if s:_doxyfile_is_a_template
+    # Generate the actual Doxyfile from Doxyfile.in
+    configure_file(${PROJECT_SOURCE_DIR}/src/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY IMMEDIATE)
+MuT: endif
+    # And now the target for "make doc"
+    add_custom_target(doc
+        ${DOXYGEN_EXECUTABLE} ${DOXYFILE}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+        )
+else(DOXYGEN_FOUND)
+    message(FATAL_ERROR 
+        "Doxygen is needed to build the documentation. Please install it correctly")
+endif(DOXYGEN_FOUND)
+

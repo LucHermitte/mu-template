@@ -1,0 +1,50 @@
+VimL:" $Id$
+VimL:" CPack snippet, Luc Hermitte, 30th Sep 2013
+VimL:" hint: CPack snippet for CMakeLists.txt
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: "
+#======================================================================
+# CPack
+OPTION(<+PROJECT+>_USE_CPACK "Generate installer using CPack" OFF)
+MARK_AS_ADVANCED(<+PROJECT+>_USE_CPACK)
+
+# variables also used for doxygen
+SET(CPACK_PACKAGE_NAME "<+Project name+>" CACHE STRING "Package name")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "<+Project description+>")
+SET(CPACK_PACKAGE_VENDOR "<+Author('short')+>")
+MARK_AS_ADVANCED(CPACK_PACKAGE_NAME)
+MARK_AS_ADVANCED(CPACK_PACKAGE_DESCRIPTION_SUMMARY)
+
+IF(<+PROJECT+>_USE_CPACK)
+    # The following components are regex's to match anywhere (unless anchored)
+    # in absolute path + filename to find files or directories to be excluded
+    # from source tarball.
+    set(CPACK_SOURCE_IGNORE_FILES
+        "~$"
+        "\\.git$"
+        "^${PROJECT_SOURCE_DIR}.*/.git/"
+        "\\.swp$"
+        "\\.swo$"
+        )
+    message("CPACK_SOURCE_IGNORE_FILES = ${CPACK_SOURCE_IGNORE_FILES}")
+
+
+    INCLUDE(InstallRequiredSystemLibraries)
+    
+    SET(CPACK_PACKAGE_CONTACT "<+Author()+>" CACHE STRING  "<+Author('short')+> contact email")
+
+    SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/<+README.md+>")
+    SET(CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/<+COPYING+>")
+
+    # Cygwin specific stuff
+    find_package(Cygwin)
+    IF (CYGWIN)
+        SET(CPACK_CYGWIN_PATCH_FILE "${CMAKE_CURRENT_SOURCE_DIR}/useless-but-required-by-cmake-patch-file-for-cygwin")
+        SET(CPACK_CYGWIN_BUILD_SCRIPT
+            "${CMAKE_CURRENT_SOURCE_DIR}/useless-but-required-by-cmake-build-script-for-cygwin")
+    ENDIF(CYGWIN)
+    
+    INCLUDE(CPack)
+ENDIF(<+PROJECT+>_USE_CPACK)
+

@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.0.3
+" Version:	3.0.5
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -266,6 +266,9 @@
 "	    v3.0.2 
 "	v3.0.4
 "	(*) s:Include() can now forward more than one argument.
+"	v3.0.5
+"	(*) Author('short') works
+"	(*) New templates files for cmake and doxyfile
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -303,7 +306,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 304
+let s:k_version = 305
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -344,7 +347,7 @@ endfunction
 
 " g:author : recurrent special variable                    {{{2
 function! Author(...)
-  let short = (a:0>0 && a:1==1) ? '_short' : ''
+  let short = (a:0>0 && (a:1==1 ||a:1=='short')) ? '_short' : ''
   if     exists('b:author'.short) | return b:author{short}
   elseif exists('g:author'.short) | return g:author{short}
   elseif exists('$USERNAME')      | return $USERNAME	" win32

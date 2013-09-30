@@ -1,0 +1,21 @@
+VimL:" $Id$
+VimL:" CMake File Template, Luc Hermitte, 28th Sep 2013
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_here = expand('%:p:h')
+VimL: "
+VimL: " 1- detect whether it's the root CMakeList.txt
+VimL: let s:_is_root_cmake = lh#mut#cmake#is_root_cmakelist(s:_here) 
+VimL: if s:_is_root_cmake | call s:Include('root', 'cmake/internals') | endif
+VimL: " 2- detect subdirs
+VimL: let s:_subdirs = lh#mut#cmake#subdirs(s:_here)
+VimL: if ! empty(s:_subdirs) | call s:Include('subdirs', 'cmake/internals', s:_subdirs) |endif
+VimL: " 3- detect *.cpp, *.c, *.in (configurable)
+VimL: " 4- detect doxygen file
+VimL: " silent! unlet s:_doxyfiles
+VimL: let s:_doxyfiles = lh#mut#cmake#find_doxyfile(s:_here)
+VimL: " TODO: error if len > 1
+VimL: if !empty(s:_doxyfiles) | call s:Include('doxygen', 'cmake', {'doxyfile': s:_doxyfiles[0]} ) |endif
+VimL: " 5- detect test/tst/configurable test dir and *.c/.cpp with main() or with boost.unit/gunit/config-plugin patterns
+VimL: " 6- if root CMakeLists.txt => add CPack stuff
+VimL: " if s:_is_root_cmake | call s:Include('cpack', 'cmake/internals') | endif
