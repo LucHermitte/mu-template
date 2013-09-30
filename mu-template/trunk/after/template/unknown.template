@@ -1,3 +1,4 @@
 VimL: " Trying other heuristics that are bases on the filename, and not its
 VimL: " extention.
 VimL: if expand('%')=~ 'Doxyfile' | call s:Include('Doxyfile','doxygen') |endif
+VimL: if expand('%')=~ 'COPYING'  | call s:Include('copying','license') |endif
