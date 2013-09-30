@@ -12,26 +12,11 @@
 "   filetype aimed by the template file, while &filetype values 'template'.
 " 
 "------------------------------------------------------------------------
-" Installation:	
-"    (*) Drop it into {rtp}/ftplugin/
-"    (*) Add into your $HOME/.vim/filetype.vim:
-"       au BufNewFile,BufRead template.*  | 
-"              \ if (expand('<afile>:p:h') =~? '.*\<template\%([/\\].\+\)\=')  |
-"              \    let s:ft = matchstr(expand('<afile>:p:h'), 
-"              \        '.*\<template[/\\]\zs[^/\\]\+')                        |
-"              \    if strlen(s:ft)                                            |
-"              \      exe 'set ft='.s:ft                                       |
-"              \    else                                                       |
-"              \      exe ("doau filetypedetect BufRead " . expand("<afile>")) |
-"              \    endif                                                      |
-"              \    let g:ft = &ft  |
-"              \    set ft=template |
-"              \ endif
 " History:	
 "    30th May 2004: v1.02
 "	Installation comment changed. -> better recognition of the target ft
 "    16th Apr 2006: v1.0.0
-"    	empty g:ft won't load every ftplugin
+"    	empty b:ft won't load every ftplugin
 "    v2.3.0.
 "       n_CTRL-W_f overriden to follow s:Include() calls in template-files.
 " TODO:		
@@ -53,9 +38,9 @@ let s:cpo_save=&cpo
 set cpo&vim
 
 "------------------------------------------------------------------------
-if exists('g:ft') && strlen(g:ft) && g:ft != 'template'
-  exe 'runtime! syntax/'.g:ft.'.vim'
-  exe 'runtime! ftplugin/'.g:ft.'.vim ftplugin/'.g:ft.'_*.vim ftplugin/'.g:ft.'/*.vim'
+if exists('b:ft') && strlen(b:ft) && b:ft != 'template'
+  exe 'runtime! syntax/'.b:ft.'.vim'
+  exe 'runtime! ftplugin/'.b:ft.'.vim ftplugin/'.b:ft.'_*.vim ftplugin/'.b:ft.'/*.vim'
 endif
 
 nnoremap <buffer> <silent> <c-w>f :call <sid>OpenFile()<cr>
@@ -70,7 +55,7 @@ if &cp || (exists("g:loaded_ftplug_template")
   finish
 endif
 let g:loaded_ftplug_template = s:k_version
-" unlet g:ft
+" unlet b:ft
 
 function! s:OpenFile()
   let l = getline('.')

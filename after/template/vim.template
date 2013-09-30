@@ -1,5 +1,5 @@
 VimL: " $Id$
-VimL: "«Vim» Template File, Luc Hermitte
+VimL: "Vim Template File, Luc Hermitte
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
