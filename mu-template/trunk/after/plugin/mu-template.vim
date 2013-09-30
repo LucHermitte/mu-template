@@ -673,7 +673,7 @@ function! s:FTDetection4Templates(filename, event)
   else
     exe ("doau filetypedetect BufRead " . a:filename)
   endif
-  let g:ft = &ft
+  let b:ft = &ft
   set ft=template
   " Finally run mu-template
   if a:event == 'new' && s:AutomaticInsertion()
