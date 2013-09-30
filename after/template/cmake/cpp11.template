@@ -1,0 +1,32 @@
+VimL:" $Id$
+VimL:" C++11 autodetection snippet, Luc Hermitte, 30th Sep 2013
+VimL:" hint: Code to autodetect C++11 support
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: "
+
+#======================================================================
+# C++11
+# Using: http://pageant.ghulbus.eu/?p=664
+# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
+include(CMake/CheckCXX11Features.cmake)
+# Check how hash maps/unordered maps
+include(CMake/CheckHashMap.cmake)
+# Check a blocking bug from GNU libstdc++ implementation of std::bitset
+include(CMake/CheckBitSetMaxSize.cmake)
+
+# GCC specifics
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++0x")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb")
+endif()
+# Visual Studio specifics
+if(MSVC)
+  # Warning Level 4 for Debug builds
+  list(APPEND CMAKE_CXX_FLAGS_DEBUG " /W4")
+  list(REMOVE_DUPLICATES CMAKE_CXX_FLAGS_DEBUG)
+endif()
+
+# Configure file where detected options are stored.
+CONFIGURE_FILE(${SRC_INC}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})

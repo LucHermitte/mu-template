@@ -1,0 +1,13 @@
+VimL:" $Id$
+VimL:" Root CMakeLists File Template, Luc Hermitte, 29th Sep 2013
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+CMAKE_MINIMUM_REQUIRED(VERSION <+Marker_Txt('2.8.4')+>)
+
+#======================================================================
+# Version
+SET(CPACK_PACKAGE_VERSION_MAJOR "<+Marker_Txt(0)+>")
+SET(CPACK_PACKAGE_VERSION_MINOR "<+Marker_Txt(1)+>")
+SET(CPACK_PACKAGE_VERSION_PATCH "<+Marker_Txt(0)+>")
+
+SET(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
