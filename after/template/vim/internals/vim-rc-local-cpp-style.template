@@ -1,0 +1,166 @@
+VimL:" $Id$
+VimL:" Reminder of C/C++ options, Luc Hermitte <hermitte {at} free {dot} fr>, 02nd Oct 2013
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+
+" ======================[ Project's style ]===================
+
+" This file is meant to be included by a local .vimrc
+
+" ## ======================[ Project's settings {{{1
+setlocal sw=4
+setlocal expandtab
+setlocal tw=79
+
+" ## ======================[ Naming conventions {{{1
+" This is used by lh-refactor, and all lh-cpp snippets for mu-template
+" :h lh#dev#naming
+
+" # core variables names {{{2
+" (extract any getter, global, ... decoration)
+" let b:cpp_strip_subst = '\l\1' " default
+" You may have to play with b:cpp_strip_re to remove naming convention not
+" handled by default
+
+" # local variables {{{2
+"let b:c_local_subst = '\l&'              " variable " default
+"let b:c_local_subst = 'l_\l&'            " l_variable
+"let b:c_local_subst = 'l\U&'             " lVariable
+
+" # global variables {{{2
+"let b:c_global_subst = '\l&'             " variable
+"let b:c_global_subst = 'g_\l&'           " g_variable " default
+"let b:c_global_subst = 'g\U&'            " gVariable
+
+" # static variables {{{2
+"let b:c_static_subst = '\l&'             " variable
+"let b:c_static_subst = 's_\l&'           " s_variable " default
+"let b:c_static_subst = 's\U&'            " sVariable
+
+" # constants {{{2
+"let b:c_constant_subst = '\U&\E'         " CONSTANT " default
+"let b:c_constant_subst = 'k_\l&'         " s_constant
+"let b:c_constant_subst = 'k\U&'          " sConstant
+
+" # parameters {{{2
+"let b:c_param_subst = '&'                " parameter " default
+"let b:c_param_subst = 'p_\l&'            " p_parameter " please, no!
+"let b:c_param_subst = '\l&_'             " parameter_
+
+" # member variables {{{2
+"let b:cpp_member_subst = '\l&'             " attribute
+"let b:cpp_member_subst = 'm_\l&'           " m_attribute " default
+"let b:cpp_member_subst = 'm\U&'            " mVariable
+"let b:cpp_member_subst = 'my\U&'           " myVariable
+"let b:cpp_member_subst = '\l&_'            " attribute_
+
+" # getters {{{2
+" let b:cpp_strip_getter = '\l\1'           " name()
+" let b:cpp_strip_getter = 'get\u&'         " getName() "  default
+" let b:cpp_strip_getter = 'get_\l&'        " get_name()
+
+" # ref getters (total de-encapsulation) {{{2
+" let b:cpp_strip_ref_getter = '\l\1'       " name()
+" let b:cpp_strip_ref_getter = 'get\u&'     " getName()
+" let b:cpp_strip_ref_getter = 'get_\l&'    " get_name()
+" let b:cpp_strip_ref_getter = 'ref\u&'     " refName()  "  default
+" let b:cpp_strip_ref_getter = 'ref_\l&'    " ref_name()
+
+" # proxy getters {{{2
+" let b:cpp_strip_ref_getter = '\l\1'       " name()
+" let b:cpp_strip_ref_getter = 'get\u&'     " getName()
+" let b:cpp_strip_ref_getter = 'get_\l&'    " get_name()
+" let b:cpp_strip_ref_getter = 'proxy\u&'   " proxyName()  "  default
+" let b:cpp_strip_ref_getter = 'proxy_\l&'  " proxy_name()
+
+" # setters {{{2
+" let b:cpp_strip_setter = '\l\1'           " name(value)
+" let b:cpp_strip_setter = 'set\u&'         " setName(value) "  default
+" let b:cpp_strip_setter = 'set_\l&'        " set_name(value)
+
+" ## ======================[ lh-refactor options {{{1
+" # getter {{{2
+" - documentation
+" let b:cpp_refactor_getter_doc   = '/** ${_ppt_name}\ getter. */\n'
+" - new lines or not to introduce getter code
+" let b:cpp_refactor_getter_open  = ' { '  " default
+" let b:cpp_refactor_getter_close = '}'
+" let b:cpp_refactor_getter_open  = ' {\n' " à la Java
+" let b:cpp_refactor_getter_close = '\n}'
+" let b:cpp_refactor_getter_open  = '\n{\n' " everything on a separate line
+" let b:cpp_refactor_getter_close = '\n}'
+
+" # setter {{{2
+" - documentation
+" let b:cpp_refactor_setter_doc   = '/** ${_ppt_name}\ setter. */\n'
+" - new lines or not to introduce setter code
+" let b:cpp_refactor_setter_open  = ' { '  " default
+" let b:cpp_refactor_setter_close = '}'
+" let b:cpp_refactor_setter_open  = ' {\n' " à la Java
+" let b:cpp_refactor_setter_close = '\n}'
+" let b:cpp_refactor_setter_open  = '\n{\n' " everything on a separate line
+" let b:cpp_refactor_setter_close = '\n}'
+
+" ## ======================[ Doxygen snippets {{{1
+let b:CppDox_CommentLeadingChar = '*'
+let b:CppDox_TagLeadingChar     = '@'
+let b:CppDox_ingroup            = '0'
+let b:CppDox_brief              = '0'
+let b:CppDox_author_tag         = 'author'
+let b:CppDox_author             = Author('name')
+
+
+" ## ======================[ GOTOIMPL code generation of function bodies {{{1
+" Possible values:
+"   0: In the inline section of the header/current file
+"   1: In the inline section of a dedicated inline file
+let b:implPlace                 = 2 " transl. unit (.cpp)
+" ShowVirtual = 0 -> '' ; 1 -> '/*virtual*/'
+let g:cpp_ShowVirtual           = 1
+" ShowStatic  = 0 -> '' ; 1 -> '/*static*/'
+let g:cpp_ShowStatic            = 1
+" ShowExplicit= 0 -> '' ; 1 -> '/*explicit*/'
+let g:cpp_ShowExplicit 		= 1
+" ShowDefaultParam = 0 -> '' ;
+" 		     1 -> default value for params within comments ;
+"		     2 -> within comment as well, but spaces are trimmed ;
+"		     3 -> like 2, but the equal sign is not displayed.
+let g:cpp_ShowDefaultParam      = 1
+
+" Preference regarding where functions definitions are written
+"
+" Possible Values:
+"   0: At the end of the file plus offset g:cpp_FunctionPosArg
+"   1: Search for a specific pattern g:cpp_FunctionPosArg
+"      Useful if you use template skeletons
+"   2: Call a user specified function : g:cpp_FunctionPosArg
+"      Beware! This is a (security) back door.
+"   3: Store the value in a temporary variable ; to be used in conjunction
+"      with :PASTEIMPL -- Robert Kelly IV's approach
+let g:cpp_FunctionPosition = 2
+if exists('g:cpp_FunctionPosArg') | unlet g:cpp_FunctionPosArg | endif
+
+" ## ======================[ Misc {{{1
+" Write each '(' on a new line; -> if \n() ... {}
+let b:c_nl_before_bracket                  = 0
+" Write each '{' on a new line; -> if ...() \n {}
+let b:c_nl_before_curlyB                   = 0
+" Write each "namespace Foo {" on a same line
+let b:cpp_multiple_namespaces_on_same_line = 1
+
+" ## ======================[ Expansion of function snippets {{{1 
+" The following options apply when expanding template-files that generate new
+" fonctions.
+" NB: not all template-files may respect these parameters. If you found any,
+" please contact me (see <http://code.google.com/p/lh-vim/wiki/contact>) as
+" this is a bug.
+"
+" Must we also generate an associated documentation ?
+let b:cpp_template_expand_doc = 1
+
+" Ordered list of doxygen tags to write before the main body of the comment
+let b:c_pre_desc_ordered_tags = [ "ingroup", "brief", "param", "return", "throw", "invariant", "pre", "post"]
+" Ordered list of doxygen tags to write after the main body of the comment
+let b:c_post_desc_ordered_tags = ["note", "warning"]
+
+" vim600: set fdm=marker:

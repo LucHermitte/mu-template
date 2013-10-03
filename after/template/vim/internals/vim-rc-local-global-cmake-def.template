@@ -1,0 +1,78 @@
+VimL:" $Id$
+VimL:" «vim-rc-local-global-cmake-def» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 02nd Oct 2013
+VimL:" hint: «vim-rc-local-global-cmake-def-hint»
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_prj_config  = s:Param('_prj_config', 'g:'.Marker_Txt('MyProject').'_config')
+VimL: let s:_prj_src_dir = s:Param('_prj_src_dir', Marker_Txt('HEAD'))
+VimL: let s:_prj_name    = s:Param('_prj_name', Marker_Txt('MyProjectName'))
+
+" ======================[ Global project configuration {{{2
+let s:sources_dir = '<+s:_prj_src_dir+>'
+
+" echo expand("<sfile>:p:h")
+" unlet <+s:_prj_config+>
+" Mandatory Project options
+call lh#let#if_undef('<+s:_prj_config+>.paths.trunk', string(expand("<sfile>:p:h")))
+LetIfUndef <+s:_prj_config+>.paths.project    fnamemodify(<+s:_prj_config+>.paths.trunk,':h')
+LetIfUndef <+s:_prj_config+>.paths.doxyfile   <+s:_prj_config+>.paths.project
+" Note: this could be anything like: MyProject_config.build.ARM-release
+LetIfUndef <+s:_prj_config+>.build.Debug      'build/debug'
+LetIfUndef <+s:_prj_config+>.build.Release    'build/release'
+
+" Here, this matches all the trunk => complete even with test files
+LetIfUndef <+s:_prj_config+>.paths.sources    <+s:_prj_config+>.paths.project.(s:sources_dir)
+" Optional Project options
+LetIfUndef <+s:_prj_config+>.compilation.mode 'Debug'
+LetIfUndef <+s:_prj_config+>.tests.verbosity '-VV'
+
+" ======================[ Menus {{{2
+let s:menu_priority = '50.120.'
+let s:menu_name     = '&Project.&<+s:_prj_name+>.'
+
+" Function: s:getSNR([func_name]) {{{3
+function! s:getSNR(...)
+  if !exists("s:SNR")
+    let s:SNR=matchstr(expand('<sfile>'), '<SNR>\d\+_\zegetSNR$')
+  endif
+  return s:SNR . (a:0>0 ? (a:1) : '')
+endfunction
+
+" Function: s:EditLocalCMakeFile() {{{3
+function! s:EditLocalCMakeFile()
+  let file = lh#path#to_relative(expand('%:p:h').'/CMakeLists.txt')
+  call lh#buffer#jump(file, 'sp')
+endfunction
+
+call lh#let#if_undef ('<+s:_prj_config+>.functions',
+      \ string({'EditLocalCMakeFile': function(s:getSNR('EditLocalCMakeFile'))}))
+
+" ======================[ Local variables to automagically import in QuickFix buffer {{{2
+QFImport b:tags_select
+QFImport &l:path
+QFImport b:BTW_project_target
+QFImport b:BTW_compilation_dir
+QFImport b:BTW_project_build_mode
+
+"------------------------------------------------------------------------
+" ======================[ Compilation mode, & CTest options {{{2
+let <+s:_prj_config+>_menu = {
+      \ '_project': '<+substitute(s:_prj_config, "^g:", "", "")+>',
+      \ 'menu': {'priority': s:menu_priority, 'name': s:menu_name}
+      \ }
+let s:cmake_integration = []
+let s:cmake_integration += [ 'def_toggable_compil_mode' ]
+let s:cmake_integration += [ 'def_toggable_ctest_verbosity' ]
+let s:cmake_integration += [ 'def_toggable_ctest_checkmem' ]
+let s:cmake_integration += [ 'def_ctest_targets' ]
+let s:cmake_integration += [ 'add_gen_clic_DB' ]
+let s:cmake_integration += [ 'update_list' ]
+call lh#btw#cmake#def_options(<+s:_prj_config+>_menu, s:cmake_integration)
+
+
+" ======================[ Misc functions {{{2
+
+"=============================================================================
+" vim600: set fdm=marker:

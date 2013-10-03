@@ -1,0 +1,13 @@
+VimL:" $Id$
+VimL:" Mut-if File Template, Luc Hermitte, 01st Oct 2013
+VimL:" hint: Mut: if / else . endif
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+¡"MuT"¡:  if ¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡
+    ¡s:Surround(1, '<+if-code+>')¡
+¡"MuT"¡:  else<++>
+    ¡s:Surround(3, '<+else-code+>')¡
+¡"MuT"¡:  endif<++>

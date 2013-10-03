@@ -1,0 +1,15 @@
+VimL:" $Id$
+VimL:" CTest test definition for a boost.test, Luc Hermitte, 01st Oct 2013
+VimL:" hint: add_executable+...+add_test
+VimL:"
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_test_name   = s:Param("test_name", Marker_Txt("UT_TestName"))
+VimL: let s:_test_source = s:Param("test_source", s:_test_name+".cpp")
+VimL: let s:_tested_lib  = s:Param("tested_lib", Marker_Txt("MyProjectLib${CMAKE_DEBUG_POSTFIX}"))
+ADD_EXECUTABLE(<+s:_test_name+> <+s:_test_source+>)
+TARGET_LINK_LIBRARIES(<+s:_test_name+> 
+    MyProjectLib${CMAKE_DEBUG_POSTFIX}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    )
+ADD_TEST(<+s:_test_name+> <+s:_test_name+>)

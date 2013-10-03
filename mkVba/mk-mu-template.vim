@@ -21,6 +21,7 @@ endtry
 finish
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
+after/template/addon-info
 after/template/addon-info.template
 after/template/c.template
 after/template/c/case.template
@@ -42,6 +43,7 @@ after/template/c/switch.template
 after/template/c/while.template
 after/template/cmake.template
 after/template/cmake/add_subdirectory.template
+after/template/cmake/boost-test.template
 after/template/cmake/cpack.template
 after/template/cmake/cpp11.template
 after/template/cmake/doxygen.template
@@ -53,6 +55,7 @@ after/template/cpptu-header.template
 after/template/cppunit-header.template
 after/template/help.template
 after/template/html.template
+after/template/java
 after/template/license/boost-full.template
 after/template/license/boost-short.template
 after/template/license/copying.template
@@ -73,12 +76,14 @@ after/template/sh/rvalue.template
 after/template/tcl.template
 after/template/template.template
 after/template/template/arg.template
+after/template/template/if.template
 after/template/template/include.template
 after/template/template/reindent.template
 after/template/test-included.template
 after/template/test.template
 after/template/tex/begin-end.template
 after/template/tex/center.template
+after/template/tex/down.template
 after/template/tex/figure.template
 after/template/tex/frac.template
 after/template/tex/frame-beamer.template
@@ -100,6 +105,11 @@ after/template/vim/internals/vim-header.template
 after/template/vim/internals/vim-mkvba.template
 after/template/vim/internals/vim-other-scripts.template
 after/template/vim/internals/vim-plugin.template
+after/template/vim/internals/vim-rc-local-ccpp.template
+after/template/vim/internals/vim-rc-local-cpp-style.template
+after/template/vim/internals/vim-rc-local-default.template
+after/template/vim/internals/vim-rc-local-global-cmake-def.template
+after/template/vim/internals/vim-rc-local.template
 after/template/vim/internals/vim-rc-local.template
 after/template/vim/loop-arg.template
 after/template/vim/menu-make.template

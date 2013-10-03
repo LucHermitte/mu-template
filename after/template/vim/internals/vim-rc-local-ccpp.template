@@ -1,0 +1,104 @@
+VimL:" $Id$
+VimL:" vim-rc-local C/C++ projects File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 01st Oct 2013
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_prj_config = s:Param('_prj_config', 'g:'.Marker_Txt('MyProject').'_config')
+
+let b:ProjectVersion        = '<+version+>'
+let b:cpp_project_namespace = '<+project_ns+>'
+
+" ======================[ &path {{{2
+
+" don't search into included file how to complete
+setlocal complete-=i
+
+" No sub project
+" let b:project_crt_sub_project = matchstr(lh#path#strip_common([<+s:_prj_config+>.paths.trunk, expand('%:p:h')])[1], '[^/\\]*[/\\][^/\\]*')
+
+" Tells BTW the compilation directory
+let b:BTW_compilation_dir = <+s:_prj_config+>.paths._build
+" Local vimrc variable for source dir
+let b:project_sources_dir = <+s:_prj_config+>.paths.sources
+" Option for Mu-Template-> |s:path_from_root()|
+let b:sources_root = <+s:_prj_config+>.paths.sources
+
+" Configures lh-cpp complete includes sub-plugin -> ftplugin/c/c_AddInclude.vim
+let b:includes = [ b:project_sources_dir . '/**']
+if SystemDetected() == 'unix'
+  " Add your 3rd party libraries used in the project here
+  call lh#path#add_if_exists('b:includes', '/home/lhermitte/dev/boost/1_51_0/install/include/')
+  call lh#path#add_if_exists('b:includes', '/usr/local/include/**')
+  call lh#path#add_if_exists('b:includes', '/usr/include/**')
+endif
+" For config.h.in files and alike
+" todo: adapt it automatically to the current compilation dir
+let b:includes += [b:BTW_compilationd_dir . '/**']
+
+" Setting &path
+exe 'setlocal path+='.FixPathName(b:project_sources_dir).'/**'
+exe 'setlocal path+='.FixPathName(b:BTW_compilation_dir).'/**'
+" for p in b:includes
+"   exe 'setlocal path+='.FixPathName(p)
+" endfor
+
+if 0
+  " gcov output path
+  let b:gcov_files_path = <+s:_prj_config+>.paths.sources.'/obj/debug/Testing/CoverageInfo'
+
+  " spell files
+  setlocal spellfile=
+  exe 'setlocal spellfile+='.FixPathName(b:project_sources_dir).'/ignore.utf-8.add'
+  let b:tags_to_spellfile = 'code-symbols.add'
+  for p in ['src', 'inc', 'tst/tests-unitaires']
+    " echo 'setlocal spellfile+='.FixPathName(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
+    exe 'setlocal spellfile+='.FixPathName(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
+  endfor
+endif
+
+" ======================[ tags generation {{{2
+let b:tags_dirname = FixPathName(b:project_sources_dir)
+let b:tags_options = ' --exclude="*.dox" --exclude="html" --exclude=".*sw*"'
+let b:tags_options .= ' --exclude="*.txt" --exclude="*.o" --exclude="*.os" --exclude="*.tags" --exclude=tags --exclude=buttons --exclude="*.png" --exclude="*.tar"'
+exe 'setlocal tags+='.(b:tags_dirname).'/tags'
+if SystemDetected() == 'msdos'
+else
+  setlocal tags+=/usr/local/include/otb/tags
+  setlocal tags+=$HOME/dev/tags/stl.tags
+  setlocal tags+=$HOME/dev/tags/boost.tags
+endif
+" let BTW_make_in_background_in = 'xterm -e'
+
+" ======================[ Settings for BTW {{{2
+if SystemDetected() == 'msdos'
+  :BTW setlocal cmake
+  " echomsg SystemDetected()
+  if SystemDetected() == 'unix' " cygwin
+    " then cygwin's cmake does not work -> use win32 cmake
+    let $PATH=substitute($PATH, '\(.*\);\([^;]*CMake[^;]*\)', '\2;\1', '')
+  endif
+endif
+:BTW addlocal STLFilt
+" silent! unlet b:BTW_project_executable
+LetIfUndef b:BTW_project_executable.type 'ctest'
+" sets b:BTW_project_executable.rule
+call <+s:_prj_config+>_menu.def_ctest_targets.set_ctest_argument()
+
+let b:BTW_project_target = ''
+let b:BTW_project_config = {
+      \ 'type': 'ccmake',
+      \ 'arg': (b:project_sources_dir), 
+      \ 'wd' : lh#function#bind(string(b:BTW_compilation_dir))
+      \ }
+
+
+" ======================[ Project's style {{{2
+source <sfile>:p:h/_vimrc_cpp_style.vim
+
+" ======================[ Menus {{{2
+call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
+" call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
+call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )
+"
+
