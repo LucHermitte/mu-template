@@ -406,19 +406,19 @@ function! s:Comment(text)          " {{{3
   return s:Command('" '.a:text)
 endfunction
 
-" function! s:PushArgs()             {{{3
+" Function: s:PushArgs()             {{{3
 function! s:PushArgs(args)
   call add(s:args, a:args)
 endfunction
 
-" function! s:PopArgs()              {{{3
+" Function: s:PopArgs()              {{{3
 function! s:PopArgs()
   if !empty(s:args)
     call remove(s:args, -1)
   endif
 endfunction
 
-" function! s:Args()                 {{{3
+" Function: s:Args()                 {{{3
 " @returns a list. If the list is empty, this mean no parameter was given.
 let s:args = []
 function! s:Args()
@@ -426,7 +426,20 @@ function! s:Args()
   return empty(s:args) ? [] : s:args[-1]
 endfunction
 
-" function! s:Include()              {{{3
+" Function: s:Param(name,default)    {{{3
+" @returns a list. If the list is empty, this mean no parameter was given.
+let s:args = []
+function! s:Param(name, default)
+  if empty(s:args)                   | return a:default
+  elseif empty(a:name)               | return s:args[-1]
+  elseif has_key(s:args[-1], a:name) | return s:args[-1]{a:name}
+  else                               | return a:default
+  endif
+  " echomsg string(s:args)
+  return empty(s:args) ? [] : s:args[-1]
+endfunction
+
+" Function: s:Include()              {{{3
 function! s:Include(template, ...)
   let pos = s:content.crt
   " let correction = s:NeedToJoin > 0
@@ -438,16 +451,46 @@ function! s:Include(template, ...)
   endif
   " pushing a list permit to test the void args case
   " todo: mark the line where s:Pop should be applied
+  " todo: check if pushing while no file found as no pop will get executed
   call s:PushArgs(a:0>1 ? a:000[1:] : [])
   if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
     call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
 endfunction
 
-" function! s:Inject(lines)          {{{3
+" Function: s:Inject(lines)          {{{3
 function! s:Inject(lines)
   let pos = s:content.crt
   call extend(s:content.lines, a:lines, s:content.crt+0)
+endfunction
+
+" Function: s:InjectAndTransform(templatename) {{{3
+function! s:InjectAndTransform(templatename, Transformation, ...)
+  let dir = fnamemodify(a:templatename, ':h')
+  if dir != "" | let dir .= '/' | endif
+  if a:0>0 && !empty(a:1)
+    let dir .= a:1 . '/'
+  endif
+  let templatepath = dir.a:templatename.'.template'
+  try
+    let wildignore_save = &wildignore
+    let &wildignore = ""
+    let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, templatepath)
+    if len(matching_filenames) == 0
+      return 0 " NB: the finally block is still executed
+      " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
+    else
+      if &verbose >= 1
+	echo "Loading <".matching_filenames[0].">"
+      endif
+      call s:PushArgs(a:0>1 ? [a:2] : [])
+      let lines = readfile(matching_filenames[0])
+      let lines = a:Transformation(lines)
+      let lines += [s:Command( 'call s:PopArgs()')]
+      call extend(s:content.lines, lines, a:pos)
+  finally
+    let &wildignore = wildignore_save
+  endtry
 endfunction
 
 function! s:path_from_root(path)   " {{{3
@@ -467,7 +510,7 @@ function! s:path_from_root(path)   " {{{3
   return path
 endfunction
 
-" function s:Surround(id, default)   {{{3
+" Function: s:Surround(id, default)  {{{3
 function! s:Surround(id, default)
   let key = 'surround'.a:id
   return has_key(s:content,key)
@@ -476,7 +519,7 @@ function! s:Surround(id, default)
   endif
 endfunction
 
-" function s:Line()                  {{{3
+" Function: s:Line()                 {{{3
 " Returns current line
 function! s:Line()
   return s:content.crt + s:content.start
@@ -496,7 +539,8 @@ endfunction
 " Core Functions {{{2
 let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1]}
 
-function! s:LoadTemplate(pos, templatepath)                  " {{{3
+" s:LoadTemplate(pos, templatepath)                            {{{3
+function! s:LoadTemplate(pos, templatepath)
   " echomsg "s:LoadTemplate(".a:pos.", '".a:templatepath."')"
   try
     let wildignore = &wildignore
@@ -643,7 +687,7 @@ function! s:Marker(regex)
   return s:NoRegex(s:marker_open) . a:regex . s:NoRegex(s:marker_close)
 endfunction
 
-" s:InterpretLines(the_line)                                   {{{3
+" s:InterpretMuTCommand(the_line)                              {{{3
 function! s:InterpretMuTCommand(the_line)
   let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
   if     special_cmd == 'if'
@@ -670,7 +714,8 @@ function! s:InterpretMuTCommand(the_line)
   endif
 endfunction
 
-function! s:InterpretLines(first_line)                       " {{{3
+" s:InterpretLines(first_line)                                 {{{3
+function! s:InterpretLines(first_line)
   " Constants
   let markerCharacters = Marker_Txt('')
 
@@ -738,7 +783,7 @@ function! s:InterpretLines(first_line)                       " {{{3
   endwhile
 endfunction
 
-" function! s:Reencode()                                       {{{3
+" Function: s:Reencode()                                       {{{3
 function! s:Reencode()
   call map(s:content.lines, 'lh#encoding#iconv(v:val, '.string(s:fileencoding).', &enc)')
 endfunction
