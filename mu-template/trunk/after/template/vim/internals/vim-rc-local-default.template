@@ -1,0 +1,12 @@
+VimL:" $Id$
+VimL:" «vim-rc-local-default» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 30th Sep 2013
+"------------------------------------------------------------------------
+" Local mappings {{{2
+
+inoremap <buffer> <+keybinding+> <+action+>
+
+"------------------------------------------------------------------------
+" Local commands {{{2
+
+command! -b -nargs=<++> <+CommandName+> <+Action+>
+

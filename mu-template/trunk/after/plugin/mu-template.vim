@@ -269,6 +269,9 @@
 "	v3.0.5
 "	(*) Author('short') works
 "	(*) New templates files for cmake and doxyfile
+"	«v3.0.6»
+"	(*) <Plug>MuT_Surround in visual-mode fixed to support counts, with
+"	latest versions of Vim
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -306,7 +309,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 305
+let s:k_version = 306
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
@@ -435,7 +438,7 @@ else " {{{3
   inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
   inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
   " takes a count to specify where the selected texte goes (see while-snippets)
-  vnoremap <silent> <Plug>MuT_Surround <c-\><c-n>:call lh#mut#surround()<cr>
+  vnoremap <silent> <Plug>MuT_Surround :<C-U>call lh#mut#surround()<cr>
   if !hasmapto('<Plug>MuT_ckword', 'i')
     imap <unique> <C-R><space>	<Plug>MuT_ckword
   endif
