@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.0.5
+" Version:	3.0.6
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -269,9 +269,11 @@
 "	v3.0.5
 "	(*) Author('short') works
 "	(*) New templates files for cmake and doxyfile
-"	«v3.0.6»
+"	v3.0.6
 "	(*) <Plug>MuT_Surround in visual-mode fixed to support counts, with
-"	latest versions of Vim
+"	    latest versions of Vim
+" 	(*) Compatibility with completion plugins like YouCompleteMe extended
+" 	    to the surrounding feature.
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .

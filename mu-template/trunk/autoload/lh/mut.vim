@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.0.3
+" Version:      3.0.6
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.6
+" 	(*) Compatibility with completion plugins like YouCompleteMe extended
+" 	    to the surrounding feature.
 "	v3.0.4
 "	(*) s:Include() can now forward more than one argument.
 "	v3.0.3
@@ -56,7 +59,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 304
+let s:k_version = 306
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -336,10 +339,24 @@ function! lh#mut#surround()
     if s:content[surround_id] =~ "\n$" " line-wise surrounding
       put!=''
     endif
+    if stridx(s:content[surround_id], '\n') < 0 " suppose this is on a single-line
+      let l = strlen(s:content[surround_id])
+      let line = getline('.')
+      let pos = getpos('.')
+      " Clear the line from the word to expand
+      if pos[2] > 1
+        call setline('.', line[0:pos[2]-2])
+      else
+        call setline('.', '')
+      endif
+      " Insert a line break
+      " call append('.', line[(pos[2]-1+l):])
+      call append('.', line[(pos[2]-1):])
+      call setpos('.', pos)
+    endif
 
     " 3- insert the template {{{3
-    " return s:InsertTemplateFile(a:word,file)
-    if !lh#mut#expand_and_jump(0,file)
+    if !lh#mut#expand_and_jump(1,file)
       call lh#common#error_msg("muTemplate: Problem to insert the template: <".a:file.'>')
     endif
     return ''
