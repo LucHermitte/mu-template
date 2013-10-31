@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" <itemizedlist> File Template, Luc Hermitte <hermitte at free.fr>, 30th Oct 2013
+VimL:" hint: <itemizedlist></itemizedlist>
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+<itemizedlist>¡s:Surround(1, '<++>')¡</itemizedlist>
