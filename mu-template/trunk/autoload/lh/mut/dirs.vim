@@ -3,7 +3,9 @@
 " File:         autoload/lh/mut/dirs.vim                          {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:      3.0.2
+" License:      GPLv3 with exceptions
+"               <URL:http://code.google.com/p/lh-vim/wiki/License>
+" Version:      3.0.7
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +21,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:      
+" 	v3.0.7
+" 	(*) Fix bug to correctly read shorten names like
+" 	    xslt/call-template.template
 " 	v3.0.2
 " 	(*) Have doxygen templates available in C
 " 	v3.0.0
@@ -36,7 +41,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 220
+let s:k_version = 307
 function! lh#mut#dirs#version()
   return s:k_version
 endfunction
@@ -118,7 +123,7 @@ function! lh#mut#dirs#shorten_template_filenames(list)
   call map(a:list, 'lh#path#strip_start(v:val, g:lh#mut#dirs#cache)')
   " 2- simplify filename to keep only the non "template" part
   "NAMES WERE: call map(a:list, 'substitute(v:val, "\\<template\.", "", "")')
-  call map(a:list, 'substitute(v:val, "\.template\\>", "", "")')
+  call map(a:list, 'substitute(v:val, "\\.template\\>", "", "")')
   return a:list
 endfunction
 

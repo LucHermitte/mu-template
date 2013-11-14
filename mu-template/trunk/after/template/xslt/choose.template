@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" {xsl:choose} File Template, Luc Hermitte
+VimL:" hint: <xsl:choose><xsl:when>...</xsl:when></xsl:choose>
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<xsl:choose>
+VimL: call s:Include("when", "xslt")
+VimL: call s:Include("otherwise", "xslt")
+</xsl:choose>{++}

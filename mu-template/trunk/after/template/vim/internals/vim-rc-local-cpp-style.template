@@ -18,65 +18,65 @@ setlocal tw=79
 
 " # core variables names {{{2
 " (extract any getter, global, ... decoration)
-" let b:cpp_strip_subst = '\l\1' " default
-" You may have to play with b:cpp_strip_re to remove naming convention not
+" let b:cpp_naming_strip_subst = '\l\1' " default
+" You may have to play with b:cpp_naming_strip_re to remove naming convention not
 " handled by default
 
 " # local variables {{{2
-"let b:c_local_subst = '\l&'              " variable " default
-"let b:c_local_subst = 'l_\l&'            " l_variable
-"let b:c_local_subst = 'l\U&'             " lVariable
+"let b:c_naming_local_subst = '\l&'              " variable " default
+"let b:c_naming_local_subst = 'l_\l&'            " l_variable
+"let b:c_naming_local_subst = 'l\U&'             " lVariable
 
 " # global variables {{{2
-"let b:c_global_subst = '\l&'             " variable
-"let b:c_global_subst = 'g_\l&'           " g_variable " default
-"let b:c_global_subst = 'g\U&'            " gVariable
+"let b:c_naming_global_subst = '\l&'             " variable
+"let b:c_naming_global_subst = 'g_\l&'           " g_variable " default
+"let b:c_naming_global_subst = 'g\U&'            " gVariable
 
 " # static variables {{{2
-"let b:c_static_subst = '\l&'             " variable
-"let b:c_static_subst = 's_\l&'           " s_variable " default
-"let b:c_static_subst = 's\U&'            " sVariable
+"let b:c_naming_static_subst = '\l&'             " variable
+"let b:c_naming_static_subst = 's_\l&'           " s_variable " default
+"let b:c_naming_static_subst = 's\U&'            " sVariable
 
 " # constants {{{2
-"let b:c_constant_subst = '\U&\E'         " CONSTANT " default
-"let b:c_constant_subst = 'k_\l&'         " s_constant
-"let b:c_constant_subst = 'k\U&'          " sConstant
+"let b:c_naming_constant_subst = '\U&\E'         " CONSTANT " default
+"let b:c_naming_constant_subst = 'k_\l&'         " s_constant
+"let b:c_naming_constant_subst = 'k\U&'          " sConstant
 
 " # parameters {{{2
-"let b:c_param_subst = '&'                " parameter " default
-"let b:c_param_subst = 'p_\l&'            " p_parameter " please, no!
-"let b:c_param_subst = '\l&_'             " parameter_
+"let b:c_naming_param_subst = '&'                " parameter " default
+"let b:c_naming_param_subst = 'p_\l&'            " p_parameter " please, no!
+"let b:c_naming_param_subst = '\l&_'             " parameter_
 
 " # member variables {{{2
-"let b:cpp_member_subst = '\l&'             " attribute
-"let b:cpp_member_subst = 'm_\l&'           " m_attribute " default
-"let b:cpp_member_subst = 'm\U&'            " mVariable
-"let b:cpp_member_subst = 'my\U&'           " myVariable
-"let b:cpp_member_subst = '\l&_'            " attribute_
+"let b:cpp_naming_member_subst = '\l&'             " attribute
+"let b:cpp_naming_member_subst = 'm_\l&'           " m_attribute " default
+"let b:cpp_naming_member_subst = 'm\U&'            " mVariable
+"let b:cpp_naming_member_subst = 'my\U&'           " myVariable
+"let b:cpp_naming_member_subst = '\l&_'            " attribute_
 
 " # getters {{{2
-" let b:cpp_strip_getter = '\l\1'           " name()
-" let b:cpp_strip_getter = 'get\u&'         " getName() "  default
-" let b:cpp_strip_getter = 'get_\l&'        " get_name()
+" let b:cpp_naming_strip_getter = '\l\1'           " name()
+" let b:cpp_naming_strip_getter = 'get\u&'         " getName() "  default
+" let b:cpp_naming_strip_getter = 'get_\l&'        " get_name()
 
 " # ref getters (total de-encapsulation) {{{2
-" let b:cpp_strip_ref_getter = '\l\1'       " name()
-" let b:cpp_strip_ref_getter = 'get\u&'     " getName()
-" let b:cpp_strip_ref_getter = 'get_\l&'    " get_name()
-" let b:cpp_strip_ref_getter = 'ref\u&'     " refName()  "  default
-" let b:cpp_strip_ref_getter = 'ref_\l&'    " ref_name()
+" let b:cpp_naming_strip_ref_getter = '\l\1'       " name()
+" let b:cpp_naming_strip_ref_getter = 'get\u&'     " getName()
+" let b:cpp_naming_strip_ref_getter = 'get_\l&'    " get_name()
+" let b:cpp_naming_strip_ref_getter = 'ref\u&'     " refName()  "  default
+" let b:cpp_naming_strip_ref_getter = 'ref_\l&'    " ref_name()
 
 " # proxy getters {{{2
-" let b:cpp_strip_ref_getter = '\l\1'       " name()
-" let b:cpp_strip_ref_getter = 'get\u&'     " getName()
-" let b:cpp_strip_ref_getter = 'get_\l&'    " get_name()
-" let b:cpp_strip_ref_getter = 'proxy\u&'   " proxyName()  "  default
-" let b:cpp_strip_ref_getter = 'proxy_\l&'  " proxy_name()
+" let b:cpp_naming_strip_ref_getter = '\l\1'       " name()
+" let b:cpp_naming_strip_ref_getter = 'get\u&'     " getName()
+" let b:cpp_naming_strip_ref_getter = 'get_\l&'    " get_name()
+" let b:cpp_naming_strip_ref_getter = 'proxy\u&'   " proxyName()  "  default
+" let b:cpp_naming_strip_ref_getter = 'proxy_\l&'  " proxy_name()
 
 " # setters {{{2
-" let b:cpp_strip_setter = '\l\1'           " name(value)
-" let b:cpp_strip_setter = 'set\u&'         " setName(value) "  default
-" let b:cpp_strip_setter = 'set_\l&'        " set_name(value)
+" let b:cpp_naming_strip_setter = '\l\1'           " name(value)
+" let b:cpp_naming_strip_setter = 'set\u&'         " setName(value) "  default
+" let b:cpp_naming_strip_setter = 'set_\l&'        " set_name(value)
 
 " ## ======================[ lh-refactor options {{{1
 " # getter {{{2

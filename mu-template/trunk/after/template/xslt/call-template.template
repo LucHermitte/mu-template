@@ -1,0 +1,12 @@
+VimL:" $Id$
+VimL:" {xsl:call-template} File Template, Luc Hermitte
+VimL:" hint: <xsl:call-template name="name"><xsl:with-param .../></xsl:call-template>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+VimL: " todo: take a list of parameters and use with-param as many times as necessary
+<xsl:call-template name="{+template-name+}">
+VimL: call s:Include('with-param', 'xslt')
+</xsl:call-template>{++}

@@ -4,8 +4,8 @@ VimL:" hint: <xsl:otherwise></xsl:otherwise>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1 
-VimL: let s:marker_open  = '<+'
-VimL: let s:marker_close = '+>'
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
 <xsl:otherwise>
-<++>
-</xsl:otherwise>
+  ¡s:Surround(1, '{+code+}')¡
+</xsl:otherwise>{++}

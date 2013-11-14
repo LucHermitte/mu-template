@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.0.6
-let s:version = '3.0.6'
+" Version:	3.0.7
+let s:version = '3.0.7'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -21,7 +21,6 @@ endtry
 finish
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
-after/template/addon-info
 after/template/addon-info.template
 after/template/c.template
 after/template/c/case.template
@@ -53,19 +52,20 @@ after/template/cmake/internals/subdirs.template
 after/template/cpp.template
 after/template/cpptu-header.template
 after/template/cppunit-header.template
-after/template/docbk/emphasis.template
-after/template/docbk/listitem.template
 after/template/docbk/code.template
-after/template/docbk/programlisting.template
-after/template/docbk/para.template
+after/template/docbk/emphasis.template
 after/template/docbk/itemizedlist.template
+after/template/docbk/listitem.template
+after/template/docbk/para.template
+after/template/docbk/programlisting.template
+after/template/doxygen/Doxyfile.template
 after/template/help.template
 after/template/html.template
-after/template/java
 after/template/license/boost-full.template
 after/template/license/boost-short.template
 after/template/license/copying.template
 after/template/license/gplv3-full.template
+after/template/license/gplv3-short.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template
@@ -116,22 +116,29 @@ after/template/vim/internals/vim-rc-local-cpp-style.template
 after/template/vim/internals/vim-rc-local-default.template
 after/template/vim/internals/vim-rc-local-global-cmake-def.template
 after/template/vim/internals/vim-rc-local.template
-after/template/vim/internals/vim-rc-local.template
 after/template/vim/loop-arg.template
 after/template/vim/menu-make.template
 after/template/vim/option-protect.template
 after/template/vim/plugmap.template
 after/template/vim/snr.template
-after/template/xslt/xsl-attribute.template
-after/template/xslt/xsl-for-each.template
-after/template/xslt/xsl-if.template
-after/template/xslt/xsl-otherwise.template
-after/template/xslt/xsl-template-match.template
-after/template/xslt/xsl-template-name.template
-after/template/xslt/xsl-value-of.template
-after/template/xslt/xsl-when.template
+after/template/xslt/apply-template.template
+after/template/xslt/attribute.template
+after/template/xslt/call-template.template
+after/template/xslt/choose.template
+after/template/xslt/copy-of.template
+after/template/xslt/for-each.template
+after/template/xslt/if.template
+after/template/xslt/otherwise.template
+after/template/xslt/param.template
+after/template/xslt/template-match.template
+after/template/xslt/template-name.template
+after/template/xslt/text.template
+after/template/xslt/value-of.template
+after/template/xslt/when.template
+after/template/xslt/with-param.template
 autoload/lh/cpp/file.vim
 autoload/lh/mut.vim
+autoload/lh/mut/cmake.vim
 autoload/lh/mut/dirs.vim
 doc/mu-template.txt
 ftplugin/template.vim
