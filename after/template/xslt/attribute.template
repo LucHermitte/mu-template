@@ -4,8 +4,8 @@ VimL:" hint: <xsl:attribut name="cond"></xsl:attribut>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
-VimL: let s:marker_open  = '<+'
-VimL: let s:marker_close = '+>'
-<xsl:attribute name="<+condition+>">
-<++>
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<xsl:attribute name="¡substitute(s:Surround(2, '{+condition+}'), '^\_s*\|\_s*$', '', 'g')¡">
+  ¡s:Surround(1, '{+code+}')¡
 </xsl:attribute>

@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:"{xsl:template} Template File, Luc Hermitte
+VimL:" hint: <xsl:template match="XPath">...</xsl:template>
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1 
+<xsl:template match="¡substitute(s:Surround(2, '{+XPath+}'), '^\_s*\|\_s*$', '', 'g')¡">
+  ¡s:Surround(1, '{+code+}')¡
+</xsl:template>{++}

@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:"{xsl:when} Template File, Luc Hermitte
+VimL:" hint: <xsl:when test="cond"></xsl:when>
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<xsl:when test="¡substitute(s:Surround(2, '{+condition+}'), '^\_s*\|\_s*$', '', 'g')¡">
+  ¡s:Surround(1, '{+code+}')¡
+</xsl:when>{++}

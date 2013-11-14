@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.0.6
+" Version:	3.0.7
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -274,6 +274,9 @@
 "	    latest versions of Vim
 " 	(*) Compatibility with completion plugins like YouCompleteMe extended
 " 	    to the surrounding feature.
+" 	v3.0.7
+" 	(*) Fix bug to correctly read shorten names like
+" 	    xslt/call-template.template
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -311,7 +314,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 306
+let s:k_version = 307
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')

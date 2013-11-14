@@ -1,0 +1,9 @@
+VimL:" $Id: xsl-copy-of.template 326 2011-01-06 01:37:00Z luc.hermitte $
+VimL:"{xsl:copy-of} Template File, Luc Hermitte
+VimL:" hint: <xsl:copy-of select="XPath"/>
+VimL: let s:copy_start  = '¡'
+VimL: let s:copy_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<xsl:copy-of select="¡s:Surround(1, '{+XPath+}')¡"/>
