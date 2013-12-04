@@ -3,7 +3,8 @@ VimL:" <para> File Template, Luc Hermitte <hermitte at free.fr>, 30th Oct 2013
 VimL:" hint: <para></para>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
-VimL: let s:marker_open  = '<+'
-VimL: let s:marker_close = '+>'
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
-<para>¡s:Surround(1, '<++>')¡</para>
+VimL: let s:para = empty(s:Args()) ? Marker_Txt('text') : (s:Args()[0])
+<para>¡s:Surround(1, s:para)¡</para>{++}

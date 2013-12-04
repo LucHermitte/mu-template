@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.0.7
+" Version:	3.0.8
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -277,6 +277,9 @@
 " 	v3.0.7
 " 	(*) Fix bug to correctly read shorten names like
 " 	    xslt/call-template.template
+"	v3.0.8
+"	(*) lh#mut#expand_and_jump()/:MuTemplate fixed to receive several
+"	    parameters
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .

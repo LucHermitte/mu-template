@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.0.6
+" Version:      3.0.8
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.0.8
+"	(*) lh#mut#expand_and_jump()/:MuTemplate fixed to receive several
+"	    parameters
 "	v3.0.6
 " 	(*) Compatibility with completion plugins like YouCompleteMe extended
 " 	    to the surrounding feature.
@@ -284,12 +287,12 @@ endfunction
 
 " Function: lh#mut#expand_and_jump(needToJoin, ...)        {{{2
 function! lh#mut#expand_and_jump(needToJoin, ...)
-  " echomsg "lh#mut#expand_and_jump"
+  " echomsg "lh#mut#expand_and_jump(".a:needToJoin.",".join(a:000, ',').")"
   try 
     call lh#mut#dirs#update()
     let s:args = []
     if a:0 > 1
-      call s:PushArgs([a:2])
+      call s:PushArgs(a:000[1:])
       " echomsg 'all: ' . string(s:args)
     endif
     let res = (a:0>0)

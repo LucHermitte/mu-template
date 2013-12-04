@@ -1,0 +1,9 @@
+VimL:" $Id: variable.template 753 2013-11-14 20:06:07Z luc.hermitte@gmail.com $
+VimL:"{xsl:variable} Template File, Luc Hermitte
+VimL:" hint: <xsl:variable name="name"/>
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1 
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<xsl:variable name="¡s:Surround(2, '{+Name+}')¡">¡s:Surround(1, '{+Value+}')¡</xsl:variable>

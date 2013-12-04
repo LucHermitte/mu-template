@@ -9,6 +9,6 @@ VimL: let s:marker_close = '+>'
 ¡s:Comment('hint: <+'.expand('%:t:r').'-hint+>')¡
 ¡'VimL:'¡ let s:value_start = '¡'
 ¡'VimL:'¡ let s:value_end   = s:value_start
-¡'VimL:'¡ let s:marker_open  = '<+'
-¡'VimL:'¡ let s:marker_close = '+>'
+¡'VimL:'¡ let s:marker_open  = '¡b:ft =~ 'xml\|xslt\|html\|docbk' ? '{+' : '<+'¡'
+¡'VimL:'¡ let s:marker_close = '¡b:ft =~ 'xml\|xslt\|html\|docbk' ? '+}' : '+>'¡'
 <++>
