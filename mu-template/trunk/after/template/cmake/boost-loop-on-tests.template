@@ -1,0 +1,23 @@
+VimL:" $Id$
+VimL:" boost-loop-on-tests File Template, Luc Hermitte, 08th Jan 2014
+VimL:" hint: foreach test: add_executable+add_test
+VimL:"
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+VimL: let s:_test_names  = s:Param("test_names", Marker_Txt("TestNames"))
+VimL: let s:_tested_lib  = s:Param("tested_lib", Marker_Txt("MyProjectLib"))
+include_directories(${SRC_INC})
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIRS})
+
+set(TESTS_LIST "<+s:_test_names+>")
+foreach(test ${TESTS_LIST})
+    ADD_EXECUTABLE(${test} ${test}.cpp)
+    TARGET_LINK_LIBRARIES(${test}
+        <+s:_tested_lib+>${CMAKE_DEBUG_POSTFIX}
+        ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+        )
+    ADD_TEST(${test} ${test})
+    message(STATUS "-> test added: ${test}")
+endforeach()

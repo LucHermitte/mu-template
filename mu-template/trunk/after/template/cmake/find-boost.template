@@ -1,0 +1,38 @@
+VimL:" $Id$
+VimL:" find-boost File Template, Luc Hermitte, 08th Jan 2014
+VimL:" hint: do the proper find boost
+VimL:"
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+#======================================================================
+# COTS
+# - Boost
+# set(Boost_NO_BOOST_CMAKE ON)
+# set(Boost_DEBUG ON)
+# set(Boost_DETAILED_FAILURE_MSG ON)
+
+# Set here the list of Boost library components required
+set(BOOST_COMPONENTS_USED "<+boost-components-used+>")
+IF (<+project+>_BUILD_TESTING) # Append unit_test_framework if UT are built
+    set(BOOST_COMPONENTS_USED ${BOOST_COMPONENTS_USED} unit_test_framework)
+ENDIF()
+IF (NOT BOOST_COMPONENTS_USED STREQUAL "")
+    set(BOOST_COMPONENTS_USED COMPONENTS ${BOOST_COMPONENTS_USED})
+ENDIF()
+
+find_package(Boost REQUIRED ${BOOST_COMPONENTS_USED})
+IF(Boost_FOUND)
+    IF (Boost_DEBUG)
+        MESSAGE(STATUS "Boost_VERSION     : ${Boost_VERSION}")
+        MESSAGE(STATUS "Boost_INCLUDE_DIR : ${Boost_INCLUDE_DIR}")
+        MESSAGE(STATUS "Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
+        MESSAGE(STATUS "Boost_LIBRARIES   : ${Boost_LIBRARIES}")
+    ENDIF(Boost_DEBUG)
+ELSE(Boost_FOUND)
+  MESSAGE(STATUS "Boost_DIR is: $ENV{Boost_DIR}")
+  MESSAGE(FATAL_ERROR
+      "Cannot build <+project+> without Boost.  Please set Boost_DIR.")
+ENDIF(Boost_FOUND)
+
