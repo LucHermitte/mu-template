@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.0.9
-let s:version = '3.0.9'
+" Version:	3.1.0
+let s:version = '3.1.0'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -58,6 +58,8 @@ after/template/docbk/code.template
 after/template/docbk/emphasis.template
 after/template/docbk/filename.template
 after/template/docbk/function.template
+after/template/docbk/glossentry.template
+after/template/docbk/glossterm.template
 after/template/docbk/itemizedlist.template
 after/template/docbk/listitem.template
 after/template/docbk/literal.template

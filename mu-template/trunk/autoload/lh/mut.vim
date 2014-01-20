@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.0.8
+" Version:      3.1.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.1.0
+"	(*) Refactorizations
+"	(*) New function lh#mut#expand_text()
 "	v3.0.8
 "	(*) lh#mut#expand_and_jump()/:MuTemplate fixed to receive several
 "	    parameters
@@ -62,7 +65,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 306
+let s:k_version = 310
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -130,15 +133,12 @@ function! lh#mut#edit(path)
   endtry
 endfunction
 
-" Function: lh#mut#expand(NeedToJoin, ...) {{{2
+" Function: lh#mut#expand(NeedToJoin, ...)                 {{{2
 function! lh#mut#expand(NeedToJoin, ...)
+  let s:content.lines = []
+
   " echomsg 'lh#mut#expand('.a:NeedToJoin.string(a:000).')'
   " 1- Determine the name of the template file expected {{{3
-  let pos = line('.')
-  let s:content.start = pos
-  let s:content.lines = []
-  let s:content.scope = [1]
-  let s:NeedToJoin = a:NeedToJoin
   if a:0 > 0
     let dir = fnamemodify(a:1, ':h')
     if dir != "" | let dir .= '/' | endif
@@ -150,118 +150,34 @@ function! lh#mut#expand(NeedToJoin, ...)
     " otherwise (default) : the template file is function of the current
     " filetype
   endif
+
   " 2- Load the associated template {{{3
-  let foldenable=&foldenable
-  silent! set nofoldenable
-  try
-    call  s:LoadTemplate(0, dir.ft.'.template')
+  call  s:LoadTemplate(0, dir.ft.'.template')
 
-    " 2.0 Reset default settings
-    " clear any function definition
-    let s:__function = []
-    " Default values for placeholder characters (they can be overridden in each
-    " template file).
-    let s:marker_open  = '<+'
-    let s:marker_close = '+>'
-    " Default support for evaluation of placeholder-text
-    silent! unlet s:dont_eval_markers 
-    " Default fileencoding to override in template files
-    let s:fileencoding = &enc
-
-    " Note: last is the number of the last line inserted
-    " 3- If successful, interpret it {{{3
-    if len(s:content.lines) > 0 " {{{4
-      " Interpret
-      call s:InterpretLines(pos)
-      " Reencode
-      if s:fileencoding != &enc
-	if has('multi_byte')
-	  call s:Reencode()
-	else
-	  call lh#common#warning_msg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
-	endif
-      endif
-      " @post: :functions must be fully defined
-      if !empty(s:__function)
-	throw 'function definition not terminated (:enfunction expected)'
-      endif
-
-      " Insert
-      call append(pos, s:content.lines)
-      let last=pos + len(s:content.lines)
-      " echomsg 'last='.last
-
-      " Goto the first line and delete it (because :r insert one useless line)
-      if "" == getline(pos)
-	silent exe pos."normal! dd0"
-      else
-	silent exe pos."normal! J!0"
-      endif
-      let last -= 1
-      " Activate Tom Link's Stakeholders in case it is installed
-      if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1)
-	if !exists('#stakeholders') " Stakeholder not enabled for all buffers
-	  if !exists('b:stakeholders') || exists('b:stakeholders_range')
-	    " previously activated on a range, or never activated
-	    " echomsg "try EnableInRange(".pos.','.last.')'
-	    " Reset previous range
-	    call stakeholders#DisableBuffer()
-	    " Set new range in case there is no global activation
-	    call stakeholders#EnableInRange(pos, last)
-	  else
-	    " echomsg "already activated for the current buffer ?"
-	  endif
-	else " Stakeholders Enabled for all buffers
-	  if exists('b:stakeholders')
-	    " Relaunch for the new global range
-	    call stakeholders#DisableBuffer()
-	    call stakeholders#EnableBuffer()
-	  else
-	    " echomsg "leave it to autocmds?"
-	    call stakeholders#EnableBuffer()
-	  endif
-	endif
-      endif " Stakeholders installed
-
-      " Reindent
-      if exists('s:reindent') && s:reindent
-	silent exe (pos).','.(last).'normal! =='
-	unlet s:reindent
-      endif
-      " Join with the line after the template that have been inserted
-      if     a:NeedToJoin >= 2
-	silent exe last."normal! A".Marker_Txt('')."\<esc>J!"
-	let s:moveto = 'call cursor('.last.','.virtcol('.').')'
-      elseif a:NeedToJoin >= 1
-	"Here: problem when merging empty &comments
-	if s:IsKindOfEmptyLine(last+1)
-	  silent exe (last+1).'delete _'
-	  let s:moveto = last.'normal! $'
-	else
-	  " exe last."normal! J!"
-	  exe last
-	  let s:moveto = 'call cursor('.last.','.virtcol('$').')'
-	  silent exe last."normal! gqj"
-	endif
-      else " NeedToJoin == 0
-	let s:moveto = 'call cursor('.pos.',1)'
-      endif
-      return 1
-    else " {{{4
-      return 0
-    endif
-  finally
-    let &foldenable=foldenable
-    let s:args=[]
-    " and unfold the lines inserted
-    if &foldenable
-      silent! exe (pos).','.(last).'foldopen!'
-    endif
-  endtry
-  " }}}3
+  " 3- Expand the lines {{{3
+  return s:DoExpand(a:NeedToJoin)
 endfunction
 
-" Function: lh#mut#jump_to_start() {{{2
+" Function: lh#mut#expand_text(NeedToJoin, text, ...)      {{{2
+function! lh#mut#expand_text(NeedToJoin, text, ...)
+  let s:content.lines = type(a:text) == type([]) ? a:text : split(a:text, "\n")
+  try 
+    let s:args = []
+    if a:0 > 1
+      call s:PushArgs(a:000[1:])
+      " echomsg 'all: ' . string(s:args)
+    endif
+    let res = s:DoExpand(a:NeedToJoin)
+    if res && s:Option('jump_to_first_markers',1)
+      call lh#mut#jump_to_start()
+    endif
+    return res
+  finally
+    let s:args = []
+  endtry
+endfunction
+
+" Function: lh#mut#jump_to_start()                         {{{2
 function! lh#mut#jump_to_start()
   " echomsg 'lh#mut#jump_to_start()'
   " set foldopen+=insert,jump
@@ -307,7 +223,7 @@ function! lh#mut#expand_and_jump(needToJoin, ...)
   endtry
 endfunction
 
-" Function: lh#mut#surround()                                  {{{2
+" Function: lh#mut#surround()                              {{{2
 function! lh#mut#surround()
   try 
     " 1- ask which template to execute {{{3
@@ -368,7 +284,7 @@ function! lh#mut#surround()
   endtry
 endfunction
 "------------------------------------------------------------------------
-" Function: lh#mut#search_templates(word)                      {{{2
+" Function: lh#mut#search_templates(word)                  {{{2
 function! lh#mut#search_templates(word)
   let s:args = []
   " 1- Build the list of template files matching the current word {{{3
@@ -399,7 +315,7 @@ endfunction
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
 " Tools functions                                          {{{2
-function! s:Option(name, default)                        " {{{3
+function! s:Option(name, default)  " {{{3
   if     exists('b:mt_'.a:name) | return b:mt_{a:name}
   elseif exists('g:mt_'.a:name) | return g:mt_{a:name}
   else                          | return a:default
@@ -583,6 +499,81 @@ function! s:LoadTemplate(pos, templatepath)
     let &wildignore = wildignore
   endtry
   return len(s:content.lines)
+endfunction
+
+" Function: s:DoExpand(NeedToJoin)                             {{{3
+" @pre s:content.lines array is filled with the lines to expand
+function! s:DoExpand(NeedToJoin)
+  if len(s:content.lines) == 0
+    return 0
+  endif
+
+  let pos = line('.')
+  let s:content.start = pos
+  let s:content.scope = [1]
+  let s:NeedToJoin = a:NeedToJoin
+  let foldenable=&foldenable
+  silent! set nofoldenable
+  try
+    " 1- Reset default settings {{{4
+    " clear any function definition
+    let s:__function = []
+    " Default values for placeholder characters (they can be overridden in each
+    " template file).
+    let s:marker_open  = '<+'
+    let s:marker_close = '+>'
+    " Default support for evaluation of placeholder-text
+    silent! unlet s:dont_eval_markers 
+    " Default fileencoding to override in template files
+    let s:fileencoding = &enc
+
+    " Note: last is the number of the last line inserted
+    " 2- Interpret {{{4
+    call s:InterpretLines(pos)
+    " Reencode
+    if s:fileencoding != &enc
+      if has('multi_byte')
+        call s:Reencode()
+      else
+        call lh#common#warning_msg('muTemplate: This vim executable cannot convert the text from "'.s:fileencoding.'" to &enc="'.&enc.'" as requested by the template-file')
+      endif
+    endif
+    " @post: :functions must be fully defined
+    if !empty(s:__function)
+      throw 'function definition not terminated (:enfunction expected)'
+    endif
+
+    " 3- Insert {{{4
+    call append(pos, s:content.lines)
+    let last=pos + len(s:content.lines)
+    " echomsg 'last='.last
+
+    " Goto the first line and delete it (because :r inserts one useless line) {{{4
+    if "" == getline(pos)
+      silent exe pos."normal! dd0"
+    else
+      silent exe pos."normal! J!0"
+    endif
+    let last -= 1
+    " Activate Tom Link's Stakeholders in case it is installed {{{4
+    call s:TryActivateStakeholders(pos, last)
+
+    " Reindent {{{4
+    if exists('s:reindent') && s:reindent
+      silent exe (pos).','.(last).'normal! =='
+      unlet s:reindent
+    endif
+    " Join with the line after the template that have been inserted {{{4
+    call s:JoinWithNext(a:NeedToJoin,pos,last)
+    return 1
+  finally " Reset settings {{{4
+    let &foldenable=foldenable
+    let s:args=[]
+    " and unfold the lines inserted
+    if &foldenable
+      silent! exe (pos).','.(last).'foldopen!'
+    endif
+  endtry
 endfunction
 
 " s:InterpretValue() will interpret a sequence between ¡.\{-}¡ {{{3
@@ -932,7 +923,7 @@ function! s:InsertTemplateFile(word,file)
     " TODO: manage a blinking pb
     let l = strlen(a:word)	" No word to expand ; abort
     if     0 == l
-    " elseif 1 == l		" Select a one-character length word
+      " elseif 1 == l		" Select a one-character length word
       " silent exe "normal! \<esc>vc\<c-g>u\<esc>"
     else			" Select a 1_n-characters length word
       let ew = escape(a:word, '\.*[/')
@@ -974,6 +965,55 @@ function! s:InsertTemplateFile(word,file)
     return ""
   endif " }}}4
 endfunction
+
+" s:TryActivateStakeholders(pos, last)                         {{{3
+function! s:TryActivateStakeholders(pos,last)
+  if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1)
+    if !exists('#stakeholders') " Stakeholder not enabled for all buffers
+      if !exists('b:stakeholders') || exists('b:stakeholders_range')
+        " previously activated on a range, or never activated
+        " echomsg "try EnableInRange(".a:pos.','.a:last.')'
+        " Reset previous range
+        call stakeholders#DisableBuffer()
+        " Set new range in case there is no global activation
+        call stakeholders#EnableInRange(a:pos, a:last)
+      else
+        " echomsg "already activated for the current buffer ?"
+      endif
+    else " Stakeholders Enabled for all buffers
+      if exists('b:stakeholders')
+        " Relaunch for the new global range
+        call stakeholders#DisableBuffer()
+        call stakeholders#EnableBuffer()
+      else
+        " echomsg "leave it to autocmds?"
+        call stakeholders#EnableBuffer()
+      endif
+    endif
+  endif " Stakeholders installed
+endfunction
+
+" s:JoinWithNext(NeedToJoin,last,pos)                          {{{3
+function! s:JoinWithNext(NeedToJoin,pos,last)
+  if     a:NeedToJoin >= 2
+    silent exe a:last."normal! A".Marker_Txt('')."\<esc>J!"
+    let s:moveto = 'call cursor('.a:last.','.virtcol('.').')'
+  elseif a:NeedToJoin >= 1
+    "Here: problem when merging empty &comments
+    if s:IsKindOfEmptyLine(a:last+1)
+      silent exe (a:last+1).'delete _'
+      let s:moveto = a:last.'normal! $'
+    else
+      " exe a:last."normal! J!"
+      exe a:last
+      let s:moveto = 'call cursor('.a:last.','.virtcol('$').')'
+      silent exe a:last."normal! gqj"
+    endif
+  else " NeedToJoin == 0
+    let s:moveto = 'call cursor('.a:pos.',1)'
+  endif
+endfunction
+
 " }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save
