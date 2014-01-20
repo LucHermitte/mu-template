@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 24th Jun 2011
+*mu-template.vim*       For Vim version 7+      Last change: 20th Jan 2014
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 3.0.1
+                    Version 3.1.0
 
 
 ==============================================================================
@@ -230,6 +230,20 @@ current selection.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 {{{3 Through the menu                                          ~
     See |MuT-menu|.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+{{{3 Through the API~
+    You may be wrtting plugins that need to expand stuff. mu-template offers
+    several functions for this need.
+
+{{{4 Expand text directly at the current position~
+                                                *lh#mut#expand_text()*  
+    This function takes two parameters:
+    - Whether we need to join what is inserted with what follow on next line
+      (0 or 1)
+    - and the text to expand. It could also be a list of lines to expand. 
+    e.g. >
+    call lh#mut#expand_text(0, ['I am <+Author()+>', 'And you are <+fill-in-your-name+>'])
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 {{{3 Filetype inheritance                                      ~
@@ -871,7 +885,7 @@ Tom Link		For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2012 <http://code.google.com/p/lh-vim/>, CC by SA 3.0 {{{1
+ © Luc Hermitte, 2001-2014 <http://code.google.com/p/lh-vim/>, CC by SA 3.0 {{{1
  $Id$
  VIM: let b:VS_language = 'american' 
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
