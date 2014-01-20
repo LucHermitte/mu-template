@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.0.8
+" Version:	3.1.0
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -280,6 +280,9 @@
 "	v3.0.8
 "	(*) lh#mut#expand_and_jump()/:MuTemplate fixed to receive several
 "	    parameters
+"	v3.1.0
+"	(*) Refactorizations
+"	(*) New function lh#mut#expand_text()
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -317,7 +320,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 307
+let s:k_version = 310
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')

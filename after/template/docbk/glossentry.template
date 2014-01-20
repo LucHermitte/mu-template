@@ -1,0 +1,15 @@
+VimL:" $Id$
+VimL:" <glossentry/> File Template, Luc Hermitte
+VimL:" hint: <glossentry/>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+<glossentry xml:id="gloss.{+gloss-id+}">
+  <glossterm>{+glossterm+}</glossterm>
+
+  <glossdef>
+    <para>{+definition+}.</para>
+  </glossdef>
+</glossentry>{++}

@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" <glossterm/> File Template, Luc Hermitte
+VimL:" hint: <glossterm/>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+<glossterm linkend="gloss.{+gloss-id+}">¡s:Surround(1, '{+glossterm+}')¡</glossterm>¡s:Surround(2, '{++}')¡
