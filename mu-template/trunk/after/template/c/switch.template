@@ -22,7 +22,7 @@ VimL: endfunction
 VimL: "
 VimL: let s:_expr = empty(s:Args()) ? Marker_Txt('expr') : s:Args()[0].name
 VimL: let s:_with_block = len(s:Args()) <= 1 ? INPUT("Insert a block for each case (0/1) ?") : (s:Args()[1])
-switch<+C_nl_before_bracket()+>(<+s:_expr+>)<+C_nl_before_curlyB()+>{
+switch(<+s:_expr+>){
 VimL: call s:_LoopOverCases()
     default:
 <+s:_with_block?'{':''+>

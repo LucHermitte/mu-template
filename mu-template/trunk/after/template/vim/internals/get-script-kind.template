@@ -5,8 +5,10 @@ VimL: let s:alplug     = expand('%:p') =~ '/autoload'
 VimL: let s:plugin     = expand('%:p') =~ '/plugin'
 VimL: let s:localvimrc = expand('%:p') =~ '/_vimrc_local.vim'
 VimL: let s:mkvba      = expand('%:p') =~ '/mkVba'
+VimL: let s:tests      = expand('%:p') =~ '/tests'
 VimL: if s:ftplug     | let s:script_kind = 'ftplugin' | endif
 VimL: if s:alplug     | let s:script_kind = 'autoload' | endif
 VimL: if s:plugin     | let s:script_kind = 'plugin'   | endif
 VimL: if s:localvimrc | let s:script_kind = 'local'    | endif
 VimL: if s:mkvba      | let s:script_kind = 'mkvba'    | endif
+VimL: if s:tests      | let s:script_kind = 'tests'    | endif
