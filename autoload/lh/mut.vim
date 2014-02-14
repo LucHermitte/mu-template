@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.1.0
+" Version:      3.2.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.2.0
+"	(*) Support for lh#dev styling option :AddStyle
 "	v3.1.0
 "	(*) Refactorizations
 "	(*) New function lh#mut#expand_text()
@@ -65,7 +67,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 310
+let s:k_version = 320
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -581,7 +583,7 @@ endfunction
 " To possibly expand a sequence into an empty string, use the
 " 'bool_expr ?  act1 : act2' VimL operator ; cf vim.template for examples of
 " use.
-function! s:InterpretValue(what)
+function! s:InterpretValue(what) abort
   try
     " todo: can we use eval() now?
     exe 'let s:__r = ' . a:what
@@ -596,7 +598,7 @@ endfunction
 " s:InterpretCommand() will interpret a sequence 'VimL:.*'     {{{3
 " ... and return nothing
 " Back-Door to trojans !!!
-function! s:InterpretCommand(what)
+function! s:InterpretCommand(what) abort
   try
     if empty(s:__function)
       if a:what =~ '^:\?fu\%[nction]'
@@ -625,7 +627,7 @@ function! s:InterpretCommand(what)
 endfunction
 
 " s:InterpretValues(line) ~ eval expressions in {line}         {{{3
-function! s:InterpretValues(line)
+function! s:InterpretValues(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
     throw 'already within the definition of a function (no non-VimL code authorized)'
@@ -655,7 +657,7 @@ endfunction
 
 " s:InterpretMarkers(line) ~ eval markers as expr in {line}    {{{3
 " todo merge with s:InterpretValues
-function! s:InterpretMarkers(line)
+function! s:InterpretMarkers(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
     throw 'already within the definition of a function (no non-VimL code authorized)'
@@ -678,6 +680,54 @@ function! s:InterpretMarkers(line)
       catch /.*/
         let value = Marker_Txt(split[2])
       endtry
+      let res .= split[1] . (type(value)!=type("") ? string(value) : value)
+      let tail = split[3]
+      let may_merge = 1
+    endif
+  endwhile
+  " echomsg "may_merge=".may_merge."  ---  ".res
+  return res
+  " return { 'line' : res, 'may_merge' : may_merge }
+endfunction
+
+" s:ApplyStyling(line) ~ add spaces or NL before/after brackets{{{3
+function! s:FindMatchingPattern(patterns, string)
+  let i = 0
+  for p in a:patterns
+    if match(p, a:string) >= 0 | return i | endif
+    let i+=1
+  endfor
+  return i
+endfunction
+
+function! s:ApplyStyling(line) abort
+  " @pre must not be defining VimL functions
+  if !empty(s:__function)
+    throw 'already within the definition of a function (no non-VimL code authorized)'
+  endif
+
+  let styles = lh#dev#style#get(&ft)
+  if empty(styles) | return a:line | endif
+  let patterns = keys(styles)
+  let replacements = values(styles)
+
+  let res = ''
+  let tail = a:line
+  " todo: recognize when all patterns are 1-char long
+  let re =  '\(.\{-}\)'.'\('.join(patterns, '\|').'\)'.'\(.*\)'
+  let may_merge = 0
+  while strlen(tail)!=0
+    let split = matchlist(tail, re)
+    if len(split) <2 || strlen(split[0]) == 0
+      " nothing found
+      let res .= tail
+      let tail = ''
+      " let may_merge = 0
+    else
+      let pattern_idx = s:FindMatchingPattern(patterns, split[2])
+      " assert pattern_idx < len(replacements) 
+      let value = replacements[pattern_idx]
+
       let res .= split[1] . (type(value)!=type("") ? string(value) : value)
       let tail = split[3]
       let may_merge = 1
@@ -770,12 +820,17 @@ function! s:InterpretLines(first_line)
       " Replaces expressions by their interpreted value
       let line = s:InterpretValues(the_line)
       let the_line = line.line
+
+      " Replaces characters from a list (-> style policies for {, ( regarding
+      " spaces, newlines, etc.
+      let the_line = s:ApplyStyling(the_line)
+
       if the_line =~ '^\s*$' && line.may_merge
 	" The line becomes empty after the evaluation of the expression => strip it
 	call remove(s:content.lines, s:content.crt) " implicit next
       else
 	" Put back the interpreted lines in the content buffer
-	if match(the_line, "[\n\r]")
+	if match(the_line, "[\n\r]") >= 0
 	  " Split the line into several lines if it contains "\n" or "\r"
 	  " characters
 	  let lines = split(the_line, "[\r\n]")
