@@ -6,7 +6,7 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:_prj_config = s:Param('_prj_config', 'g:'.Marker_Txt('MyProject').'_config')
 
-let b:ProjectVersion        = '<+version+>'
+let b:ProjectVersion        = '<+_version_+>'
 let b:cpp_project_namespace = '<+project_ns+>'
 
 " ======================[ &path {{{2
@@ -28,13 +28,13 @@ let b:sources_root = <+s:_prj_config+>.paths.sources
 let b:includes = [ b:project_sources_dir . '/**']
 if SystemDetected() == 'unix'
   " Add your 3rd party libraries used in the project here
-  call lh#path#add_if_exists('b:includes', '/home/lhermitte/dev/boost/1_51_0/install/include/')
-  call lh#path#add_if_exists('b:includes', '/usr/local/include/**')
-  call lh#path#add_if_exists('b:includes', '/usr/include/**')
+  call lh#path#add_path_if_exists('b:includes', '/home/lhermitte/dev/boost/1_51_0/install/include/')
+  call lh#path#add_path_if_exists('b:includes', '/usr/local/include/**')
+  call lh#path#add_path_if_exists('b:includes', '/usr/include/**')
 endif
 " For config.h.in files and alike
 " todo: adapt it automatically to the current compilation dir
-let b:includes += [b:BTW_compilationd_dir . '/**']
+let b:includes += [b:BTW_compilation_dir . '/**']
 
 " Setting &path
 exe 'setlocal path+='.FixPathName(b:project_sources_dir).'/**'
@@ -97,6 +97,7 @@ let b:BTW_project_config = {
 source <sfile>:p:h/_vimrc_cpp_style.vim
 
 " ======================[ Menus {{{2
+let s:script=expand("<sfile>:p:h")
 call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
 " call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
 call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )

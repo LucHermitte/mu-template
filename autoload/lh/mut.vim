@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.2.0
+" Version:      3.2.1
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.2.1
+"	(*) s:Param() will search for the key in all params
+"	    TODO: rethink the way parameters are passed
 "	v3.2.0
 "	(*) Support for lh#dev styling option :AddStyle
 "	v3.1.0
@@ -67,7 +70,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 320
+let s:k_version = 321
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -368,13 +371,31 @@ endfunction
 " @returns a list. If the list is empty, this mean no parameter was given.
 let s:args = []
 function! s:Param(name, default)
-  if empty(s:args)                   | return a:default
-  elseif empty(a:name)               | return s:args[-1]
-  elseif has_key(s:args[-1], a:name) | return s:args[-1]{a:name}
-  else                               | return a:default
+  if empty(a:name)
+    return s:args[-1]
+  else
+    let i = len(s:args) - 1
+    while i > -1
+      silent! unlet arg
+      let arg = s:args[i]
+
+      if type(arg)==type([])
+        let j = len(arg) - 1
+        while j > -1
+          if type(arg[j])==type({}) && has_key(arg[j], a:name) 
+            return arg[j][a:name]
+          endif
+          let j -= 1
+        endwhile
+
+      elseif type(arg)==type({}) && has_key(arg, a:name) 
+        return arg[a:name]
+      endif
+      let i -= 1
+    endwhile
+    return a:default
   endif
   " echomsg string(s:args)
-  return empty(s:args) ? [] : s:args[-1]
 endfunction
 
 " Function: s:Include()              {{{3
