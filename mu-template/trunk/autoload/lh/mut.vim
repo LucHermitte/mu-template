@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.2.1
+" Version:      3.2.2
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.2.1
+"	(*) bug fix: MuT: elif... MuT: else was incorrectly managed
 "	v3.2.1
 "	(*) s:Param() will search for the key in all params
 "	    TODO: rethink the way parameters are passed
@@ -779,13 +781,17 @@ function! s:InterpretMuTCommand(the_line)
     if len(s:content.scope) <= 1
       throw "'MuT: elseif' used, but there was no if"
     endif
-    let is_true = eval(cond)
-    let s:content.scope[0] = is_true 
+    if s:content.scope[0] != 0 " something has been true in the past
+      let s:content.scope[0] = -1 " => ignoring this case
+    else
+      let is_true = eval(cond)
+      let s:content.scope[0] = is_true 
+    endif
   elseif special_cmd == 'else'
     if len(s:content.scope) <= 1
       throw "'MuT: else' used, but there was no if"
     endif
-    let s:content.scope[0] = ! s:content.scope[0]
+    let s:content.scope[0] = s:content.scope[0] == 0 " only of nothing has ever been true
   elseif special_cmd == 'endif'
     if len(s:content.scope) <= 1
       throw "'MuT: else' used, but there was no if"
@@ -814,7 +820,7 @@ function! s:InterpretLines(first_line)
       call s:InterpretMuTCommand(the_line)
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
       continue
-    elseif ! s:content.scope[0]
+    elseif s:content.scope[0] != 1
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
       continue
     endif
