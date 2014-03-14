@@ -142,9 +142,13 @@ if exists('g:cpp_FunctionPosArg') | unlet g:cpp_FunctionPosArg | endif
 
 " ## ======================[ Misc {{{1
 " Write each '(' on a new line; -> if \n() ... {}
-let b:c_nl_before_bracket                  = 0
+" let b:c_nl_before_bracket                  = 0
+AddStyle -b ( (
+  " ))
 " Write each '{' on a new line; -> if ...() \n {}
-let b:c_nl_before_curlyB                   = 0
+" let b:c_nl_before_curlyB                   = 0
+AddStyle -b { {
+  " }}
 " Write each "namespace Foo {" on a same line
 let b:cpp_multiple_namespaces_on_same_line = 1
 

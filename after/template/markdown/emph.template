@@ -1,0 +1,4 @@
+VimL:" $Id$
+VimL:" emphasis/italic File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 13th Mar 2014
+VimL:" This snippet exists for uniformity with other languages
+VimL: call s:Include('italic', 'markdown')

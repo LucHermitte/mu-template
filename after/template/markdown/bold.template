@@ -1,0 +1,10 @@
+VimL:" $Id$
+VimL:" bold File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 13th Mar 2014
+VimL:" hint: **text**/__text__
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_bold_char_ = lh#dev#option#get('bold_char', &ft, '*')
+VimL: let s:_bold_mark_ = s:_bold_char_ . s:_bold_char_
+¡s:_bold_mark_.s:Surround(1,'<+text+>').s:_bold_mark_¡<++>

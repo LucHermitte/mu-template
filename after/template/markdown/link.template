@@ -1,0 +1,25 @@
+VimL:" $Id$
+VimL:" link File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 13th Mar 2014
+VimL:" hint: [text](url)
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_surrounded1_ = s:Surround(1, '') 
+VimL: let s:_link_        = s:Surround(2, '') 
+VimL: " 1- Set s:_text_
+MuT:  if s:_surrounded1_ =~ '^\(https\=\|s\=ftp\)://\|^mailto:'
+VimL:    let s:_link_ = s:_surrounded1_
+VimL:    let s:_text_ = lh#marker#txt(s:_surrounded1_)
+MuT: elseif !empty(s:_surrounded1_)
+VimL:    let s:_text_ = s:_surrounded1_
+MuT: elseif !empty(s:_link_)
+VimL:    let s:_text_ = lh#marker#txt(s:_link_)
+MuT: else
+VimL:    let s:_text_ = lh#marker#txt('text')
+MuT: endif
+VimL: " 1- Set s:_link_
+MuT:  if empty(s:_link_)
+VimL:    let s:_link_ = lh#marker#txt('link')
+MuT:  endif
+[<+s:_text_+>](<+s:_link_+>)<++>
