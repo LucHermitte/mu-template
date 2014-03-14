@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.2.1
-let s:version = '3.2.1'
+" Version:	3.2.2
+let s:version = '3.2.2'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -75,6 +75,10 @@ after/template/license/boost-short.template
 after/template/license/copying.template
 after/template/license/gplv3-full.template
 after/template/license/gplv3-short.template
+after/template/markdown/bold.template
+after/template/markdown/emph.template
+after/template/markdown/italic.template
+after/template/markdown/link.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template
@@ -125,6 +129,7 @@ after/template/vim/internals/vim-rc-local-cpp-style.template
 after/template/vim/internals/vim-rc-local-default.template
 after/template/vim/internals/vim-rc-local-global-cmake-def.template
 after/template/vim/internals/vim-rc-local.template
+after/template/vim/internals/vim-tests.template
 after/template/vim/loop-arg.template
 after/template/vim/menu-make.template
 after/template/vim/option-protect.template

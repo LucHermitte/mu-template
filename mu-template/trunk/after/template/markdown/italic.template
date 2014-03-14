@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" emphasis/italic File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 13th Mar 2014
+VimL:" hint: _text_
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_emphasis_char_ = lh#dev#option#get('emphasis_char', &ft, '_')
+¡s:_emphasis_char_.s:Surround(1,'<+text+>').s:_emphasis_char_¡<++>
