@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.2.2
-let s:version = '3.2.2'
+" Version:	3.2.3
+let s:version = '3.2.3'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -51,6 +51,7 @@ after/template/cmake/find-boost.template
 after/template/cmake/if.template
 after/template/cmake/internals/root.template
 after/template/cmake/internals/subdirs.template
+after/template/cmake/status.template
 after/template/cpp.template
 after/template/cpptu-header.template
 after/template/cppunit-header.template
@@ -98,6 +99,7 @@ after/template/template/arg.template
 after/template/template/if.template
 after/template/template/include.template
 after/template/template/reindent.template
+after/template/template/surround.template
 after/template/test-included.template
 after/template/test.template
 after/template/tex/begin-end.template

@@ -1,0 +1,8 @@
+VimL:" $Id$
+VimL:" s:Surround() File Template, Luc Hermitte <hermitte at free.fr>, 17th Mar 2014
+VimL:" hint: s:Surround(<+1+>, '<+default+>')
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+s:Surround(¡s:Surround(2, lh#marker#txt('1'))¡, ¡s:Surround(1, lh#marker#txt('default'))¡)<++>
