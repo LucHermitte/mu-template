@@ -42,6 +42,7 @@ after/template/c/switch.template
 after/template/c/while.template
 after/template/cmake.template
 after/template/cmake/add_subdirectory.template
+after/template/cmake/all_subdirs.template
 after/template/cmake/boost-loop-on-tests.template
 after/template/cmake/boost-test.template
 after/template/cmake/cpack.template

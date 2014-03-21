@@ -1,0 +1,6 @@
+VimL:" $Id$
+VimL:" add_subdirectory(*) File Template, Luc Hermitte <hermitte at free.fr>, 19th Mar 2014
+VimL:" hint: add_subdirectory(dir) x all
+VimL: let s:_here = expand('%:p:h')
+VimL: let s:_subdirs = lh#mut#cmake#subdirs(s:_here)
+VimL: if ! empty(s:_subdirs) | call s:Include('subdirs', 'cmake/internals', s:_subdirs) |endif

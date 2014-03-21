@@ -8,8 +8,7 @@ VimL: " 1- detect whether it's the root CMakeList.txt
 VimL: let s:_is_root_cmake = lh#mut#cmake#is_root_cmakelist(s:_here) 
 VimL: if s:_is_root_cmake | call s:Include('root', 'cmake/internals') | endif
 VimL: " 2- detect subdirs
-VimL: let s:_subdirs = lh#mut#cmake#subdirs(s:_here)
-VimL: if ! empty(s:_subdirs) | call s:Include('subdirs', 'cmake/internals', s:_subdirs) |endif
+VimL: call s:Include('all_subdirs', 'cmake')
 VimL: " 3- detect *.cpp, *.c, *.in (configurable)
 VimL: " 4- detect doxygen file
 VimL: " silent! unlet s:_doxyfiles
