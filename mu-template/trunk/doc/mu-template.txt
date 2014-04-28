@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 20th Jan 2014
+*mu-template.vim*       For Vim version 7+      Last change: 28th Apr 2014
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 3.1.0
+                    Version 3.3.0
 
 
 ==============================================================================
@@ -26,8 +26,8 @@ PRESENTATION                                *MuT-presentation* {{{1
 µTemplate is a template-files loader for Vim. Once loaded, templates are
 interpreted and expanded according to a flexible syntax (|MuT-syntax|).
 
-Note: Every time you read "I", "me" or "my", consider that I, Luc Hermitte, have
-written this documentation.
+Disclaimer: Every time you read "I", "me" or "my", consider that I, Luc
+Hermitte, have written this documentation.
 
 ------------------------------------------------------------------------------
 {{{2 Template-files paths              ~
@@ -404,6 +404,28 @@ FEATURES                                    *MuT-features*     {{{1
     - Finally, the last menu item permits to rebuild the menu when some
       template-files are added or deleted from the system.
     
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    {{{3 Post Expansion Hooks~
+                                            *MuT-post-expand-hooks* *s:AddPostExpandCallback()*
+
+    It's possible to execute hooks after the expansion has been done. 
+
+    The typical use case is for programming langages: the snippet expanded
+    uses a symbol that is defined in a header file/module/package. In order
+    for the expanded code to be valid, this symbol needs to be
+    included/imported/... Hooks can be used to import the missing definitions.
+
+    For instance, lh-cpp defines the following vector-snippet: >
+        VimL: call s:AddPostExpandCallback('lh#cpp#include#add("<vector>")')
+        std::vector<¡s:Surround(1, '<+type+>')¡> <++>
+<   Expanding vector, will of course insert std::vector<>, but also it will
+   automatically include <vector> (if not already included). 
+   Note: this is achieved thanks to |lh#cpp#include#add|. Equivalent functions
+   are still to be written for other languages (Java, Python, Perl, ...)
+
+   Important: the hook function needs to return the number of lines added (in
+   case they are added before the place where the snippet has been expanded)
+
 
 ==============================================================================
 TEMPLATE FILES SYNTAX                       *MuT-syntax*       {{{1
@@ -504,6 +526,14 @@ A:  If you want to insert a lot of lines according to a given case (for
     instead of |IF()|.
     Examples: check c.template, vim.template
 
+                                                        *MuT-if*  *MuT-else*  *MuT-endif*
+    You can also use "MuT: if", e.g.: >
+        MuT:  if lh#dev#cpp#use_cpp11()
+        std::shared_ptr<<+type+>> <++>
+        MuT:  else
+        boost::shared_ptr<<+type+>> <++>
+        MuT:  endif
+
 
 Q:  "How can I re-indent the lines inserted?"           *s:reindent*
 A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
@@ -522,12 +552,13 @@ A:  This can be achieved with the special function |s:Include()|.
 	VimL: call s:Include('case', 'c', arg)
 
 
-Q:  "How can I pass parameters to imported skeletons?" *s:Args()* *s:PushArgs()*
+Q:  "How can I pass parameters to imported skeletons?" *s:Args()* *s:PushArgs()* *s:Params()*
 A:  Three API functions are provided for this purpose:
     - |s:PushArgs()| permits to push arguments to the skeleton
     - |s:Include()| which takes an optional third parameter to push arguments
       to the imported skeleton.
-    - |s:Args()|permits to fetch the arguments passed.
+    - |s:Args()| permits to fetch the arguments passed.
+    - |s:Params()| permit to fetch a named argument passed.
     In order to support optional arguments, the arguments passed (to
     |s:PushArgs()|, not to |s:Include()|), and fetched, shall be wrapped in a
     |List|.  An empty list will be equivalent the C void argument.
@@ -587,6 +618,7 @@ A:  Be sure the expression to expand does not end with a "\n". You may want to
 <   «todo: check if it concerns every ending \n, or only strings strictly equal to "\n"»
 
                                         *MuT-loops* *MuT-instruction-injection* 
+                                        *s:Inject()*  *s:InjectAndTransform()*
     You can also inject text (or even |MuT-instruction|) into |s:content| with: >
         VimL: call s:Inject(["list", "of", "lines"]
 <   You can also define complex functions in |autoload| plugins instead, or
@@ -722,8 +754,8 @@ The (non) exhaustive list of the reserved symbols is:
 - s:Interpret(), s:InterpretValues(), s:InterpretValue(),
   s:InterpretCommand(), s:InterpretLines(),
 - s:Template(), s:TemplateDirs(), s:LoadTemplate s:SearchTemplates(),
-- s:CheckDeps(), s:Option().
-- s:NoRegex(), s:Marker(), s:Value(), s:Command(), s:Comment()
+- s:Option().
+- s:NoRegex(), s:Marker(), s:Value(), s:Command(), s:Special(), s:Comment()
 
 Moreover, all s: variables starting will a double underscore will be reserved.
 

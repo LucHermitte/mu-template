@@ -1,0 +1,8 @@
+VimL:" $Id$
+VimL:" post-include File Template, Luc Hermitte, 28th Apr 2014
+VimL:" hint: AddPostExpandCallback(lh#cpp#include#add("<string>"))
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: call s:Include('post-expand-callback', 'template', 'lh#cpp#include#add("<'.lh#marker#txt('header').'>")')

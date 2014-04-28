@@ -1,0 +1,10 @@
+VimL:" $Id$
+VimL:" «post-expand-callback» File Template, Luc Hermitte, 28th Apr 2014
+VimL:" hint: «post-expand-callback-hint»
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:hook = empty(s:Args()) ? lh#marker#txt('hook') : (s:Args()[0])
+¡'VimL:'¡ call s:AddPostExpandCallback(<+s:hook+>)
+VimL: unlet s:hook
