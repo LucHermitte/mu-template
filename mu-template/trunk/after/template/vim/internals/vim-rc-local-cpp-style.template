@@ -54,6 +54,21 @@ setlocal tw=79
 "let b:cpp_naming_member_subst = 'my\U&'           " myVariable
 "let b:cpp_naming_member_subst = '\l&_'            " attribute_
 
+" # types {{{2
+" let b:cpp_naming_type         = 'lowerCamelCase' " unusualStuff
+" let b:cpp_naming_type         = 'UpperCamelCase' " UsualStuff " default
+" let b:cpp_naming_type         = 'snake_case'     " a_la_lib_std
+"
+" let b:cpp_naming_type_re      = '.*'
+" let b:cpp_naming_type_subst   = '&'              " Typename " default
+" let b:cpp_naming_type_subst   = 'T&'             " TTypenname
+" let b:cpp_naming_type_subst   = '&_t'            " Typenname_t
+
+" # functions {{{2
+" let b:cpp_naming_function     = 'lowerCamelCase' " usualStuff " default
+" let b:cpp_naming_function     = 'UpperCamelCase' " ALaC#
+" let b:cpp_naming_function     = 'snake_case'     " a_la_lib_std
+
 " # getters {{{2
 " let b:cpp_naming_strip_getter = '\l\1'           " name()
 " let b:cpp_naming_strip_getter = 'get\u&'         " getName() "  default
