@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.2.2
+" Version:	3.3.0
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -290,6 +290,9 @@
 "	    TODO: rethink the way parameters are passed
 "	v3.2.1
 "	(*) bug fix: MuT: elif... MuT: else was incorrectly managed
+"	v3.3.0
+"	(*) New feature: post expansion hooks
+"
 "
 " BUGS:	{{{2
 "	Globals should be prefixed. Eg.: g:author .
@@ -327,7 +330,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 322
+let s:k_version = 330
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')

@@ -3,6 +3,7 @@ VimL:" CMake File Template, Luc Hermitte, 28th Sep 2013
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:_here = expand('%:p:h')
+VimL: call s:Include("cmake-file-header", "cmake/internals")
 VimL: "
 VimL: " 1- detect whether it's the root CMakeList.txt
 VimL: let s:_is_root_cmake = lh#mut#cmake#is_root_cmakelist(s:_here) 

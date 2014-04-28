@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.2.2
+" Version:      3.3.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.3.0
+"	(*) New feature: post expansion hooks
 "	v3.2.1
 "	(*) bug fix: MuT: elif... MuT: else was incorrectly managed
 "	v3.2.1
@@ -72,7 +74,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 321
+let s:k_version = 330
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -263,7 +265,7 @@ function! lh#mut#surround()
     " The following hack is required in line-wise surrounding to not expand the
     " template-file after the first line after the one surrounded.
     if s:content[surround_id] =~ "\n$" " line-wise surrounding
-      put!=''
+      silent put!=''
     endif
     if stridx(s:content[surround_id], '\n') < 0 " suppose this is on a single-line
       let l = strlen(s:content[surround_id])
@@ -419,6 +421,11 @@ function! s:Include(template, ...)
   endif
 endfunction
 
+" Function: s:AddPostExpandCallback(callback) {{{3
+function! s:AddPostExpandCallback(callback)
+  let s:content.callbacks += [a:callback]
+endfunction
+
 " Function: s:Inject(lines)          {{{3
 function! s:Inject(lines)
   let pos = s:content.crt
@@ -498,7 +505,7 @@ endfunction
 " }}}2
 "------------------------------------------------------------------------
 " Core Functions {{{2
-let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1]}
+let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1], 'callbacks': []}
 
 " s:LoadTemplate(pos, templatepath)                            {{{3
 function! s:LoadTemplate(pos, templatepath)
@@ -536,6 +543,7 @@ function! s:DoExpand(NeedToJoin)
   let pos = line('.')
   let s:content.start = pos
   let s:content.scope = [1]
+  let s:content.callbacks = []
   let s:NeedToJoin = a:NeedToJoin
   let foldenable=&foldenable
   silent! set nofoldenable
@@ -590,6 +598,12 @@ function! s:DoExpand(NeedToJoin)
     endif
     " Join with the line after the template that have been inserted {{{4
     call s:JoinWithNext(a:NeedToJoin,pos,last)
+
+    " Execute the post-expand callbacks (like add_include_dirs)
+    let nb_lines_added =  s:ExecutePostExpandCallbacks()
+    let pos             += nb_lines_added
+    let last            += nb_lines_added
+    let s:content.start += nb_lines_added
     return 1
   finally " Reset settings {{{4
     let &foldenable=foldenable
@@ -1094,6 +1108,21 @@ function! s:JoinWithNext(NeedToJoin,pos,last)
   else " NeedToJoin == 0
     let s:moveto = 'call cursor('.a:pos.',1)'
   endif
+endfunction
+
+" s:ExecutePostExpandCallbacks()                               {{{3
+function! s:ExecutePostExpandCallbacks()
+  let nb_lines_added = 0
+  for Callback in s:content.callbacks
+    if type(Callback) == type(function('has'))
+      let nb_lines_added += Callback()
+    elseif type(Callback) == type({})
+      let nb_lines_added +=  lh#function#execute(Callback)
+    else
+      execute 'let nb_lines_added += '.Callback
+    endif
+  endfor
+  return nb_lines_added
 endfunction
 
 " }}}1
