@@ -77,7 +77,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 330
+let s:k_version = 332
 function! lh#mut#version()
   return s:k_version
 endfunction
