@@ -1,0 +1,23 @@
+VimL:" $Id$
+VimL:" ut-test-case File Template, Luc Hermitte, 30th Apr 2014
+VimL:" hint: Test case snippet
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+VimL: let s:ut_framework = lh#dev#option#get('ut_framework', &ft, 'boost')
+VimL: " TODO: define as many file as frameworks
+MuT:  if     s:ut_framework == 'boost'
+    BOOST_AUTO_TEST_CASE(<+test-case-name+>)
+MuT:  elseif s:ut_framework == 'gtest'
+    TEST(<+test-case-name+>, <+test-name+>)
+MuT:  elseif s:ut_framework == 'cxxtest'
+    void test_<+test-case-name+>()
+MuT:  else
+    <+Sorry, unsupported UT framework+>
+MuT:  endif
+{
+    ¡s:Surround(1, '<+test-case-code+>')¡
+}
+
