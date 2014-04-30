@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.3.0
+" Version:	3.3.2
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -292,6 +292,9 @@
 "	(*) bug fix: MuT: elif... MuT: else was incorrectly managed
 "	v3.3.0
 "	(*) New feature: post expansion hooks
+"	v3.3.2
+"	(*) lh#expand*() return the number of the last line where text as been
+"	    inserted
 "
 "
 " BUGS:	{{{2
@@ -330,7 +333,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 330
+let s:k_version = 332
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')

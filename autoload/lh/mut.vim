@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.0
+" Version:      3.3.2
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,9 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.3.2
+"	(*) lh#expand*() return the number of the last line where text as been
+"	    inserted
 "	v3.3.0
 "	(*) New feature: post expansion hooks
 "	v3.2.1
@@ -604,7 +607,7 @@ function! s:DoExpand(NeedToJoin)
     let pos             += nb_lines_added
     let last            += nb_lines_added
     let s:content.start += nb_lines_added
-    return 1
+    return last
   finally " Reset settings {{{4
     let &foldenable=foldenable
     let s:args=[]
