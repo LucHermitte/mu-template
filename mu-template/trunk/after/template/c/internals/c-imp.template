@@ -13,5 +13,10 @@ VimL: " Include the associated inline file, if found
 ¡filereadable(expand("%:p:r").'.inl')? '#include "'.expand('%:t:r').'.inl"':""¡
 <+other includes+>
 
-VimL: call s:Include("section-sep", "c", "other stuff")
+MuT:  if lh#option#get('is_unit_test', 0)
+VimL: call s:Include('c-ut', 'c/internals')
+MuT:  else
+VimL:   call s:Include("section-sep", "c", "other stuff")
 <+other stuff+>
+
+MuT:  endif
