@@ -295,6 +295,13 @@
 "	v3.3.2
 "	(*) lh#expand*() return the number of the last line where text as been
 "	    inserted
+"	v3.3.3
+"	(*) new functions:
+"	    - to obtain a template definition in a list variable
+"	      s:GetTemplateLines()
+"	    - and s:Include_and_map() to include and apply map() on included
+"	      templates (use case: load a license text and format it as a
+"	      comment)
 "
 "
 " BUGS:	{{{2
@@ -333,7 +340,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 332
+let s:k_version = 333
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
