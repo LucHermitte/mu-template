@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.3.2
-let s:version = '3.3.2'
+" Version:	3.3.3
+let s:version = '3.3.3'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -75,11 +75,14 @@ after/template/docbk/title.template
 after/template/doxygen/Doxyfile.template
 after/template/help.template
 after/template/html.template
-after/template/license/boost-full.template
-after/template/license/boost-short.template
 after/template/license/copying.template
-after/template/license/gplv3-full.template
-after/template/license/gplv3-short.template
+after/template/license/text/boost-full.template
+after/template/license/text/boost-short.template
+after/template/license/text/gplv3-full.template
+after/template/license/text/gplv3-short.template
+after/template/license/text/BSD-2.template
+after/template/license/text/BSD-3.template
+after/template/license/text/MIT.template
 after/template/markdown/bold.template
 after/template/markdown/emph.template
 after/template/markdown/italic.template

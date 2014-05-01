@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.2
+" Version:      3.3.3
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,13 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.3.3
+"	(*) new functions:
+"	    - to obtain a template definition in a list variable
+"	      s:GetTemplateLines()
+"	    - and s:Include_and_map() to include and apply map() on included
+"	      templates (use case: load a license text and format it as a
+"	      comment)
 "	v3.3.2
 "	(*) lh#expand*() return the number of the last line where text as been
 "	    inserted
@@ -77,7 +84,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 332
+let s:k_version = 333
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -424,6 +431,46 @@ function! s:Include(template, ...)
   endif
 endfunction
 
+" Function: s:Include_and_map()      {{{3
+function! s:Include_and_map(template, map_action, ...)
+  let pos = s:content.crt
+  " let correction = s:NeedToJoin > 0
+  let correction = 0
+  let dir = fnamemodify(a:template, ':h')
+  if dir != "" | let dir .= '/' | endif
+  if a:0>0 && !empty(a:1)
+    let dir .= a:1 . '/'
+  endif
+  " pushing a list permit to test the void args case
+  " todo: mark the line where s:Pop should be applied
+  " todo: check if pushing while no file found as no pop will get executed
+  call s:PushArgs(a:0>1 ? a:000[1:] : [])
+  if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template', a:map_action)
+    call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+  endif
+endfunction
+
+" Function: s:GetTemplateLines()     {{{3
+function! s:GetTemplateLines(template, ...)
+  let pos = s:content.crt
+  " let correction = s:NeedToJoin > 0
+  let correction = 0
+  let dir = fnamemodify(a:template, ':h')
+  if dir != "" | let dir .= '/' | endif
+  if a:0>0 && !empty(a:1)
+    let dir .= a:1 . '/'
+  endif
+  " pushing a list permit to test the void args case
+  " todo: mark the line where s:Pop should be applied
+  " todo: check if pushing while no file found as no pop will get executed
+  " call s:PushArgs(a:0>1 ? a:000[1:] : [])
+  let lines = s:LoadTemplateLines(pos-correction, dir.a:template.'.template')
+  if 0 == len(lines)
+    call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+  endif
+  return lines
+endfunction
+
 " Function: s:AddPostExpandCallback(callback) {{{3
 function! s:AddPostExpandCallback(callback)
   let s:content.callbacks += [a:callback]
@@ -510,29 +557,39 @@ endfunction
 " Core Functions {{{2
 let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1], 'callbacks': []}
 
-" s:LoadTemplate(pos, templatepath)                            {{{3
-function! s:LoadTemplate(pos, templatepath)
-  " echomsg "s:LoadTemplate(".a:pos.", '".a:templatepath."')"
+" s:LoadTemplateLines(pos, templatepath)                       {{{3
+function! s:LoadTemplateLines(pos, templatepath)
+  " echomsg "s:LoadTemplateLines(".a:pos.", '".a:templatepath."')"
   try
     let wildignore = &wildignore
     let &wildignore  = ""
 
     let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, a:templatepath)
     if len(matching_filenames) == 0
-      return 0 " NB: the finally block is still executed
+      return [] " NB: the finally block is still executed
       " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
     else
       if &verbose >= 1
 	echo "Loading <".matching_filenames[0].">"
       endif
       let lines = readfile(matching_filenames[0])
-      let lines += [s:Command( 'call s:PopArgs()')]
-      call extend(s:content.lines, lines, a:pos)
-      " echomsg string(s:content)
+      return lines
     endif
   finally
     let &wildignore = wildignore
   endtry
+endfunction
+
+" s:LoadTemplate(pos, templatepath [, map_action])             {{{3
+function! s:LoadTemplate(pos, templatepath, ...)
+  let lines = s:LoadTemplateLines(a:pos, a:templatepath)
+  let lines += [s:Command( 'call s:PopArgs()')]
+  if a:0 > 0
+    let map_action = a:1
+    let pat_not_text = '\c\(^'.s:Command('').'\|'.s:Special('').'\)'
+    call map(lines, "v:val =~ pat_not_text ? (v:val) : ".map_action)
+  endif
+  call extend(s:content.lines, lines, a:pos)
   return len(s:content.lines)
 endfunction
 
