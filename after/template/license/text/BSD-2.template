@@ -1,6 +1,6 @@
 VimL:" $Id$
 VimL:" BSD-2 File Template, Luc Hermitte, 01st May 2014
-VimL:" hint: BSD 2 Clases License (http://opensource.org/licenses/BSD-2-Clause)
+VimL:" hint: BSD 2 Clauses License (http://opensource.org/licenses/BSD-2-Clause)
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
