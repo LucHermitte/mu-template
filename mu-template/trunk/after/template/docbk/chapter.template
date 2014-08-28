@@ -1,0 +1,12 @@
+VimL:" $Id$
+VimL:" <chapter> File Template, Luc Hermitte
+VimL:" hint: <chapter></chapter>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+<chapter>
+VimL: call s:Include('title', 'docbk')
+VimL: call s:Include('para', 'docbk')
+</chapter>{++}
