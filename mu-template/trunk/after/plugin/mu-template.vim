@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:	3.3.2
+" Version:	3.3.5
 "
 " Initial Author:	Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:	0.11
@@ -302,6 +302,8 @@
 "	    - and s:Include_and_map() to include and apply map() on included
 "	      templates (use case: load a license text and format it as a
 "	      comment)
+"	v3.3.5
+"	(*) bug fix: MuT: elif... MuT: else was incorrectly managed (see test3)
 "
 "
 " BUGS:	{{{2
@@ -340,7 +342,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 333
+let s:k_version = 335
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
