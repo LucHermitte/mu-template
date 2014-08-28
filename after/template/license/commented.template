@@ -4,19 +4,22 @@ VimL:" hint: Commented Licence file skeleton
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL:" 
-VimL:" We search for all licenses installed in mu-template license/text directories
-VimL:" and ask the use to choose one.
-VimL: let s:_licenses = map(lh#mut#dirs#get_short_list_of_TF_matching('*', 'license/text'), 'substitute(v:val, "^license[/\\\\]text[/\\\\]", "", "")')
-VimL: echomsg string(s:_licenses)
-MuT:  if len(s:_licenses) == 1
-VimL:    let s:_license = s:_licenses[0]
+VimL: let s:_args = empty(s:Args()) ? "" : (s:Args()[0])
+MuT:  if !empty(s:_args)
+VimL:   let s:_license = s:_args
 MuT:  else
-VimL:    let b:mt_chooseWith = 'confirm'
-VimL:    let s:_choice = s:ChooseTemplateFile(s:_licenses, '')
-VimL:    " check choice > 1
-VimL:    let s:_license = s:_licenses[s:_choice - 2]
+VimL:   " We search for all licenses installed in mu-template license/text directories
+VimL:   " and ask the use to choose one.
+VimL:   let s:_licenses = map(lh#mut#dirs#get_short_list_of_TF_matching('*', 'license/text'), 'substitute(v:val, "^license[/\\\\]text[/\\\\]", "", "")')
+MuT:    if len(s:_licenses) == 1
+VimL:      let s:_license = s:_licenses[0]
+MuT:    else
+VimL:      let b:mt_chooseWith = 'confirm'
+VimL:      let s:_choice = s:ChooseTemplateFile(s:_licenses, '')
+VimL:      " check choice > 1
+VimL:      let s:_license = s:_licenses[s:_choice - 2]
+MuT:    endif
 MuT:  endif
-VimL: echomsg "--->".string(s:_license)
 VimL: let s:_comment = lh#dev#_line_comment()
 MuT:  if !empty(s:_comment)
 VimL: call s:Include_and_map(s:_license, string(s:_comment.' ').".v:val", 'license/text')
