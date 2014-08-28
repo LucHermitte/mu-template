@@ -1,0 +1,30 @@
+VimL:" $Id$
+VimL:" «test3» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 28th Aug 2014
+VimL:" hint: «test3-hint»
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:_arg=input("arg?")
+MuT:  if s:_arg
+        1
+VimL:   let s:un = 1
+MuT:    if s:un
+          1.1
+MuT:    else
+          1.2
+MuT:    endif
+
+MuT:  else
+        2
+VimL:   let s:deux=input("deux?")
+MuT:    if s:deux > 0
+          2.1
+MuT:    elseif s:deux<0
+          2.2
+MuT:    else
+          2.3
+MuT:    endif
+MuT:  endif
+VimL: silent! let s:un
+VimL: silent! let s:deux

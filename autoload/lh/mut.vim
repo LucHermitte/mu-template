@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.3
+" Version:      3.3.5
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"	v3.3.5
+"	(*) bug fix: MuT: elif... MuT: else was incorrectly managed (see test3)
 "	v3.3.3
 "	(*) new functions:
 "	    - to obtain a template definition in a list variable
@@ -84,7 +86,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 333
+let s:k_version = 335
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -845,21 +847,34 @@ function! s:Marker(regex)
   return s:NoRegex(s:marker_open) . a:regex . s:NoRegex(s:marker_close)
 endfunction
 
+" s:isBranchActive()                                           {{{3
+function! s:isBranchActive()
+  " If there is a 0 in the scope, it means we are with an inactive branch
+  " (if/else)
+  return min(s:content.scope) == 1
+endfunction
+
 " s:InterpretMuTCommand(the_line)                              {{{3
 function! s:InterpretMuTCommand(the_line)
   let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
   if     special_cmd == 'if'
-    let is_true = eval(cond)
-    call insert(s:content.scope, is_true) 
+    if s:isBranchActive()
+      let is_true = eval(cond)
+      call insert(s:content.scope, is_true) 
+    else " Don't bother to evaluate anything, but push a new "if/else/endif" 
+      call insert(s:content.scope, -2)
+    endif
   elseif special_cmd == 'elseif'
     if len(s:content.scope) <= 1
       throw "'MuT: elseif' used, but there was no if"
     endif
-    if s:content.scope[0] != 0 " something has been true in the past
-      let s:content.scope[0] = -1 " => ignoring this case
-    else
-      let is_true = eval(cond)
-      let s:content.scope[0] = is_true 
+    if min(s:content.scope[1:]) == 1 " Within an active branch => check the current if
+      if s:content.scope[0] != 0 " something has been true in the past
+        let s:content.scope[0] = -1 " => ignoring this case
+      else
+        let is_true = eval(cond) " can be evaluated as we're within an active branch
+        let s:content.scope[0] = is_true 
+      endif
     endif
   elseif special_cmd == 'else'
     if len(s:content.scope) <= 1
@@ -894,7 +909,7 @@ function! s:InterpretLines(first_line)
       call s:InterpretMuTCommand(the_line)
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
       continue
-    elseif s:content.scope[0] != 1
+    elseif ! s:isBranchActive()
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
       continue
     endif
