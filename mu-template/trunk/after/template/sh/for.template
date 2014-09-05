@@ -6,6 +6,7 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-for <+i+> in $<+list+> ; do
+VimL: let s:reindent     = 1
+for <+i+> in ¡s:Surround(2, '$<+list+>')¡ ; do
     ¡s:Surround(1, '<+code+>')¡
 done
