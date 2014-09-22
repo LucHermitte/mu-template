@@ -7,7 +7,6 @@ VimL: "
 VimL: " Determine a default name for the project
 VimL: let s:project = matchstr(expand('%'), 'mk-\zs.*\ze\.vim')
 VimL: if empty(s:project) | let s:project = '<+project-name+>' | endif
-let s:version = '0.0.1'
 let s:project = '¡s:project¡'
 VimL: " And now the default template
 cd <sfile>:p:h

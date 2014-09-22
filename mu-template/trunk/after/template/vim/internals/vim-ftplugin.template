@@ -1,7 +1,6 @@
 VimL: " $Id$
 VimL: "«Vim» ft-plugins Template File, Luc Hermitte
 VimL: let s:filetype = matchstr(expand('%:p'), 'ftplugin/\zs.\{-}\ze\%(\.vim\|[_/\\]\)')
-let s:k_version = <+001+>
 " Buffer-local Definitions {{{1
 " Avoid local reinclusion {{{2
 if &cp || (exists("b:loaded_ftplug_¡s:fn¡")

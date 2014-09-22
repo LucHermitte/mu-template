@@ -8,7 +8,16 @@ VimL: "let s:path  = lh#path#strip_start(expand('%:p'), &rtp)
 VimL: let s:align = repeat(' ', 49-strlen(s:path))
 " File:         ¡s:path.s:align¡ {{{1
 " Author:       ¡Author()¡
-" Version:      <+0.0.1+>
+VimL: let s:mkvba = expand('%:p')[0:-1+stridx(expand('%:p'), s:path)] . 'mkVba/mk-*.vim'
+VimL: let s:mkvba = glob(s:mkvba)
+MuT:  if !empty(s:mkvba) && -1 == stridx(s:mkvba, "\n")
+VImL:   let s:version_lines = filter(readfile(s:mkvba), 'v:val =~ "let\\s\\+s:\\(k_\\)\\=version\\s*="')
+VimL:   let s:version = empty(s:version_lines) ? lh#marker#txt('001') : matchstr(s:version_lines[0], '.*=\s*\zs.*')
+MuT:  else
+VimL:   let s:version = lh#marker#txt('001')
+MuT:  endif
+" Version:      <+substitute(substitute(s:version, "'", '', 'g'), '\d', '&.', 'g')+>
+let s:k_version = <+s:version+>
 " Created:      ¡DateStamp()¡
 " Last Update:  ¡'$'¡Date$
 "------------------------------------------------------------------------
