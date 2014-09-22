@@ -5,7 +5,6 @@ VimL: " Override s:fn computation for local-vimrc case
 VimL: let s:fn = substitute(s:location,'\(\W\|_\)\+', '_', 'g') 
 VimL: debug let s:_prj_kind = s:Param('project_kind', {})
 VimL: let g:prj_kind = s:_prj_kind
-let s:k_version = <+001+>
 " Always loaded {{{1
 " Buffer-local Definitions {{{1
 " Avoid local reinclusion {{{2

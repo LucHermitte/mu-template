@@ -1,7 +1,6 @@
 VimL: " $Id$
 VimL: "«Vim» plugins Template File, Luc Hermitte
 " Avoid global reinclusion {{{1
-let s:k_version = <+001+>
 if &cp || (exists("g:loaded_¡s:fn¡")
       \ && (g:loaded_¡s:fn¡ >= s:k_version)
       \ && !exists('g:force_reload_¡s:fn¡'))

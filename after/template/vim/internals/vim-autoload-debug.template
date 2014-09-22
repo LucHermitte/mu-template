@@ -5,7 +5,6 @@ VimL: call s:Include('vim-autoload-function', 'vim/internals')
 VimL: "
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = <+001+>
 function! ¡s:function_prefix¡version()
   return s:k_version
 endfunction
