@@ -5,7 +5,8 @@
 "		<URL:http://code.google.com/p/lh-vim/>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.0.7
+" Version:      3.3.6
+let s:k_version = 336
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -14,13 +15,16 @@
 "       The purpose of this autoload plugin is to provide an internal library
 "       to plugin/mu-template.vim and autoload/lh/mut.vim (that will always be
 "       loaded)
-" 
+"
 "------------------------------------------------------------------------
 " Installation:
 "       Drop this file into {rtp}/autoload/lh
 "       Requires Vim7+
 "       See plugin/mu-template.vim
-" History:      
+" History:
+" 	v3.3.6
+" 	(*) Some snippets can be common to all filetypes, they are expected to
+" 	be in {template_root_dir}/_/
 " 	v3.0.7
 " 	(*) Fix bug to correctly read shorten names like
 " 	    xslt/call-template.template
@@ -41,7 +45,6 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 307
 function! lh#mut#dirs#version()
   return s:k_version
 endfunction
@@ -172,7 +175,7 @@ endfunction
 function! s:GetTemplateFilesMatching(word, filetype)
   " Look for filetypes (C++ -> C, ...)
   let gpatterns=[]
-  let fts = [a:filetype]
+  let fts = [a:filetype, '_']
   while !empty(fts)
     let ft = remove(fts, 0)
     "NAMES WERE: call add( gpatterns , ' template.'.ft.'-'.a:word )
