@@ -10,7 +10,7 @@ VimL: if empty(s:project) | let s:project = '<+project-name+>' | endif
 let s:project = '¡s:project¡'
 VimL: " And now the default template
 cd <sfile>:p:h
-try 
+try
   let save_rtp = &rtp
   let &rtp = expand('<sfile>:p:h:h').','.&rtp
   exe '¡s:Line()+7¡,$MkVimball! '.s:project.'-'.s:version

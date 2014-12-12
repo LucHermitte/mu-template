@@ -23,7 +23,7 @@ let s:k_version = <+s:version+>
 "------------------------------------------------------------------------
 " Description:
 "       <+description+>
-" 
+"
 "------------------------------------------------------------------------
 " Installation:
 "       Drop this file into {rtp}/¡fnamemodify(s:path, ':h')¡

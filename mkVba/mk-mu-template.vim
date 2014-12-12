@@ -3,13 +3,13 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.3.6
-let s:version = '3.3.6'
+" Version:	3.3.7
+let s:version = '3.3.7'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
 cd <sfile>:p:h
-try 
+try
   let save_rtp = &rtp
   let &rtp = expand('<sfile>:p:h:h').','.&rtp
   exe '22,$MkVimball! mu-template-'.s:version
@@ -140,10 +140,13 @@ after/template/vim/internals/vim-header.template
 after/template/vim/internals/vim-mkvba.template
 after/template/vim/internals/vim-other-scripts.template
 after/template/vim/internals/vim-plugin.template
+after/template/vim/internals/vim-rc-global-ccpp.template
 after/template/vim/internals/vim-rc-local-ccpp.template
+after/template/vim/internals/vim-rc-local-cmake.template
 after/template/vim/internals/vim-rc-local-cpp-style.template
 after/template/vim/internals/vim-rc-local-default.template
 after/template/vim/internals/vim-rc-local-global-cmake-def.template
+after/template/vim/internals/vim-rc-local-jira.template
 after/template/vim/internals/vim-rc-local.template
 after/template/vim/internals/vim-tests.template
 after/template/vim/loop-arg.template

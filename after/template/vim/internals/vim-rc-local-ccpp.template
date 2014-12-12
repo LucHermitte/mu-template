@@ -6,11 +6,7 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:_prj_config = s:Param('_prj_config', 'g:'.Marker_Txt('MyProject').'_config')
 
-let b:ProjectVersion        = '<+_version_+>'
-let b:cpp_project_namespace = '<+project_ns+>'
-
 " ======================[ &path {{{2
-
 " don't search into included file how to complete
 setlocal complete-=i
 
@@ -32,13 +28,20 @@ if SystemDetected() == 'unix'
   call lh#path#add_path_if_exists('b:includes', '/usr/local/include/**')
   call lh#path#add_path_if_exists('b:includes', '/usr/include/**')
 endif
+
 " For config.h.in files and alike
 " todo: adapt it automatically to the current compilation dir
 let b:includes += [b:BTW_compilation_dir . '/**']
+let b:cpp_included_paths = [b:project_sources_dir]
+" If the project has .h.in files that are generated in the build
+" directory, uncomment the next line
+" let b:cpp_included_paths += [b:BTW_compilation_dir]
 
 " Setting &path
+exe 'set path+='.FixPathName(b:BTW_compilation_dir).'/**'
+" If the project has .h.in files that are generated in the build
+" directory, uncomment the next line
 exe 'setlocal path+='.FixPathName(b:project_sources_dir).'/**'
-exe 'setlocal path+='.FixPathName(b:BTW_compilation_dir).'/**'
 " for p in b:includes
 "   exe 'setlocal path+='.FixPathName(p)
 " endfor
@@ -59,16 +62,22 @@ endif
 
 " ======================[ tags generation {{{2
 let b:tags_dirname = FixPathName(b:project_sources_dir)
-let b:tags_options = ' --exclude="*.dox" --exclude="html" --exclude=".*sw*"'
-let b:tags_options .= ' --exclude="*.txt" --exclude="*.o" --exclude="*.os" --exclude="*.tags" --exclude=tags --exclude=buttons --exclude="*.png" --exclude="*.tar"'
+let b:tags_options = ' --exclude="*.dox" --exclude="html" --exclude="*.xml" --exclude="*.xsd" --exclude=".*sw*"'
+let b:tags_options .= ' --exclude="*.txt" --exclude="cmake" --exclude="*.cmake" --exclude="*.o" --exclude="*.os" --exclude="*.tags" --exclude=tags --exclude=buttons --exclude="*.png" --exclude="*.tar"'
 exe 'setlocal tags+='.(b:tags_dirname).'/tags'
 if SystemDetected() == 'msdos'
 else
-  setlocal tags+=/usr/local/include/otb/tags
+  " You'll have to generate thoses files for your system...
   setlocal tags+=$HOME/dev/tags/stl.tags
   setlocal tags+=$HOME/dev/tags/boost.tags
+  " ITK and OTB
+  " setlocal tags+=$HOME/dev/tags/itk.tags
+  " setlocal tags+=$HOME/dev/tags/otb.tags
 endif
 " let BTW_make_in_background_in = 'xterm -e'
+
+" ======================[ Settings for compil_hints {{{2
+let b:compil_hints_autostart = 1
 
 " ======================[ Settings for BTW {{{2
 if SystemDetected() == 'msdos'
@@ -77,6 +86,7 @@ if SystemDetected() == 'msdos'
   if SystemDetected() == 'unix' " cygwin
     " then cygwin's cmake does not work -> use win32 cmake
     let $PATH=substitute($PATH, '\(.*\);\([^;]*CMake[^;]*\)', '\2;\1', '')
+    BTW addlocal cygwin
   endif
 endif
 :BTW addlocal STLFilt
@@ -88,18 +98,31 @@ call <+s:_prj_config+>_menu.def_ctest_targets.set_ctest_argument()
 let b:BTW_project_target = ''
 let b:BTW_project_config = {
       \ 'type': 'ccmake',
-      \ 'arg': (b:project_sources_dir), 
+      \ 'arg': (b:project_sources_dir),
       \ 'wd' : lh#function#bind(string(b:BTW_compilation_dir))
       \ }
 
-
 " ======================[ Project's style {{{2
-source <sfile>:p:h/_vimrc_cpp_style.vim
+silent! source <sfile>:p:h/_vimrc_cpp_style.vim
+let b:ProjectVersion        = '<+_version_+>'
+let b:cpp_project_namespace = '<+project_ns+>'
+" Where templates related to the project will be stored. You'll have to
+" adjust the number of ':h', -> :h expand()
+let b:mt_templates_paths = fnamemodify(b:project_sources_dir, ":h").'/templates'
+" Expecting your project has a <+project_ns+>::Exception type
+let b:exception_type = b:cpp_project_namespace.'::Exception'
+
+" Special management of tests and unit tests
+if expand('%:p') =~ b:project_sources_dir.'/Testing'
+  let b:ipf_dox_group = 'gTests'
+  let b:is_unit_test = 1
+endif
+
+" ======================[ Settings for searchfile {{{2
+let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx'
 
 " ======================[ Menus {{{2
 let s:script=expand("<sfile>:p:h")
 call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
 " call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
 call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )
-"
-
