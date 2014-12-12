@@ -2,10 +2,16 @@ VimL: " $Id$
 VimL: "Vim local-vimrc Template File, Luc Hermitte
 VimL: let s:location = fnamemodify(s:path, ':r')
 VimL: " Override s:fn computation for local-vimrc case
-VimL: let s:fn = substitute(s:location,'\(\W\|_\)\+', '_', 'g') 
+VimL: let s:fn = substitute(s:location,'\(\W\|_\)\+', '_', 'g')
+VimL: silent! unlet s:_prj_kind
+VimL: silent! unlet g:prj_kind
 VimL: debug let s:_prj_kind = s:Param('project_kind', {})
 VimL: let g:prj_kind = s:_prj_kind
 " Always loaded {{{1
+MuT:  if has_key(s:_prj_kind, 'c') || has_key(s:_prj_kind, 'cpp')
+VimL:     call s:Include('vim-rc-global-ccpp', 'vim/internals')
+MuT:  endif
+
 " Buffer-local Definitions {{{1
 " Avoid local reinclusion {{{2
 if &cp || (exists("b:loaded_¡s:fn¡")
@@ -18,11 +24,17 @@ let s:cpo_save=&cpo
 set cpo&vim
 " Avoid local reinclusion }}}2
 
+let s:script = expand("<sfile>:p")
+MuT:  if has_key(s:_prj_kind, 'cmake')
+VimL:     call s:Include('vim-rc-local-cmake', 'vim/internals')
+MuT:  endif
 MuT:  if has_key(s:_prj_kind, 'c') || has_key(s:_prj_kind, 'cpp')
 VimL:     call s:Include('vim-rc-local-ccpp', 'vim/internals')
 MuT:  endif
-MuT:  if has_key(s:_prj_kind, 'cmake')
-VimL:     call s:Include('vim-rc-local-cmake', 'vim/internals')
+VimL: " Bug tracker
+VimL: let s:bug_tracker = WHICH('CONFIRM',"Which bug tracker will you use ?", ['None/Another', '&Jira'])
+MuT:  if s:bug_tracker == 'jira'
+VimL:     call s:Include('vim-rc-local-jira', 'vim/internals')
 MuT:  endif
 MuT:  if empty(s:_prj_kind)
 VimL:     call s:Include('vim-rc-local-default', 'vim/internals')

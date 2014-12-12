@@ -1,0 +1,9 @@
+VimL:" $Id$
+VimL:" vim-rc-local CMake File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Dec 2014
+
+" Project config {{{2
+if ! (exists("g:loaded_¡s:fn¡")
+      \ && (g:loaded__vimrc_local >= s:k_version)
+      \ && !exists('g:force_reload_¡s:fn¡'))
+  source <sfile>:p:h/_vimrc_local_global_defs.vim
+endif

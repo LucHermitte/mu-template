@@ -167,7 +167,7 @@ AddStyle -b { {
 " Write each "namespace Foo {" on a same line
 let b:cpp_multiple_namespaces_on_same_line = 1
 
-" ## ======================[ Expansion of function snippets {{{1 
+" ## ======================[ Expansion of function snippets {{{1
 " The following options apply when expanding template-files that generate new
 " fonctions.
 " NB: not all template-files may respect these parameters. If you found any,
@@ -182,4 +182,3 @@ let b:c_pre_desc_ordered_tags = [ "ingroup", "brief", "param", "return", "throw"
 " Ordered list of doxygen tags to write after the main body of the comment
 let b:c_post_desc_ordered_tags = ["note", "warning"]
 
-" vim600: set fdm=marker:

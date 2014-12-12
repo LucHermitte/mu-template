@@ -6,13 +6,21 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: call s:Include('get-script-kind', 'vim/internals')
 VimL: call s:Include('vim-header', 'vim/internals')
-VimL: let s:fn = substitute(expand("%:t:r"),'\W', '_', 'g') 
-VimL: if s:ftplug     | call s:Include('vim-ftplugin', 'vim/internals') | endif
-VimL: if s:alplug     | call s:Include('vim-autoload-plugin', 'vim/internals') | endif
-VimL: if s:plugin     | call s:Include('vim-plugin', 'vim/internals') | endif
-VimL: if s:localvimrc | call s:Include('vim-rc-local', 'vim/internals') | endif
-VimL: if s:mkvba      | call s:Include('vim-mkvba', 'vim/internals') | endif
-VimL: if s:tests      | call s:Include('vim-tests', 'vim/internals') | endif
-VimL: if !s:plugin &&!s:ftplug &&!s:alplug &&!s:mkvba &&!s:tests | call s:Include('vim-other-scripts', 'vim/internals') | endif
+VimL: let s:fn = substitute(expand("%:t:r"),'\W', '_', 'g')
 VimL: " let s:ftplug = CONFIRM("Is this script an ftplugin ?", "&Yes\n&No", s:ftplug)==1
+MuT:  if s:ftplug
+VimL:    call s:Include('vim-ftplugin', 'vim/internals')
+MuT:  elseif s:alplug
+VimL:    call s:Include('vim-autoload-plugin', 'vim/internals')
+MuT:  elseif s:plugin
+VimL:    call s:Include('vim-plugin', 'vim/internals')
+MuT:  elseif s:localvimrc
+VimL:    call s:Include('vim-rc-local', 'vim/internals')
+MuT:  elseif s:mkvba
+VimL:    call s:Include('vim-mkvba', 'vim/internals')
+MuT:  elseif s:tests
+VimL:    call s:Include('vim-tests', 'vim/internals')
+MuT:  else
+VimL:    call s:Include('vim-other-scripts', 'vim/internals')
+MuT:  endif
 VimL: if !s:mkvba | call s:Include('vim-footer', 'vim/internals') | endif

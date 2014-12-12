@@ -1,0 +1,15 @@
+VimL:" $Id$
+VimL:" vim-rc-local-jira File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Dec 2014
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+
+" ======================[ JIRA complete {{{2
+let b:jiracomplete_username   = <+Author(0)+>
+let b:jiracomplete_url        = {'url': '<+url+>'<+, 'verify': 'False'+>}
+" In case you want to store your password, don't put it into a
+" versionning system:
+" source <sfile>:p:h/auth.vim
+" or if you don't care...
+" let b:jiracomplete_password   = <+password+>

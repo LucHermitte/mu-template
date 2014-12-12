@@ -74,5 +74,3 @@ call lh#btw#cmake#def_options(<+s:_prj_config+>_menu, s:cmake_integration)
 
 " ======================[ Misc functions {{{2
 
-"=============================================================================
-" vim600: set fdm=marker:
