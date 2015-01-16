@@ -40,10 +40,11 @@ function! s:getSNR(...)
   return s:SNR . (a:0>0 ? (a:1) : '')
 endfunction
 
-" Function: s:EditLocalCMakeFile() {{{3
-function! s:EditLocalCMakeFile()
+" Function: s:EditLocalCMakeFile([pos]) {{{3
+function! s:EditLocalCMakeFile(...)
+  let where = a:0==0 ? '' : a:1.' '
   let file = lh#path#to_relative(expand('%:p:h').'/CMakeLists.txt')
-  call lh#buffer#jump(file, 'sp')
+  call lh#buffer#jump(file, where.'sp')
 endfunction
 
 call lh#let#if_undef ('<+s:_prj_config+>.functions',
@@ -55,6 +56,7 @@ QFImport &l:path
 QFImport b:BTW_project_target
 QFImport b:BTW_compilation_dir
 QFImport b:BTW_project_build_mode
+QFImport b:includes
 
 "------------------------------------------------------------------------
 " ======================[ Compilation mode, & CTest options {{{2
@@ -62,6 +64,7 @@ let <+s:_prj_config+>_menu = {
       \ '_project': '<+substitute(s:_prj_config, "^g:", "", "")+>',
       \ 'menu': {'priority': s:menu_priority, 'name': s:menu_name}
       \ }
+" <+TODO: uncomment what you won't use+>
 let s:cmake_integration = []
 let s:cmake_integration += [ 'def_toggable_compil_mode' ]
 let s:cmake_integration += [ 'def_toggable_ctest_verbosity' ]

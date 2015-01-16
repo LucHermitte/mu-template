@@ -6,7 +6,7 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 
 " ======================[ JIRA complete {{{2
-let b:jiracomplete_username   = <+Author(0)+>
+let b:jiracomplete_username   = <+string($USER)+>
 let b:jiracomplete_url        = {'url': '<+url+>'<+, 'verify': 'False'+>}
 " In case you want to store your password, don't put it into a
 " versionning system:

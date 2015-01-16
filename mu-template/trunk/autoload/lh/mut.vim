@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.5
+" Version:      3.3.8
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -12,71 +12,73 @@
 "       mu-template internal functions
 "       The purpose of this autoload plugin is to provide a lazy-loading of
 "       mu-template functions.
-" 
+"
 "------------------------------------------------------------------------
 " Installation:
 "       Drop this file into {rtp}/autoload/lh
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
-"	v3.3.5
-"	(*) bug fix: MuT: elif... MuT: else was incorrectly managed (see test3)
-"	v3.3.3
-"	(*) new functions:
-"	    - to obtain a template definition in a list variable
-"	      s:GetTemplateLines()
-"	    - and s:Include_and_map() to include and apply map() on included
-"	      templates (use case: load a license text and format it as a
-"	      comment)
-"	v3.3.2
-"	(*) lh#expand*() return the number of the last line where text as been
-"	    inserted
-"	v3.3.0
-"	(*) New feature: post expansion hooks
-"	v3.2.1
-"	(*) bug fix: MuT: elif... MuT: else was incorrectly managed
-"	v3.2.1
-"	(*) s:Param() will search for the key in all params
-"	    TODO: rethink the way parameters are passed
-"	v3.2.0
-"	(*) Support for lh#dev styling option :AddStyle
-"	v3.1.0
-"	(*) Refactorizations
-"	(*) New function lh#mut#expand_text()
-"	v3.0.8
-"	(*) lh#mut#expand_and_jump()/:MuTemplate fixed to receive several
-"	    parameters
-"	v3.0.6
-" 	(*) Compatibility with completion plugins like YouCompleteMe extended
-" 	    to the surrounding feature.
-"	v3.0.4
-"	(*) s:Include() can now forward more than one argument.
-"	v3.0.3
-"	(*) |MuT-snippets| starting at the beginning of a line were not
-"	correctly removing the expanded snippet-name. 
-"	v3.0.2
-" 	(*) Compatible with completion plugins like YouCompleteMe
-"	v3.0.1
-"	(*) Always display the choices vertically when g:mt_chooseWith=="confirm"
-"	(*) Issue#46: No longer use default shortcuts with "confirm"
-"	    selection-mode for vim under console.
-"	v3.0.0
-"	(*) s:Inject() to add lines to the generated code from VimL code.
-"	(*) fix: surrounding of line-wise selection
-"	v2.3.1
-"	(*) "MuT: if" & co conditionals
-"	(*) expressions can be expanded from placeholders (Issue#37)
-"	v2.3.0
-"	(*) Surrounding functions
-"	v2.2.2
-"	(*) new :MUEdit command to open the template-file
-" 	2.2.1
-" 	(*) make sure the lines inserted are unfolded
-" 	(*) s:Include() and MuTemplate() supports parameters
-" 	(*) Bug in embedded functions support: ":endfor" was misinterpreted for
-" 	    ":endf\%[unction]"
-" 	v2.2.0
-" 	(*) first version
+"       v3.3.8
+"       (*) Errors in InterpretCommands are better reported
+"       v3.3.5
+"       (*) bug fix: MuT: elif... MuT: else was incorrectly managed (see test3)
+"       v3.3.3
+"       (*) new functions:
+"           - to obtain a template definition in a list variable
+"             s:GetTemplateLines()
+"           - and s:Include_and_map() to include and apply map() on included
+"             templates (use case: load a license text and format it as a
+"             comment)
+"       v3.3.2
+"       (*) lh#expand*() return the number of the last line where text as been
+"           inserted
+"       v3.3.0
+"       (*) New feature: post expansion hooks
+"       v3.2.1
+"       (*) bug fix: MuT: elif... MuT: else was incorrectly managed
+"       v3.2.1
+"       (*) s:Param() will search for the key in all params
+"           TODO: rethink the way parameters are passed
+"       v3.2.0
+"       (*) Support for lh#dev styling option :AddStyle
+"       v3.1.0
+"       (*) Refactorizations
+"       (*) New function lh#mut#expand_text()
+"       v3.0.8
+"       (*) lh#mut#expand_and_jump()/:MuTemplate fixed to receive several
+"           parameters
+"       v3.0.6
+"       (*) Compatibility with completion plugins like YouCompleteMe extended
+"           to the surrounding feature.
+"       v3.0.4
+"       (*) s:Include() can now forward more than one argument.
+"       v3.0.3
+"       (*) |MuT-snippets| starting at the beginning of a line were not
+"       correctly removing the expanded snippet-name.
+"       v3.0.2
+"       (*) Compatible with completion plugins like YouCompleteMe
+"       v3.0.1
+"       (*) Always display the choices vertically when g:mt_chooseWith=="confirm"
+"       (*) Issue#46: No longer use default shortcuts with "confirm"
+"           selection-mode for vim under console.
+"       v3.0.0
+"       (*) s:Inject() to add lines to the generated code from VimL code.
+"       (*) fix: surrounding of line-wise selection
+"       v2.3.1
+"       (*) "MuT: if" & co conditionals
+"       (*) expressions can be expanded from placeholders (Issue#37)
+"       v2.3.0
+"       (*) Surrounding functions
+"       v2.2.2
+"       (*) new :MUEdit command to open the template-file
+"       2.2.1
+"       (*) make sure the lines inserted are unfolded
+"       (*) s:Include() and MuTemplate() supports parameters
+"       (*) Bug in embedded functions support: ":endfor" was misinterpreted for
+"           ":endf\%[unction]"
+"       v2.2.0
+"       (*) first version
 " TODO: See plugin/mu-template.vim
 " }}}1
 "=============================================================================
@@ -86,7 +88,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 335
+let s:k_version = 338
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -138,7 +140,7 @@ function! lh#mut#edit(path)
         let short_names = lh#path#strip_common(short_names)
       endif
       let strings = join(short_names, "\n")
-      try 
+      try
         let save_guioptions = &guioptions
         set guioptions+=v
         let choice = confirm("Which template do you wish to edit?",
@@ -182,7 +184,7 @@ endfunction
 " Function: lh#mut#expand_text(NeedToJoin, text, ...)      {{{2
 function! lh#mut#expand_text(NeedToJoin, text, ...)
   let s:content.lines = type(a:text) == type([]) ? a:text : split(a:text, "\n")
-  try 
+  try
     let s:args = []
     if a:0 > 1
       call s:PushArgs(a:000[1:])
@@ -225,7 +227,7 @@ endfunction
 " Function: lh#mut#expand_and_jump(needToJoin, ...)        {{{2
 function! lh#mut#expand_and_jump(needToJoin, ...)
   " echomsg "lh#mut#expand_and_jump(".a:needToJoin.",".join(a:000, ',').")"
-  try 
+  try
     call lh#mut#dirs#update()
     let s:args = []
     if a:0 > 1
@@ -233,8 +235,8 @@ function! lh#mut#expand_and_jump(needToJoin, ...)
       " echomsg 'all: ' . string(s:args)
     endif
     let res = (a:0>0)
-	  \ ? lh#mut#expand(a:needToJoin, a:1)
-	  \ : lh#mut#expand(a:needToJoin)
+          \ ? lh#mut#expand(a:needToJoin, a:1)
+          \ : lh#mut#expand(a:needToJoin)
     if res && s:Option('jump_to_first_markers',1)
       call lh#mut#jump_to_start()
     endif
@@ -246,7 +248,7 @@ endfunction
 
 " Function: lh#mut#surround()                              {{{2
 function! lh#mut#surround()
-  try 
+  try
     " 1- ask which template to execute {{{3
     let which = INPUT("which snippet?")
     let files = lh#mut#dirs#get_short_list_of_TF_matching(which.'*', &ft)
@@ -258,7 +260,7 @@ function! lh#mut#surround()
       return ""
     elseif (nbChoices > 1)
       let save_choose_method = s:Option('chooseWith', 'complete')
-      try 
+      try
         let g:mt_chooseWith = 'confirm'
         let choice = s:ChooseTemplateFile(files, which)
       finally
@@ -385,7 +387,6 @@ endfunction
 
 " Function: s:Param(name,default)    {{{3
 " @returns a list. If the list is empty, this mean no parameter was given.
-let s:args = []
 function! s:Param(name, default)
   if empty(a:name)
     return s:args[-1]
@@ -398,13 +399,13 @@ function! s:Param(name, default)
       if type(arg)==type([])
         let j = len(arg) - 1
         while j > -1
-          if type(arg[j])==type({}) && has_key(arg[j], a:name) 
+          if type(arg[j])==type({}) && has_key(arg[j], a:name)
             return arg[j][a:name]
           endif
           let j -= 1
         endwhile
 
-      elseif type(arg)==type({}) && has_key(arg, a:name) 
+      elseif type(arg)==type({}) && has_key(arg, a:name)
         return arg[a:name]
       endif
       let i -= 1
@@ -501,7 +502,7 @@ function! s:InjectAndTransform(templatename, Transformation, ...)
       " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
     else
       if &verbose >= 1
-	echo "Loading <".matching_filenames[0].">"
+        echo "Loading <".matching_filenames[0].">"
       endif
       call s:PushArgs(a:0>1 ? [a:2] : [])
       let lines = readfile(matching_filenames[0])
@@ -519,7 +520,7 @@ function! s:path_from_root(path)   " {{{3
     let s = strlen(b:sources_root)
     if b:sources_root[s-1] !~ '/\|\\'
       let b:sources_root .=
-	    \ ((!exists('shellslash')||&shellslash)?'/':'\')
+            \ ((!exists('shellslash')||&shellslash)?'/':'\')
       let s += 1
     endif
     let p = stridx(path, b:sources_root)
@@ -572,7 +573,7 @@ function! s:LoadTemplateLines(pos, templatepath)
       " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
     else
       if &verbose >= 1
-	echo "Loading <".matching_filenames[0].">"
+        echo "Loading <".matching_filenames[0].">"
       endif
       let lines = readfile(matching_filenames[0])
       return lines
@@ -618,7 +619,7 @@ function! s:DoExpand(NeedToJoin)
     let s:marker_open  = '<+'
     let s:marker_close = '+>'
     " Default support for evaluation of placeholder-text
-    silent! unlet s:dont_eval_markers 
+    silent! unlet s:dont_eval_markers
     " Default fileencoding to override in template files
     let s:fileencoding = &enc
 
@@ -701,22 +702,22 @@ function! s:InterpretCommand(what) abort
   try
     if empty(s:__function)
       if a:what =~ '^:\?fu\%[nction]'
-	let s:__function += [a:what]
+        let s:__function += [a:what]
       elseif a:what =~ '^:\?endf\%[unction]'
-	throw 'not within the definition of a function'
+        throw 'not within the definition of a function'
       else
-	exe a:what
+        exe a:what
       endif
     else
       if a:what =~ '^:\?fu\%[nction]'
-	throw 'already within the definition of a function (nested functions are not supported (yet))'
+        throw 'already within the definition of a function (nested functions are not supported (yet))'
       else
-	let s:__function += [a:what]
-	if a:what !~ '^:\?endfo\%[r]' && a:what =~ '^:\?endf\%[unction]'
-	  let fn_def = join(s:__function, "\n")
-	  let s:__function = []
-	  exe fn_def
-	endif " :endfunction
+        let s:__function += [a:what]
+        if a:what !~ '^:\?endfo\%[r]' && a:what =~ '^:\?endf\%[unction]'
+          let fn_def = join(s:__function, "\n")
+          let s:__function = []
+          exe fn_def
+        endif " :endfunction
       endif " != :function
     endif
   catch /.*/
@@ -774,7 +775,7 @@ function! s:InterpretMarkers(line) abort
       let tail = ''
       " let may_merge = 0
     else
-      try 
+      try
         let value = eval(split[2])
       catch /.*/
         let value = Marker_Txt(split[2])
@@ -824,7 +825,7 @@ function! s:ApplyStyling(line) abort
       " let may_merge = 0
     else
       let pattern_idx = s:FindMatchingPattern(patterns, split[2])
-      " assert pattern_idx < len(replacements) 
+      " assert pattern_idx < len(replacements)
       let value = replacements[pattern_idx]
 
       let res .= split[1] . (type(value)!=type("") ? string(value) : value)
@@ -855,40 +856,44 @@ function! s:isBranchActive()
 endfunction
 
 " s:InterpretMuTCommand(the_line)                              {{{3
-function! s:InterpretMuTCommand(the_line)
-  let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
-  if     special_cmd == 'if'
-    if s:isBranchActive()
-      let is_true = eval(cond)
-      call insert(s:content.scope, is_true) 
-    else " Don't bother to evaluate anything, but push a new "if/else/endif" 
-      call insert(s:content.scope, -2)
-    endif
-  elseif special_cmd == 'elseif'
-    if len(s:content.scope) <= 1
-      throw "'MuT: elseif' used, but there was no if"
-    endif
-    if min(s:content.scope[1:]) == 1 " Within an active branch => check the current if
-      if s:content.scope[0] != 0 " something has been true in the past
-        let s:content.scope[0] = -1 " => ignoring this case
-      else
-        let is_true = eval(cond) " can be evaluated as we're within an active branch
-        let s:content.scope[0] = is_true 
+function! s:InterpretMuTCommand(the_line) abort
+  try
+    let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
+    if     special_cmd == 'if'
+      if s:isBranchActive()
+        let is_true = eval(cond)
+        call insert(s:content.scope, is_true)
+      else " Don't bother to evaluate anything, but push a new "if/else/endif"
+        call insert(s:content.scope, -2)
       endif
+    elseif special_cmd == 'elseif'
+      if len(s:content.scope) <= 1
+        throw "'MuT: elseif' used, but there was no if"
+      endif
+      if min(s:content.scope[1:]) == 1 " Within an active branch => check the current if
+        if s:content.scope[0] != 0 " something has been true in the past
+          let s:content.scope[0] = -1 " => ignoring this case
+        else
+          let is_true = eval(cond) " can be evaluated as we're within an active branch
+          let s:content.scope[0] = is_true
+        endif
+      endif
+    elseif special_cmd == 'else'
+      if len(s:content.scope) <= 1
+        throw "'MuT: else' used, but there was no if"
+      endif
+      let s:content.scope[0] = s:content.scope[0] == 0 " only of nothing has ever been true
+    elseif special_cmd == 'endif'
+      if len(s:content.scope) <= 1
+        throw "'MuT: else' used, but there was no if"
+      endif
+      call remove(s:content.scope, 0)
+    else
+      throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
     endif
-  elseif special_cmd == 'else'
-    if len(s:content.scope) <= 1
-      throw "'MuT: else' used, but there was no if"
-    endif
-    let s:content.scope[0] = s:content.scope[0] == 0 " only of nothing has ever been true
-  elseif special_cmd == 'endif'
-    if len(s:content.scope) <= 1
-      throw "'MuT: else' used, but there was no if"
-    endif
-    call remove(s:content.scope, 0)
-  else
-    throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
-  endif
+  catch /.*/
+    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line
+  endtry
 endfunction
 
 " s:InterpretLines(first_line)                                 {{{3
@@ -903,7 +908,7 @@ function! s:InterpretLines(first_line)
   while s:content.crt < len(s:content.lines)
     " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt]
     let the_line = s:content.lines[s:content.crt]
-    
+
     " MuT: lines
     if the_line =~ pat_special
       call s:InterpretMuTCommand(the_line)
@@ -925,7 +930,7 @@ function! s:InterpretLines(first_line)
       "    => s:value_start and s:value_end must always be specified!
 
       if s:Marker('') != markerCharacters
-	" Replaces plain marker characters into current marker characters.
+        " Replaces plain marker characters into current marker characters.
         if exists('s:dont_eval_markers') && s:dont_eval_markers
           let the_line = substitute(the_line, s:Marker('\(.\{-}\)'), Marker_Txt('\1'), 'g')
         else
@@ -942,22 +947,22 @@ function! s:InterpretLines(first_line)
       let the_line = s:ApplyStyling(the_line)
 
       if the_line =~ '^\s*$' && line.may_merge
-	" The line becomes empty after the evaluation of the expression => strip it
-	call remove(s:content.lines, s:content.crt) " implicit next
+        " The line becomes empty after the evaluation of the expression => strip it
+        call remove(s:content.lines, s:content.crt) " implicit next
       else
-	" Put back the interpreted lines in the content buffer
-	if match(the_line, "[\n\r]") >= 0
-	  " Split the line into several lines if it contains "\n" or "\r"
-	  " characters
-	  let lines = split(the_line, "[\r\n]")
-	  call remove(s:content.lines, s:content.crt)
-	  call extend(s:content.lines, lines, s:content.crt)
-	  let s:content.crt += len(lines) " next
-	else
-	  " Nominal case: only one line
-	  let s:content.lines[s:content.crt] = the_line
-	  let s:content.crt += 1 " next
-	endif
+        " Put back the interpreted lines in the content buffer
+        if match(the_line, "[\n\r]") >= 0
+          " Split the line into several lines if it contains "\n" or "\r"
+          " characters
+          let lines = split(the_line, "[\r\n]")
+          call remove(s:content.lines, s:content.crt)
+          call extend(s:content.lines, lines, s:content.crt)
+          let s:content.crt += len(lines) " next
+        else
+          " Nominal case: only one line
+          let s:content.lines[s:content.crt] = the_line
+          let s:content.crt += 1 " next
+        endif
       endif
     else
       let s:content.crt += 1 " next
@@ -981,12 +986,12 @@ function! s:IsKindOfEmptyLine(lineNo)
     let i = 0
     while i != len(comments)
       if     comments[i] =~ '^m\|^[nbf]\=-\=\d*:'
-	" Never consider start or end of three-piece comment as empty comment
-	let comment = escape(matchstr(comments[i], '^.\{-}:\zs.*'), '\*')
-	" call confirm('##'.comment.'##', '&Ok', 1)
-	if line =~ '^\s*'.comment.(strlen(comment)?'\s*':'').'$'
-	  return 1
-	endif
+        " Never consider start or end of three-piece comment as empty comment
+        let comment = escape(matchstr(comments[i], '^.\{-}:\zs.*'), '\*')
+        " call confirm('##'.comment.'##', '&Ok', 1)
+        if line =~ '^\s*'.comment.(strlen(comment)?'\s*':'').'$'
+          return 1
+        endif
       endif
       let i += 1
     endwhile
@@ -1002,7 +1007,7 @@ function! s:ChooseByComplete()
     call add(entries, {"word": file, "menu": (lh#mut#dirs#hint(file)) })
   endfor
   let c = col('.')
-  let l = c - strlen(s:__complete.word) +1 
+  let l = c - strlen(s:__complete.word) +1
   let s:__complete.c = l
   let g:entries = {"c":c, "l":l, "entries": entries}
   " inoremap <buffer> <silent> <cr> <c-\><c-n>:call <sid>FinishCompletion()<cr>
@@ -1028,7 +1033,7 @@ function! s:getSNR()
   if !exists("s:SNR")
     let s:SNR=matchstr(expand("<sfile>"), "<SNR>\\d\\+_\\zegetSNR$")
   endif
-  return s:SNR 
+  return s:SNR
 endfunction
 
 " s:ChooseTemplateFile(files)                                  {{{3
@@ -1037,7 +1042,7 @@ function! s:ChooseTemplateFile(files, word)
   if mt_chooseWith == 'confirm' && len(a:files) >= (10+26+25)
     call lh#common#error_msg("Too many choices ".len(a:files).
           \" for the `confirm' mode, the snippet selection-mode is forced to `complete'")
-    try 
+    try
       let g:mt_chooseWith = 'complete'
       let res = s:ChooseTemplateFile(a:files, a:word)
     finally
@@ -1053,7 +1058,7 @@ function! s:ChooseTemplateFile(files, word)
       for file in a:files
         let choices += ['&'. key . ' ' .file]
         let key
-              \ = key == '9' ? 'a' 
+              \ = key == '9' ? 'a'
               \ : key == 'z' ? 'B'
               \ : nr2char(char2nr(key)+1)
         " after "Z" is not handled...
@@ -1063,7 +1068,7 @@ function! s:ChooseTemplateFile(files, word)
     try
       " Always display the choices vertically
       let guioptions_save = &guioptions
-      set guioptions+=v 
+      set guioptions+=v
       let choice = confirm("Which template do you wish to use ?",
             \ "&Abort\n".strings, 1)
     finally
@@ -1092,11 +1097,11 @@ function! s:InsertTemplateFile(word,file)
     " 3.1- Remove the current word {{{5
     " Note: <esc> is needed to escape from "Visual insertion mode"
     " TODO: manage a blinking pb
-    let l = strlen(a:word)	" No word to expand ; abort
+    let l = strlen(a:word)      " No word to expand ; abort
     if     0 == l
-      " elseif 1 == l		" Select a one-character length word
+      " elseif 1 == l           " Select a one-character length word
       " silent exe "normal! \<esc>vc\<c-g>u\<esc>"
-    else			" Select a 1_n-characters length word
+    else                        " Select a 1_n-characters length word
       let ew = escape(a:word, '\.*[/')
       call search(ew, 'b')
       let pos = getpos('.')

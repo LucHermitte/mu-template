@@ -21,14 +21,20 @@ let s:k_version = <+s:version+>
 " Created:      ¡DateStamp()¡
 " Last Update:  ¡'$'¡Date$
 "------------------------------------------------------------------------
+VimL: let s:_prj_description = s:Param('description', lh#marker#txt('description'))
 " Description:
-"       <+description+>
+"       <+s:_prj_description+>
 "
 "------------------------------------------------------------------------
 " Installation:
+MuT:  if s:localvimrc
+"       The file must be present in a directory parent of every directories
+"       where the definitions must apply.
+MuT:  else
 "       Drop this file into {rtp}/¡fnamemodify(s:path, ':h')¡
 "       Requires Vim7+
 "       <+install details+>
+MuT:  endif
 " History:      <+history+>
 " TODO:         <+missing features+>
 " }}}1

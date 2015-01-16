@@ -20,30 +20,53 @@ let b:project_sources_dir = <+s:_prj_config+>.paths.sources
 " Option for Mu-Template-> |s:path_from_root()|
 let b:sources_root = <+s:_prj_config+>.paths.sources
 
-" Configures lh-cpp complete includes sub-plugin -> ftplugin/c/c_AddInclude.vim
-let b:includes = [ b:project_sources_dir . '/**']
-if SystemDetected() == 'unix'
-  " Add your 3rd party libraries used in the project here
-  call lh#path#add_path_if_exists('b:includes', '/home/lhermitte/dev/boost/1_51_0/install/include/')
-  call lh#path#add_path_if_exists('b:includes', '/usr/local/include/**')
-  call lh#path#add_path_if_exists('b:includes', '/usr/include/**')
-endif
-
-" For config.h.in files and alike
-" todo: adapt it automatically to the current compilation dir
-let b:includes += [b:BTW_compilation_dir . '/**']
+" Used by mu-template to generate file headers and header-gates.
 let b:cpp_included_paths = [b:project_sources_dir]
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
 " let b:cpp_included_paths += [b:BTW_compilation_dir]
 
+" Configures lh-cpp complete includes sub-plugin -> ftplugin/c/c_AddInclude.vim
+let b:includes = [ b:project_sources_dir . '/**']
+" For config.h.in files and alike
+" todo: adapt it automatically to the current compilation dir
+let b:includes += [b:BTW_compilation_dir . '/**']
+if SystemDetected() == 'unix'
+  " Add your 3rd party libraries used in the project here
+  call lh#path#add_path_if_exists('b:includes', '/usr/local/include/**')
+  call lh#path#add_path_if_exists('b:includes', '/usr/include/**')
+endif
+
+MuT:  if has_key(s:_prj_kind, 'cmake')
+" Fetch INCLUDED paths from cmake cache configuration, and merge every thing
+" into b:includes
+try
+  let included_paths = lh#cmake#get_variables('INCLUDE')
+  call filter(included_paths, 'v:val.value!~"NOTFOUND"')
+  let uniq_included = {}
+  silent! unlet incl
+  for incl in values(included_paths)
+    let uniq_included[incl.value] = 1
+  endfor
+  silent! unlet incl
+  for incl in b:includes
+    let uniq_included[incl] = 1
+  endfor
+  let b:includes = keys(uniq_included)
+catch /.*/
+  call lh#common#warning_msg(v:exception)
+endtry
+
+MuT:  endif
 " Setting &path
 exe 'set path+='.FixPathName(b:BTW_compilation_dir).'/**'
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
 exe 'setlocal path+='.FixPathName(b:project_sources_dir).'/**'
 " for p in b:includes
-"   exe 'setlocal path+='.FixPathName(p)
+"   if p !~ '^/usr'
+"     exe 'setlocal path+='.FixPathName(p)
+"   endif
 " endfor
 
 if 0
@@ -122,7 +145,7 @@ endif
 let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx'
 
 " ======================[ Menus {{{2
-let s:script=expand("<sfile>:p:h")
 call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
+call lh#menu#make('nic', '50.12', '&Project.Edit local &CMake file', '<localleader>v<F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile("vert")<cr>')
 " call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
 call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )
