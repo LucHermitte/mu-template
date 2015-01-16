@@ -5,7 +5,7 @@ VimL: " Override s:fn computation for local-vimrc case
 VimL: let s:fn = substitute(s:location,'\(\W\|_\)\+', '_', 'g')
 VimL: silent! unlet s:_prj_kind
 VimL: silent! unlet g:prj_kind
-VimL: debug let s:_prj_kind = s:Param('project_kind', {})
+VimL: let s:_prj_kind = s:Param('project_kind', {})
 VimL: let g:prj_kind = s:_prj_kind
 " Always loaded {{{1
 MuT:  if has_key(s:_prj_kind, 'c') || has_key(s:_prj_kind, 'cpp')
@@ -33,7 +33,7 @@ VimL:     call s:Include('vim-rc-local-ccpp', 'vim/internals')
 MuT:  endif
 VimL: " Bug tracker
 VimL: let s:bug_tracker = WHICH('CONFIRM',"Which bug tracker will you use ?", ['None/Another', '&Jira'])
-MuT:  if s:bug_tracker == 'jira'
+MuT:  if s:bug_tracker == 'Jira'
 VimL:     call s:Include('vim-rc-local-jira', 'vim/internals')
 MuT:  endif
 MuT:  if empty(s:_prj_kind)
@@ -55,6 +55,10 @@ endif
 let g:loaded_¡s:fn¡ = s:k_version
 " Avoid global reinclusion }}}2
 "------------------------------------------------------------------------
+MuT:  if has_key(s:_prj_kind, 'c') || has_key(s:_prj_kind, 'cpp')
+VimL:     call s:Include('vim-rc-local-global-ccpp', 'vim/internals')
+MuT:  endif
+
 " ======================[ Misc function {{{2
 " Function: s:Echo(expr) {{{3
 function! s:Echo(expr)
@@ -62,5 +66,4 @@ function! s:Echo(expr)
   " return eval(a:expr)
 endfunction
 "------------------------------------------------------------------------
-" Functions {{{2
-" Functions }}}2
+" }}}1

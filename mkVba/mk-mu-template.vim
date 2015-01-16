@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.3.7
-let s:version = '3.3.7'
+" Version:	3.3.8
+let s:version = '3.3.8'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -145,8 +145,10 @@ after/template/vim/internals/vim-rc-local-ccpp.template
 after/template/vim/internals/vim-rc-local-cmake.template
 after/template/vim/internals/vim-rc-local-cpp-style.template
 after/template/vim/internals/vim-rc-local-default.template
+after/template/vim/internals/vim-rc-local-global-ccpp.template
 after/template/vim/internals/vim-rc-local-global-cmake-def.template
 after/template/vim/internals/vim-rc-local-jira.template
+after/template/vim/internals/vim-rc-local-ycm.template
 after/template/vim/internals/vim-rc-local.template
 after/template/vim/internals/vim-tests.template
 after/template/vim/loop-arg.template

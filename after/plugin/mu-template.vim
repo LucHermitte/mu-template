@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.5
+" Version:      3.3.8
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -307,6 +307,9 @@
 "       v3.3.6
 "       (*) Some snippets can be common to all filetypes, they are expected to
 "       be in {template_root_dir}/_/
+"       v3.3.8
+"       (*) Bug in g:mt_IDontWantTemplatesAutomaticallyInserted_4_{ft} handling fixed
+"       (*) Errors in InterpretCommands are better reported
 "
 "
 " BUGS: {{{2
@@ -682,7 +685,7 @@ function! s:AutomaticInsertion()
         \ !g:mt_IDontWantTemplatesAutomaticallyInserted
     return 1
   elseif strlen(&ft) &&
-        \ (!exists('g:mt_IDontWantTemplatesAutomaticallyInserted_4_'.&ft) ||
+        \ (exists('g:mt_IDontWantTemplatesAutomaticallyInserted_4_'.&ft) &&
         \ !g:mt_IDontWantTemplatesAutomaticallyInserted_4_{&ft})
     return 1
   else
