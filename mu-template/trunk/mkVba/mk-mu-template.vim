@@ -59,6 +59,7 @@ after/template/cmake/status.template
 after/template/cpp.template
 after/template/cpptu-header.template
 after/template/cppunit-header.template
+after/template/docbk/biblioref.template
 after/template/docbk/chapter.template
 after/template/docbk/code.template
 after/template/docbk/emphasis.template
@@ -70,6 +71,7 @@ after/template/docbk/itemizedlist.template
 after/template/docbk/listitem.template
 after/template/docbk/literal.template
 after/template/docbk/para.template
+after/template/docbk/part.template
 after/template/docbk/programlisting.template
 after/template/docbk/section.template
 after/template/docbk/title.template
