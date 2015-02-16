@@ -1,0 +1,11 @@
+VimL:" $Id$
+VimL:" <part/> File Template, Luc Hermitte <hermitte at free.fr>, 13th Feb 2015
+VimL:" hint: <part></part>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<part>
+VimL: call s:Include('title', 'docbk')
+VimL: call s:Include('chapter', 'docbk')
+</part>{++}
