@@ -6,4 +6,8 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
-<glossterm linkend="gloss.{+gloss-id+}">¡s:Surround(1, '{+glossterm+}')¡</glossterm>¡s:Surround(2, '{++}')¡
+VimL: let s:_glossterm = s:Surround(1, '{+glossterm+}')
+VimL: " TODO: remove plural mark 
+VimL: let s:_glossid = lh#marker#txt(len(split(s:_glossterm))==1 ? s:_glossterm : 'gloss-id')
+<glossterm linkend="gloss.{+s:_glossid+}">¡s:_glossterm¡</glossterm>¡s:Surround(2, '{++}')¡
+VimL: unlet s:_glossterm
