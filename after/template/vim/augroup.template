@@ -6,7 +6,8 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
 augroup <+group-name+>
   au!
-  ¡s:Surround(1, '<++>')¡
+  ¡s:Surround(1, 'au <+event+> <+action+>')¡
 augroup END
