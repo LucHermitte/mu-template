@@ -4,7 +4,7 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.8
+" Version:      3.4.0
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -19,6 +19,8 @@
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.4.0
+"       (*) Handling of lh#dev#style#*() fixed
 "       v3.3.8
 "       (*) Errors in InterpretCommands are better reported
 "       v3.3.5
@@ -88,7 +90,7 @@ set cpo&vim
 "------------------------------------------------------------------------
 " ## Misc Functions     {{{1
 " # Version {{{2
-let s:k_version = 338
+let s:k_version = 340
 function! lh#mut#version()
   return s:k_version
 endfunction
@@ -808,7 +810,8 @@ function! s:ApplyStyling(line) abort
 
   let styles = lh#dev#style#get(&ft)
   if empty(styles) | return a:line | endif
-  let patterns = keys(styles)
+  return lh#dev#style#apply(a:line)
+  let patterns = ((keys(styles)))
   let replacements = values(styles)
 
   let res = ''
