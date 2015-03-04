@@ -9,8 +9,7 @@ VimL: let s:marker_close = '+>'
 VimL:"  echomsg "case -> " .(empty(s:Args()) ? 'empty' : string(s:Args()))
 VimL: let s:case = empty(s:Args()) ? Marker_Txt('case') : (s:Args()[0])
 VimL: let s:_with_block2 = len(s:Args()) <= 1 ? INPUT("Insert a block for the case (0/1) ?") : (s:Args()[1])
-case <+s:case+>:
-<+s:_with_block2?'{':''+>
+case <+s:case+>:<+s:_with_block2?'{':''+>
     <+¡substitute(s:case, Marker_Txt('\(.\{-}\)'), '\1', '')¡-code+>;
     break;
 <+s:_with_block2?'}':''+>

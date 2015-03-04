@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.8
+" Version:      3.4.0
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -310,6 +310,8 @@
 "       v3.3.8
 "       (*) Bug in g:mt_IDontWantTemplatesAutomaticallyInserted_4_{ft} handling fixed
 "       (*) Errors in InterpretCommands are better reported
+"       v3.4.0
+"       (*) Handling of lh#dev#style#*() fixed
 "
 "
 " BUGS: {{{2
@@ -348,7 +350,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 336
+let s:k_version = 340
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')
