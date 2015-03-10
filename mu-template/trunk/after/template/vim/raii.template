@@ -8,4 +8,4 @@ VimL: let s:marker_close = '+>'
 let cleanup = lh#on#exit()
   \.restore('<+variable+>')
   \.register('<+:action+>')
-VimL: call s:Include('finally', 'vim', {'cleanup': 'call cleanup.finalize()!!!'})
+VimL: call s:Include('finally', 'vim', {'cleanup': 'call cleanup.finalize()'})
