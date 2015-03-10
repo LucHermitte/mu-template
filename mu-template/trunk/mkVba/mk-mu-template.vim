@@ -3,8 +3,8 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.4.0
-let s:version = '3.4.0'
+" Version:	3.4.1
+let s:version = '3.4.1'
 " Created:	06th Nov 2007
 " Last Update:	$Date$
 "------------------------------------------------------------------------
@@ -132,6 +132,7 @@ after/template/unknown.template
 after/template/vim.template
 after/template/vim/augroup.template
 after/template/vim/autoload-debug.template
+after/template/vim/finally.template
 after/template/vim/foreach.template
 after/template/vim/fori.template
 after/template/vim/function.template
@@ -160,6 +161,7 @@ after/template/vim/loop-arg.template
 after/template/vim/menu-make.template
 after/template/vim/option-protect.template
 after/template/vim/plugmap.template
+after/template/vim/raii.template
 after/template/vim/snr.template
 after/template/xslt/apply-template.template
 after/template/xslt/attribute.template
