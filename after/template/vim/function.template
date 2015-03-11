@@ -15,6 +15,6 @@ VimL:    let s:function_prefix='s:'
 MuT:  endif
 VimL: "
 " Function: ¡s:function_prefix¡<+funcname+>(<+params+>) {{{<+3+>
-function! ¡s:function_prefix¡<+funcname+>(<+params+>)
+function! ¡s:function_prefix¡<+funcname+>(<+params+>) abort
   ¡s:Surround(1, '<+code+>')¡
 endfunction
