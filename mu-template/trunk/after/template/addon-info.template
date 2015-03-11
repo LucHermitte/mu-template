@@ -8,7 +8,7 @@ VimL: let s:reindent     = 1
 VimL: let s:_slash = !exists('+shellslash') || &shellslash ? '/' : '\'
 VimL: let s:_project_name = matchstr(expand('%:p'), '.*'.s:_slash.'addons'.s:_slash.'\zs[^'.escape(s:_slash, '\').']*\ze')
 VimL: " VCSCommandGetVCSType() comes from VCSCommand plugin
-VimL: let s:_repo_type = exists('*VCSCommandGetVCSType') ?  substitute(VCSCommandGetVCSType(bufname('%')), '.', '\l&', 'g') : '<++>'
+VimL: let s:_repo_type = lh#vcs#get_type(fnamemodify(bufname('%'), ':p:h'))
 MuT:  if s:_repo_type == 'git'
 VimL:   let s:_repo_addr = lh#os#system('git config --get remote.origin.url')
 MuT:  elseif s:_repo_type == 'svn'
@@ -17,7 +17,7 @@ MuT:  else
 VimL:   let s:_repo_addr = Marker_Txt('Unsupported repository type')
 MuT:  endif
 {
-"name": "<+s:_project_name+>", 
+"name": "<+s:_project_name+>",gc
 "version": "<+dev+>",
 "author" : "<+Author()+>",
 "maintainer" : "<+Author()+>",
