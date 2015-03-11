@@ -1,7 +1,9 @@
 VimL: " $Id$
 VimL: "«Vim» scripts header Template File, Luc Hermitte
 "=============================================================================
+MuT:  if lh#vcs#is_svn(fnamemodify(bufname('%'), ':p:h'))
 " ¡'$'¡Id$
+MuT:  endif
 VimL: let s:root = IF(s:localvimrc, (exists('g:root')?resolve(g:root).','.g:root.',' : '').$HOME , &rtp)
 VimL: let s:path  = lh#path#strip_start(expand('%:p'), s:root)
 VimL: "let s:path  = lh#path#strip_start(expand('%:p'), &rtp)
@@ -12,7 +14,7 @@ VimL: let s:mkvba = expand('%:p')[0:-1+stridx(expand('%:p'), s:path)] . 'mkVba/m
 VimL: let s:mkvba = glob(s:mkvba)
 MuT:  if !empty(s:mkvba) && -1 == stridx(s:mkvba, "\n")
 VImL:   let s:version_lines = filter(readfile(s:mkvba), 'v:val =~ "let\\s\\+s:\\(k_\\)\\=version\\s*="')
-VimL:   let s:version = empty(s:version_lines) ? lh#marker#txt('001') : matchstr(s:version_lines[0], '.*=\s*\zs.*')
+VimL:   let s:version = empty(s:version_lines) ? lh#marker#txt('001') : matchstr(substitute(s:version_lines[0], '\.', '', 'g'), '.*=\s*\zs.*')
 MuT:  else
 VimL:   let s:version = lh#marker#txt('001')
 MuT:  endif
@@ -26,14 +28,10 @@ VimL: let s:_prj_description = s:Param('description', lh#marker#txt('description
 "       <+s:_prj_description+>
 "
 "------------------------------------------------------------------------
-" Installation:
 MuT:  if s:localvimrc
+" Installation:
 "       The file must be present in a directory parent of every directories
 "       where the definitions must apply.
-MuT:  else
-"       Drop this file into {rtp}/¡fnamemodify(s:path, ':h')¡
-"       Requires Vim7+
-"       <+install details+>
 MuT:  endif
 " History:      <+history+>
 " TODO:         <+missing features+>
