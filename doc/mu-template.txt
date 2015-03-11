@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 28th Apr 2014
+*mu-template.vim*       For Vim version 7+      Last change: 11th Mar 2015
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 3.3.0
+                    Version 3.4.1
 
 
 ==============================================================================
@@ -35,10 +35,10 @@ Hermitte, have written this documentation.
 
 The template-files are searched within a list of directories specified by
 |{runtimepath}/template/|, |(bg):[{ft}_]mt_templates_paths| and by
-|$VIMTEMPLATES|. 
+|$VIMTEMPLATES|.gc
 
 *{runtimepath}/template/* refers to 'template/' subdirectories, built from the
-list of directories specified in the 'runtimepath' vim-option. 
+list of directories specified in the 'runtimepath' vim-option.gc
 
 *$VIMTEMPLATES* is a comma (or semicolon) separated list of directories. When
 set, it has precedence over paths of the form |{runtimepath}/template/|.
@@ -73,7 +73,7 @@ proceed:
   repository. Cf. |MuT-trojan-horse|.
 - Import the configuration from another VIM user by adding '~hislogin/.vim' to
   your 'runtimepath'. By doing so, you will use the plugin and ftplugins he is
-  using, but also the template-file he uses. 
+  using, but also the template-file he uses.gc
 - More interresting, on a project you work on with other VIM users, you can
   share a directory (directly, or through a CVS/SVN base) with everybody and
   set |$VIMTEMPLATES| point to this directory.
@@ -121,14 +121,14 @@ There are several ways to load template-files:
     |$VIMTEMPLATES|.
     {filetype} refers to the |filetype| of the new file.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
 {{{3 Explicit expansion of template-files                      ~
                                         *:MuTemplate*
     We can explicitly load and interpret the template-file whose name matches:
         {path}/{extension}.template
     thanks to the command:
         :MuTemplate {extension}
-        
+gc
     Note: {path} still refers to directories listed within |$VIMTEMPLATES| or
     |{runtimepath}/template/|.
 
@@ -146,13 +146,13 @@ There are several ways to load template-files:
     parameters to commands (when auto completion is triggered), the auto
     completion works best on "*/pattern". e.g.: >
         :MuTemplate */f<tab>
-                                        
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+gc
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
 {{{3 Insert-mode expansion of template-files                   ~
-					*MuT-snippets*
+                                        *MuT-snippets*
                                         *i_CTRL-R_SPACE* *i_CTRL-R_TAB*
     This plugin defines two default insert-mode mappings:
-    (*) i_CTRL-R_SPACE 
+    (*) i_CTRL-R_SPACEgc
         uses as a {pattern}: the keyword (check 'iskeyword') before the cursor.
     (*) i_{WORD}_CTRL-R_TAB
         uses as a {pattern}: the |WORD| before the cursor.
@@ -162,7 +162,7 @@ There are several ways to load template-files:
 
     The work of the mappings consists in:
     - listing all the template-files whose names match:
-         {path}/{filetype}-{pattern}.template 
+         {path}/{filetype}-{pattern}.templategc
       or {path}/template/{filetype}/{pattern}.template
       NB: template-files may come from the ones inherited from another
           filetype (see |g:mt_inherited_ft_for_{filetype}|.
@@ -174,14 +174,14 @@ There are several ways to load template-files:
       If there were characters before and after the word, the line is not split.
       For instance, let's suppose the xslt line: >
         blah xsl:val foo
-<     with the cursor just after "val". 
+<     with the cursor just after "val".gc
       Hitting CTRL-R_TAB expands the line into: >
         blah <xsl:value-of select=«XPath»/> foo
 
 <   In order to replace these mapping keybindings with some you found more
     ergonomic, see |<Plug>MuT_ckword|.
 
-						    *g:mt_chooseWith*
+                                                    *g:mt_chooseWith*
     mu-template offers two ways to choose the template-file to expand when
     several match:
     - When g:mt_chooseWith values "complete", the choices are displayed with a
@@ -190,9 +190,9 @@ There are several ways to load template-files:
     - When g:mt_chooseWith values "confirm", the choices are displayed with a
       |confirm()| box.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
 {{{3 Visual-mode expansion of template-files                   ~
-					*MuT-surround*
+                                        *MuT-surround*
                                         *v_CTRL-R_TAB*
     This plugin defines one default visual-mode mapping:
     (*) v_CTRL-R_TAB
@@ -201,7 +201,7 @@ There are several ways to load template-files:
 
     The work of the mappings consists in:
     - listing all the template-files whose names match the snippet-name typed:
-         {path}/{filetype}-{pattern}.template 
+         {path}/{filetype}-{pattern}.templategc
       or {path}/template/{filetype}/{pattern}.template
       NB: template-files may come from the ones inherited from another
           filetype (see |g:mt_inherited_ft_for_{filetype}|.
@@ -227,25 +227,25 @@ There are several ways to load template-files:
 <  See |s:Surround()| to know how to define a snippet that can surround the
 current selection.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
 {{{3 Through the menu                                          ~
     See |MuT-menu|.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
 {{{3 Through the API~
     You may be wrtting plugins that need to expand stuff. mu-template offers
     several functions for this need.
 
 {{{4 Expand text directly at the current position~
-                                                *lh#mut#expand_text()*  
+                                                *lh#mut#expand_text()*gc
     This function takes two parameters:
     - Whether we need to join what is inserted with what follow on next line
       (0 or 1)
-    - and the text to expand. It could also be a list of lines to expand. 
+    - and the text to expand. It could also be a list of lines to expand.gc
     e.g. >
     call lh#mut#expand_text(0, ['I am <+Author()+>', 'And you are <+fill-in-your-name+>'])
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
 {{{3 Filetype inheritance                                      ~
                                     *g:mt_inherited_ft_for_{filetype}*
 The template-files to expand are searched according to the current |filetype|.
@@ -262,7 +262,7 @@ There several two ways to achieve this:
     let g:mt_inherited_ft_for_csharp = 'c'
 < If you don't want these default settings, then set these variables to an
   empty string ('') in your |.vimrc|.
-  
+gc
   @todo: support list of filetypes.
 
 - On a file per file basis, we can call |s:Include()| in order to import the
@@ -271,7 +271,7 @@ There several two ways to achieve this:
   {root-filetype} we want to support.
 
 - We can also on the operating system, and more precisely, on the file
-  system's links (hard links, symbolic links, connection points (? -- NTFS)) 
+  system's links (hard links, symbolic links, connection points (? -- NTFS))gc
 
 
 ==============================================================================
@@ -284,10 +284,10 @@ FEATURES                                    *MuT-features*     {{{1
                                                             *MuT-Marker_Txt()|*
     This plugin supports |markers| -- also known as |placeholders| in Srinath
     Avadhanula's imaps.vim plugin, and vim-latex.
-    
+gc
     To benefit (of?) the power of advanced markers systems, you can:
     - either directly write "<+{marker/placeholder-text}+>" in your
-      template-file, 
+      template-file,gc
     - or use the function |Marker_Txt()| within your template-files -- or even
       |Marker_Open()| or |Marker_Close()|.
     The text will be expanded into "«{parameter}»", "<+{parameter}+>" or
@@ -298,7 +298,7 @@ FEATURES                                    *MuT-features*     {{{1
     |s:dont_eval_markers| is set.
 
     Almost every default template-files are already relying on this feature.
-    
+gc
     All the definitions required to take advantage of the markers are defined
     into |bracketing.base.vim|, which comes from |lh-map-tools|.
     Right now, they are compatible with my |markers| system and Srinath
@@ -309,9 +309,9 @@ FEATURES                                    *MuT-features*     {{{1
     have to define these three functions in a plugin that MUST be placed into
     one of your {runtimepath}/after/plugin/ directories (not just
     {rtp}/plugin/), and to define as well the mappings to |!jump!| -- see
-    |MuT-!jump!|. 
+    |MuT-!jump!|.gc
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
     {{{3 Jumping to markers                          ~
                                                           |!jump!| *MuT-!jump!*
     |bracketing.base.vim| also proposes some default mappings that jump to the
@@ -323,16 +323,16 @@ FEATURES                                    *MuT-features*     {{{1
     mess when jumping to markers hidden within folds, etc), very flexible
     (through options), and can jump forward and backward.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
     {{{3 Automatic jump to the first marker          ~
                     *b:mt_jump_to_first_markers* *g:mt_jump_to_first_markers*
     After a template-file has been loaded and expanded, the cursor is moved to
     the first |marker| encountered. If the marker is within a fold, then the
     fold will be opened and the marker selected.
 
-    Sometimes, we define scripts that generate code. Usually, these scripts 
+    Sometimes, we define scripts that generate code. Usually, these scriptsgc
     will expect neither the cursor to move on its own, nor to be in
-    |Select-mode|. 
+    |Select-mode|.gc
     In order to not mess things up this plugin defines the option
     |g:mt_jump_to_first_markers|, which must be set to 0.
 
@@ -341,14 +341,14 @@ FEATURES                                    *MuT-features*     {{{1
     presence on the system, and sets off this options while generating code.
     If you are using such a tool unable to work with µTemplate, patch it
     (contacting the author is even better) to integrate something like: >
-      if exists('g:mu_template') && 
-            \ (   !exists('g:mt_jump_to_first_markers') 
+      if exists('g:mu_template') &&gc
+            \ (   !exists('g:mt_jump_to_first_markers')gc
             \  || g:mt_jump_to_first_markers)
         " NB: g:mt_jump_to_first_markers is true by default
         let mt_jump = 1
         let g:mt_jump_to_first_markers = 0
       endif
-      
+gc
       ... where a new buffer is opened and filled ...
 
       if exists('mt_jump')
@@ -371,12 +371,12 @@ FEATURES                                    *MuT-features*     {{{1
 
     In |lh-cpp|, a few functions constitute an API (|lh-cpp-API|) that can be
     used to analyze C++ code. For instance, |Cpp_SearchClassDefinition()|
-    tells the complete name of the current class. 
+    tells the complete name of the current class.gc
     Note also the command |:DOX| that parses C++ functions signature and then
     relies on mu-template to insert a doxygen template-comment listing every
     parameters from the function.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
     {{{3 Other things provided if not yet defined ...~
     *g:author* *Author()*       ([$USER/$USERNAME]/"")
     This function is used in some templates.
@@ -388,7 +388,7 @@ FEATURES                                    *MuT-features*     {{{1
     *DateStamp()*
     Used in some templates. See this function as a overrideable |strftime()|.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
     {{{3 Menus                                       ~
                                             *MuT-menu*
 
@@ -403,12 +403,12 @@ FEATURES                                    *MuT-features*     {{{1
     - Then, it lists the different filetypes for which there are code snippets
     - Finally, the last menu item permits to rebuild the menu when some
       template-files are added or deleted from the system.
-    
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+gc
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -gc
     {{{3 Post Expansion Hooks~
                                             *MuT-post-expand-hooks* *s:AddPostExpandCallback()*
 
-    It's possible to execute hooks after the expansion has been done. 
+    It's possible to execute hooks after the expansion has been done.gc
 
     The typical use case is for programming langages: the snippet expanded
     uses a symbol that is defined in a header file/module/package. In order
@@ -419,7 +419,7 @@ FEATURES                                    *MuT-features*     {{{1
         VimL: call s:AddPostExpandCallback('lh#cpp#include#add("<vector>")')
         std::vector<¡s:Surround(1, '<+type+>')¡> <++>
 <   Expanding vector, will of course insert std::vector<>, but also it will
-   automatically include <vector> (if not already included). 
+   automatically include <vector> (if not already included).gc
    Note: this is achieved thanks to |lh#cpp#include#add|. Equivalent functions
    are still to be written for other languages (Java, Python, Perl, ...)
 
@@ -437,18 +437,18 @@ TEMPLATE FILES SYNTAX                       *MuT-syntax*       {{{1
         trimmed.
         The characters delimiting the {expression} can be changed thanks to
         |s:value_start| and |s:value_end|.
-    
+gc
     VimL: {VimL-instruction}                            *MuT-intruction*
         {VimL-instruction} is an Ex command that is executed.
-        This statement is expanded into an empty string, 
+        This statement is expanded into an empty string,gc
         Note however that this command must not attempt to modify the current
         buffer, or directly change the |s:content| of the lines being added.
         This may lead to an undefined behaviour.
 
     VimL: hint: {snippet-hint}                          *MuT-hint*
-	{snippet-hint} is a textual hint intended to summarize what the
-	snippet will be expanded into. So far hints serve only with
-	|MuT-snippets|.
+        {snippet-hint} is a textual hint intended to summarize what the
+        snippet will be expanded into. So far hints serve only with
+        |MuT-snippets|.
 
 ------------------------------------------------------------------------------
 {{{2 How-To                            ~
@@ -499,8 +499,8 @@ A:  Have it stored in a VimL variable and use a |MuT-expression|.
 
 Q:  "How can I store the result of a expression into a variable?"  *MuT-:let*
 A:  Use the VimL instruction |:let|, and make the scope of the variable to be
-    either |s:var|, |b:var|, |w:var| or |g:var|. 
-    |local-variables| can not be used. 
+    either |s:var|, |b:var|, |w:var| or |g:var|.gc
+    |local-variables| can not be used.gc
     Ex.: >
         VimL: let s:my_variable = 1 + 2
 <   However, note that some script-symbol are reserved and must not be used. See
@@ -539,17 +539,27 @@ Q:  "How can I re-indent the lines inserted?"           *s:reindent*
 A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
     be automatically re-indented according to the current indent scheme. >
         VimL: let s:reindent = 1
-<   Examples: check */*.template.
+<    Examples: check */*.template.
+
+Q:  "How do I specify where the automated insertion starts?" *s:StartIndentingHere()*
+A:  Call s:StartIndentingHere: >
+        VimL: call s:StartIndentingHere()
+
+<    Notes:
+    - This feature will make sense after file headers that shall not be
+      indented.
+    - |s:reindent| will be automatically set when calling this function.
+    Examples: check template/c/internals/c-header.template
 
 
 Q:  "How can I load another skeleton?"                  *s:Include()*
-A:  This can be achieved with the special function |s:Include()|. 
+A:  This can be achieved with the special function |s:Include()|.gc
     Examples: check c.template that loads the template-file for C header
     files, or C implementation files according to the current buffer's file
     extension (.h or .c) >
         VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
 <   Or {swith}-template that loads {case}-template with an argument: >
-	VimL: call s:Include('case', 'c', arg)
+        VimL: call s:Include('case', 'c', arg)
 
 
 Q:  "How can I pass parameters to imported skeletons?" *s:Args()* *s:PushArgs()* *s:Params()*
@@ -559,6 +569,8 @@ A:  Three API functions are provided for this purpose:
       to the imported skeleton.
     - |s:Args()| permits to fetch the arguments passed.
     - |s:Params()| permit to fetch a named argument passed.
+      Prefer this method to fetch parameters.
+
     In order to support optional arguments, the arguments passed (to
     |s:PushArgs()|, not to |s:Include()|), and fetched, shall be wrapped in a
     |List|.  An empty list will be equivalent the C void argument.
@@ -569,6 +581,17 @@ A:  Three API functions are provided for this purpose:
     the dirty hack behing these functions. It's likelly to change to the far
     future. I'd advice you to use recursivity instead of iteration when loop
     are required. See the implementation of {switch} and {case} snippets.
+
+    Example: template/vim/raii.template and template/vim/finally.template >
+    " In template/vim/raii.template
+    VimL: call s:Include('finally', 'vim', {'cleanup': 'call cleanup.finalize()'})
+
+    " In template/vim/finally.template
+    try
+      <+s:Surround(1, s:Param('code', lh#marker#txt('code')))+>
+    finally
+      <+s:Surround(2, s:Param('cleanup', lh#marker#txt('cleanup')))+>
+    endtry
 
 
 Q:  "How can I change the expression delimiters?"  *s:value_start* *s:value_end*
@@ -617,14 +640,14 @@ A:  Be sure the expression to expand does not end with a "\n". You may want to
         text
 <   «todo: check if it concerns every ending \n, or only strings strictly equal to "\n"»
 
-                                        *MuT-loops* *MuT-instruction-injection* 
+                                        *MuT-loops* *MuT-instruction-injection*gc
                                         *s:Inject()*  *s:InjectAndTransform()*
     You can also inject text (or even |MuT-instruction|) into |s:content| with: >
         VimL: call s:Inject(["list", "of", "lines"]
 <   You can also define complex functions in |autoload| plugins instead, or
     even use |s:Include()| recursively or not, but that would be code
     obfuscation.
-    
+gc
 
 Q:  "How can I make CVS/Subversion ignore special tags  *MuT-RC-tag$*
     in a template-file?"
@@ -652,7 +675,7 @@ Q:  "I want to write a template-file, but I do not succeed to   *MuT-encoding*
     have a utf-8 file."
 A:  To save your template-file in utf-8, save it with >
         :w ++enc=utf-8
-<   See |++enc|, 'encoding', and |MuT-encodings| 
+<   See |++enc|, 'encoding', and |MuT-encodings|gc
 
 
 Q: "How can I refer to the root of my current project?"  *s:path_from_root()*
@@ -661,7 +684,7 @@ A: First you'll need a way to define project-specific informations. Plugins
    project-specific variable *b:sources_root* -- note: so far only
    |MuT-local_vimrc| will be able to set that variable before the
    template-file is expanded, hence I recommend its use over |project.vim|
-   regarding this particular task. 
+   regarding this particular task.gc
    Finally, in your template-files, you'll be able to refer to this variable
    thanks to the muT-function |s:path_from_root()|.
 
@@ -683,8 +706,8 @@ A: The |Dictionary| |s:content| contains the lines already interpreted, and
 
 
 Q: "How to define a snippet that surrounds the current selection?" *s:Surround()*
-A: You can use the s:Surround() function that takes two parameters: 
-   - an surround-id tied to the count passed to the mapping (see |MuT-surround|),
+A: You can use the s:Surround() function that takes two parameters:
+   - a surround-id tied to the count passed to the mapping (see |MuT-surround|),
    - and a default text in case no surrounding is done (snippet used in
      INSERT-mode, or with an incompatible count).
 For instance, C-is snippet looks like:
@@ -702,12 +725,12 @@ must be encoded in utf-8. Whatever 'encoding' we are running vim within.
 
 So far, this approach has been successfully tested on:
 - a Windows XP box, with vim compiled with |+multi_byte|, in latin1 as well as
-  in utf-8 
+  in utf-8gc
 - a Sun Solaris system, with vim not compiled with |+multi_byte|
 - Linux systems
 
 I had partially successful results on my French XP box, with vim running in
-latin2. 
+latin2.gc
 - |MuT-expression|s were correctly expanded (with |s:value_start| and
   |s:value_end| both set to a non ASCII character)
 - Simplified textual placeholders (|MuT-<++>|) were correctly replaced with my
@@ -721,7 +744,7 @@ The completely unsuccessful approach was to have the template-file in latin1,
 and load them in a buffer while being in utf-8. To be more exact, it worked
 only with |s:value_start| and |s:value_end| set to plain ASCII characters (1
 or more characters coded on 7bits) -- in that case, the main difficulty is to
-avoid meaningful characters like "!" in C template-files. 
+avoid meaningful characters like "!" in C template-files.gc
 
 
 THIS MEANS
@@ -787,12 +810,12 @@ CONFIGURATION                               *MuT-config*       {{{1
 <       Must be set once before mu-template.vim is sourced -> .vimrc
 
     |g:mt_chooseWith| (string; "complete"/"confirm"; default: "complete")
-	Specifies how the user will choose which snippet must be inserted when
-	there is an ambiguity.
+        Specifies how the user will choose which snippet must be inserted when
+        there is an ambiguity.
 
 ------------------------------------------------------------------------------
 {{{2 Mappings                          ~
-    *<Plug>MuT_ckword* 
+    *<Plug>MuT_ckword*gc
     *<Plug>MuT_cWORD*
     *<Plug>MuT_Surround*
 
@@ -825,11 +848,11 @@ The default template-files, shipped with the vimball archive, are also best
 placed into a {rtp}/after/ directory. Thus, it leaves us the possibility to
 override them. See |MuT-paths|.
 
-       
+gc
 µTemplate uses some other plugins. I (LH)'d rather use one (even complex) plugin
 that defines a feature I need in several places, instead of copying an
 over-simplified and limited version of the functions defined in that plugin in
-every other (ft)plugin that need this specific feature. 
+every other (ft)plugin that need this specific feature.gc
 In other words, I prefer modularity over redundancy. That's why µTemplate
 depends on other plugins.
 
@@ -868,7 +891,7 @@ stakeholders, be sure to use the same syntax for the placeholders (see
 <http://www.vim.org/scripts.php?script_id=727>
 mu-template is able to take advantage of local_vimrc plugins that expose a
 *:SourceLocalVimrc* command. Thanks to this command, some project variables,
-like |b:sources_root|, can be set before a new |buffer| is created. 
+like |b:sources_root|, can be set before a new |buffer| is created.gc
 
 |lh-cpp-readme|                                 *MuT-lh-cpp*
 <http://code.google.com/p/lh-vim/wiki/lhCpp>
@@ -900,7 +923,7 @@ running.
 
 This plugin is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  
+PARTICULAR PURPOSE.gc
 
 
 ==============================================================================
@@ -913,12 +936,12 @@ Robert Kelly IV:        For his insight and the ideas he gave me (LH)
           skeleton inserted. ie. mu-template.vim can be used for immediate GUI
           interactions, and |:FTE| to treat delayed expansions that need more
           attention from the developper.
-Tom Link		For his life changing |stakeholders| library.
+Tom Link                For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2014 <http://code.google.com/p/lh-vim/>, CC by SA 3.0 {{{1
+ © Luc Hermitte, 2001-2015 <http://code.google.com/p/lh-vim/>, CC by SA 3.0 {{{1
  $Id$
- VIM: let b:VS_language = 'american' 
+ VIM: let b:VS_language = 'american'gc
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
  vim600:fdm=marker:

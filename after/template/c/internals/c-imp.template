@@ -3,6 +3,7 @@ VimL:"C/C++ Definition File-Template, Luc Hermitte
 VimL: " The following include is meant to be overriden
 VimL: let s:filename = s:path_from_root(expand("%:p"))
 VimL: call s:Include("c-file-header", "c/internals")
+VimL: call s:StartIndentingHere()
 
 VimL: call s:Include("section-sep", "c", "Includes")
 VimL: " Deduce the name (and relative path) to the associated header file
