@@ -6,7 +6,7 @@
 " Last Update:  $Date$
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.0
+" Version:      3.4.1
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -312,6 +312,9 @@
 "       (*) Errors in InterpretCommands are better reported
 "       v3.4.0
 "       (*) Handling of lh#dev#style#*() fixed
+"       v3.4.1
+"       (*) New feature: s:StartIndentingHere() in order to handle file headers
+"       that shall not be reindented.
 "
 "
 " BUGS: {{{2
@@ -350,7 +353,7 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 340
+let s:k_version = 341
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')

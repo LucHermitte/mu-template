@@ -1,6 +1,5 @@
 VimL:" $Id$
 VimL:" Default File header - C/C++ Definition File-Template, Luc Hermitte
-//========================================================================
 /**@file	¡s:filename¡
  * @author	¡substitute(Author(0),'\r"','\r *','g')¡
  * @version	<+version+>
@@ -8,12 +7,3 @@ VimL:" Default File header - C/C++ Definition File-Template, Luc Hermitte
  * 	Created:	¡DateStamp()¡ \n
  * 	Last Update:	¡DateStamp()¡
  */
-/*------------------------------------------------------------------------
- * Description:	<+description+>
- * 
- *------------------------------------------------------------------------
- * History:	<+history+>
- * TODO:	<+missing features+>
- *========================================================================
- */
-
