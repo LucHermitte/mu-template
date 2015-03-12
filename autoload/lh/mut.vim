@@ -4,8 +4,8 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.1
-let s:k_version = 341
+" Version:      3.4.2
+let s:k_version = 342
 " Created:      05th Jan 2011
 " Last Update:  $Date$
 "------------------------------------------------------------------------
@@ -20,6 +20,8 @@ let s:k_version = 341
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.4.2
+"       (*) Fix incorrect line range to reindent
 "       v3.4.1
 "       (*) New feature: s:StartIndentingHere() in order to handle file headers
 "       that shall not be reindented.
@@ -162,7 +164,7 @@ function! lh#mut#edit(path)
 endfunction
 
 " Function: lh#mut#expand(NeedToJoin, ...)                 {{{2
-function! lh#mut#expand(NeedToJoin, ...)
+function! lh#mut#expand(NeedToJoin, ...) abort
   let s:content.lines = []
 
   " echomsg 'lh#mut#expand('.a:NeedToJoin.string(a:000).')'
@@ -187,7 +189,7 @@ function! lh#mut#expand(NeedToJoin, ...)
 endfunction
 
 " Function: lh#mut#expand_text(NeedToJoin, text, ...)      {{{2
-function! lh#mut#expand_text(NeedToJoin, text, ...)
+function! lh#mut#expand_text(NeedToJoin, text, ...) abort
   let s:content.lines = type(a:text) == type([]) ? a:text : split(a:text, "\n")
   try
     let s:args = []
@@ -609,7 +611,7 @@ endfunction
 
 " s:DoExpand(NeedToJoin)                                       {{{3
 " @pre s:content.lines array is filled with the lines to expand
-function! s:DoExpand(NeedToJoin)
+function! s:DoExpand(NeedToJoin) abort
   if len(s:content.lines) == 0
     return 0
   endif
@@ -670,7 +672,7 @@ function! s:DoExpand(NeedToJoin)
       silent exe get(s:content, 'first_line_indented', pos).','.(last).'normal! =='
       unlet s:reindent
     endif
-    " silent! unlet s:content.first_line_indented
+    silent! unlet s:content.first_line_indented
 
     " Join with the line after the template that have been inserted {{{4
     call s:JoinWithNext(a:NeedToJoin,pos,last)
@@ -1157,7 +1159,7 @@ function! s:InsertTemplateFile(word,file)
 endfunction
 
 " s:TryActivateStakeholders(pos, last)                         {{{3
-function! s:TryActivateStakeholders(pos,last)
+function! s:TryActivateStakeholders(pos,last) abort
   if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1)
     if !exists('#stakeholders') " Stakeholder not enabled for all buffers
       if !exists('b:stakeholders') || exists('b:stakeholders_range')
