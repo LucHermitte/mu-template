@@ -1,5 +1,5 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 11th Mar 2015
+*mu-template.vim*       For Vim version 7+      Last change: 14th Mar 2015
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
@@ -862,20 +862,19 @@ FILES                                       *MuT-files*        {{{1
 
 Mu-Template depends on:
 - |lh-vim-lib|
-- |lh-map-tools|
+- |lh-brackets|
+- |lh-dev|
 Mu-Template takes advantage of:
 - |searchInRuntime|
 - |stakeholders|
 
-All the corresponding |vimball|s can be obtained from
-<http://code.google.com/p/lh-vim> or |MuT-stakeholders|.
 
 ==============================================================================
 OTHER PLUGINS OF INTEREST                   *MuT-external-plugins* {{{1
 
 |stakeholders.txt|                              *MuT-stakeholders*
 <http://www.vim.org/scripts/script.php?script_id=3326>
-<https://github.com/tomtom/stakeholders_vim/>
+<http://github.com/tomtom/stakeholders_vim>
 stakeholders is the plugin that will change your mu-template experience.
 Thanks to it, identical placeholders will be modified simustaneously.
 Just install it and enjoy. The template-file c/fori exploits Tom Link's
@@ -887,16 +886,13 @@ stakeholders, be sure to use the same syntax for the placeholders (see
 |:SetMarker|)
 
 |local_vimrc|                                   *MuT-local_vimrc*
-<http://code.google.com/p/lh-vim/source/browse/misc/trunk/plugin/local_vimrc.vim>
-<http://www.vim.org/scripts.php?script_id=727>
+<http://github.com/LucHermitte/local_vimrc>
 mu-template is able to take advantage of local_vimrc plugins that expose a
 *:SourceLocalVimrc* command. Thanks to this command, some project variables,
 like |b:sources_root|, can be set before a new |buffer| is created.gc
 
 |lh-cpp-readme|                                 *MuT-lh-cpp*
-<http://code.google.com/p/lh-vim/wiki/lhCpp>
-<http://www.vim.org/scripts.php?script_id=336>
-<deprecated: http://hermitte.free.fr/vim/c.php>
+<http://github.com/LucHermitte/lh-cpp>
 
 Note: This set of ftplugins contains many C&C++ specific code-snippets that
 are not shipped with mu-tempate.
@@ -940,8 +936,7 @@ Tom Link                For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2015 <http://code.google.com/p/lh-vim/>, CC by SA 3.0 {{{1
- $Id$
+ © Luc Hermitte, 2001-2015 <http://github.com/LucHermitte/mu-template>, CC by SA 3.0 {{{1
  VIM: let b:VS_language = 'american'gc
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
  vim600:fdm=marker:
