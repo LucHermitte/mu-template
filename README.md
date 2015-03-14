@@ -5,14 +5,14 @@
   * [Features](#features)
   * [Shipped templates](#shipped-templates)
     * [Vim](#vim)
-    * [C & C++](#c-&-c++)
+    * [C & C++](#c--c)
     * [LaTeX](#latex)
     * [XSLT](#xslt)
     * [Licenses](#licenses)
     * [Other filetypes](#other-filetypes)
   * [Examples](#examples)
-    * [C-`if` snippet](#c--if-snippet)
-    * [C-`case` snippet](#c--case-snippet)
+    * [C-`if` snippet](#c-if-snippet)
+    * [C-`case` snippet](#c-case-snippet)
     * [Interactive template-file: C++ Class Template](#interactive-template-file:-c++-class-template)
     * [Completely useless recursive example](#completely-useless-recursive-example)
   * [Installation](#installation)
@@ -90,7 +90,7 @@ Most of my C and C++ template-files are shipped with [lh-cpp](http://github.com/
     * _header files_ first compute the relative current filename from the root of the current project, and contains a (-n overridable) file header, and adds automatically generated anti-reinclusion guards
     * _source files_ first compute the relative current filename from the root of the current project, and contains a (-n overridable) file header, and includes any matching _header file_ found (in the current directory, or any compatible directory when a.vim is installed)
 
-  * snippets for `main`, `for`, `for (int i`, `while`, `do...while`, `switch` and `case`, `if` ; NB: [lh-cpp](http://github.com/LucHermitte/lh-cpp) defines alternative [smart-snippets for these control-statements](http://github.com/LucHermitte/lh-cpp#code-snippets), and several C++-only snippets in its [repository](http://github.com/LucHermitte/lh-cpp/after/template/cpp)
+  * snippets for `main`, `for`, `for (int i`, `while`, `do...while`, `switch` and `case`, `if` ; NB: [lh-cpp](http://github.com/LucHermitte/lh-cpp) defines alternative [smart-snippets for these control-statements](http://github.com/LucHermitte/lh-cpp#code-snippets), and several C++-only snippets in its [repository](http://github.com/LucHermitte/lh-cpp/blob/master/after/template/cpp)
 
 ### LaTeX
 
@@ -100,7 +100,10 @@ Four snippets that are more a proof-of-concept than real snippets for intensive 
 
 ### XSLT
 
-Several snippets are provided for `attribute`, `for-each`, `if`, `otherwise`, `template match`, `template name`, `value-of`, and `when`
+Several snippets are provided for `apply-template`, `attribute`,
+`call-template`, `choose`, `for-each`, `if`, `otherwise`, `param`, `template
+match`, `template name`, `text`, `value-of`, `variable`, `when`, and
+`with-param`.
 
 ### Licenses
 
@@ -133,7 +136,7 @@ Extremely simple template-files are provided for new cmake, perl, html, tcl, mar
 
 A few examples are better than a long speech, check the [documentation](doc/mu-template.txt) for more precisions.
 
-Note: all the default template-files shipped with mu-template can be browsed from the [subversion repository](after/template/)
+Note: all the default template-files shipped with mu-template can be browsed from the [repository](after/template/)
 
 ### C-`if` snippet
 ```
