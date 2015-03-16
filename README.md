@@ -293,6 +293,7 @@ git clone git@github.com:LucHermitte/lh-tags.git
 git clone git@github.com:LucHermitte/lh-dev.git
 git clone git@github.com:LucHermitte/lh-brackets.git
 git clone git@github.com:LucHermitte/searchInRuntime.git
+git clone git@github.com:LucHermitte/mu-template.git
 ```
   * or with Vundle/NeoBundle:
 ```vim
