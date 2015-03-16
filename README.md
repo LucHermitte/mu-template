@@ -313,3 +313,5 @@ Bundle 'tomtom/stakeholders_vim'
 
 ## See also
 There are many other template-files loaders for Vim, see the [non exhaustive list of vim.wikia](http://vim.wikia.com/wiki/Category:Automated_Text_Insertion), or the [comparative matrix](http://vim-wiki.mawercer.de/wiki/topic/text-snippets-skeletons-templates.html) in Marc Weber's vim wiki.
+
+[![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
