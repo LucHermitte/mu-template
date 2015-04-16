@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" vim-rc-local CMake File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Dec 2014
 
 " ======================[ Project config {{{2

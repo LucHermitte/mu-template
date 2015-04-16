@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «vim-rc-local-global-cmake-def» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 02nd Oct 2013
 VimL:" hint: «vim-rc-local-global-cmake-def-hint»
 VimL: let s:value_start = '¡'
@@ -16,6 +15,7 @@ let s:sources_dir = '<+s:_prj_src_dir+>'
 " unlet <+s:_prj_config+>
 " Mandatory Project options
 call lh#let#if_undef('<+s:_prj_config+>.paths.trunk', string(expand("<sfile>:p:h")))
+LetIfUndef <+s:_prj_config+>.name             '<+s:_prj_name+>'
 LetIfUndef <+s:_prj_config+>.paths.project    fnamemodify(<+s:_prj_config+>.paths.trunk,':h')
 LetIfUndef <+s:_prj_config+>.paths.doxyfile   <+s:_prj_config+>.paths.project
 " Note: this could be anything like: MyProject_config.build.ARM-release
@@ -49,14 +49,6 @@ endfunction
 
 call lh#let#if_undef ('<+s:_prj_config+>.functions',
       \ string({'EditLocalCMakeFile': function(s:getSNR('EditLocalCMakeFile'))}))
-
-" ======================[ Local variables to automagically import in QuickFix buffer {{{2
-QFImport b:tags_select
-QFImport &l:path
-QFImport b:BTW_project_target
-QFImport b:BTW_compilation_dir
-QFImport b:BTW_project_build_mode
-QFImport b:includes
 
 "------------------------------------------------------------------------
 " ======================[ Compilation mode, & CTest options {{{2

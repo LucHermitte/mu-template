@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" vim-rc-local C/C++ projects File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 01st Oct 2013
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
@@ -63,11 +62,11 @@ exe 'set path+='.FixPathName(b:BTW_compilation_dir).'/**'
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
 exe 'setlocal path+='.FixPathName(b:project_sources_dir).'/**'
-" for p in b:includes
-"   if p !~ '^/usr'
-"     exe 'setlocal path+='.FixPathName(p)
-"   endif
-" endfor
+for p in b:includes
+  if p !~ '^/usr'
+    exe 'setlocal path+='.FixPathName(p)
+  endif
+endfor
 
 if 0
   " gcov output path
@@ -146,6 +145,14 @@ let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx'
 
 " ======================[ Menus {{{2
 call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
-call lh#menu#make('nic', '50.12', '&Project.Edit local &CMake file', '<localleader>v<F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile("vert")<cr>')
+call lh#menu#make('nic', '50.12', '&Project.Edit local &CMake file (vertical)', '<localleader>v<F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile("vert")<cr>')
 " call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
 call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )
+
+" ======================[ Local variables to automagically import in QuickFix buffer {{{2
+QFImport tags_select
+QFImport &path
+QFImport BTW_project_target
+QFImport BTW_compilation_dir
+QFImport BTW_project_config
+QFImport includes
