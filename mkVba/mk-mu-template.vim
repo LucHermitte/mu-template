@@ -122,12 +122,17 @@ after/template/test-included.template
 after/template/test.template
 after/template/test3.template
 after/template/tex/begin-end.template
+after/template/tex/bold.template
 after/template/tex/center.template
 after/template/tex/down.template
+after/template/tex/down.template
+after/template/tex/emph.template
 after/template/tex/figure.template
 after/template/tex/frac.template
 after/template/tex/frame-beamer.template
 after/template/tex/frame-vhelp-beamer.template
+after/template/tex/italic.template
+after/template/tex/note.template
 after/template/unknown.template
 after/template/vim.template
 after/template/vim/augroup.template

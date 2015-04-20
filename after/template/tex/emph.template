@@ -1,0 +1,8 @@
+VimL:" emphasis File Template, Luc Hermitte, 20th Apr 2015
+VimL:" This snippet exists for uniformity with other languages
+VimL:" hint: \emph{<++>}<++>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+\emph{¡s:Surround(1,'{+text+}')¡}{++}

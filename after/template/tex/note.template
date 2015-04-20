@@ -1,0 +1,7 @@
+VimL:" note File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 20th Apr 2015
+VimL:" hint: \note[item]{<++>}<++>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+\note{+[item]+}{¡s:Surround(1,'{+text+}')¡}{++}
