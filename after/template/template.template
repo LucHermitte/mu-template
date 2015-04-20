@@ -1,10 +1,9 @@
-VimL:" $Id$
 VimL:" Templates Definition File Template, Luc Hermitte
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-¡'VimL:" $'¡Id$
+VimL: call s:Include('dollar_id', '_')
 ¡s:Comment('<+'.expand('%:t:r').'+>'.' File Template, '.Author(1).', '.DateStamp())¡
 ¡s:Comment('hint: <+'.expand('%:t:r').'-hint+>')¡
 ¡'VimL:'¡ let s:value_start = '¡'

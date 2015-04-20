@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" Default File header - C/C++ Definition File-Template, Luc Hermitte
 /**@file	¡s:filename¡
  * @author	¡substitute(Author(0),'\r"','\r *','g')¡

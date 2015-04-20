@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" section-sep File Template, Luc Hermitte, 22nd Mar 2012
 VimL:" hint: /*===[ section ]===*/
 VimL: let s:marker_open  = '<+'

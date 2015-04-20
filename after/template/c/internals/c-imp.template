@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"C/C++ Definition File-Template, Luc Hermitte
 VimL: " The following include is meant to be overriden
 VimL: let s:filename = s:path_from_root(expand("%:p"))

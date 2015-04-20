@@ -1,18 +1,17 @@
 "=============================================================================
-" $Id$
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-"		<URL:http://hermitte.free.fr/vim/>
-" Version:	3.4.2
-let s:version = '3.4.2'
+"		<URL:http://github.com/LucHermitte/mu-template>
+" Version:	3.4.3
+let s:version = '3.4.3'
 " Created:	06th Nov 2007
-" Last Update:	$Date$
+" Last Update:	20th Apr 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
   let save_rtp = &rtp
   let &rtp = expand('<sfile>:p:h:h').','.&rtp
-  exe '22,$MkVimball! mu-template-'.s:version
+  exe '21,$MkVimball! mu-template-'.s:version
   set modifiable
   set buftype=
 finally
@@ -22,6 +21,7 @@ finish
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
 after/template/addon-info.template
+after/template/_/dollar_id.template
 after/template/c.template
 after/template/c/case.template
 after/template/c/do.template
