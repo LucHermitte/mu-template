@@ -101,6 +101,7 @@ after/template/markdown/link.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template
+after/template/python/path-exists.template
 after/template/sh.template
 after/template/sh/case.template
 after/template/sh/current-dir.template
