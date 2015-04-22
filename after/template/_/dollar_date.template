@@ -1,0 +1,9 @@
+VimL:" dollar_date File Template, Luc Hermitte, 22nd Apr 2015
+VimL:" hint: Add '$'Date$ only in file under subversion/CVS.
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  if lh#vcs#is_svn(fnamemodify(bufname('%'), ':p:h'))
+" ¡'$'¡Date$
+MuT:  endif

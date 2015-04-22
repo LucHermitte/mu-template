@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "«Vim» autoload plugin Template File, Luc Hermitte
 VimL: "
 VimL: call s:Include('vim-autoload-function', 'vim/internals')
@@ -14,3 +13,5 @@ VimL: call s:Include('vim-autoload-debug', 'vim/internals')
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
 
+"------------------------------------------------------------------------
+" }}}1

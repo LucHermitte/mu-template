@@ -18,7 +18,8 @@ MuT:  endif
 " Version:      <+substitute(substitute(s:version, "'", '', 'g'), '\d', '&.', 'g')+>
 let s:k_version = <+s:version+>
 " Created:      ¡DateStamp()¡
-" Last Update:  ¡'$'¡Date$
+" Last Update:
+VimL: call s:Include('dollar_date', '_')
 "------------------------------------------------------------------------
 VimL: let s:_prj_description = s:Param('description', lh#marker#txt('description'))
 " Description:
