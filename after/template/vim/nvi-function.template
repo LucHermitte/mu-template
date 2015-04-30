@@ -1,0 +1,28 @@
+VimL:" nvi-function File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 23rd Apr 2015
+VimL:" hint: non-virtual vimL function that calls a virtual one
+VimL:" I know, there are no virtual function in VimL, but I emulate them in lh#dev
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: call s:Include('get-script-kind', 'vim/internals')
+MuT:  if !s:alplug
+VimL:    call lh#common#warning_msg('This snippet is not available outside autoload plugins')
+MuT:  else
+VimL:    call s:Include('vim-autoload-function', 'vim/internals')
+VimL:    let s:fname = matchstr(s:function_prefix, 'lh#dev#\zs.*')
+VimL:    let s:project_prefix = matchstr(s:function_prefix, '.*\ze'.s:fname)
+" Function: ¡s:function_prefix¡<+funcname+>(<+params+>) {{{<+3+>
+" Entry point for <+funcname+>()
+function! ¡s:function_prefix¡<+funcname+>(<+params+>) abort
+  ¡s:Surround(1, '<+code+>')¡
+  <+let res = +>lh#dev#option#<+fast_+>call('<+s:fname+>_do_<+funcname+>', &ft, <+params+>)
+  ¡s:Surround(2, '<+code+>')¡
+endfunction
+
+" Function: ¡s:function_prefix¡_do_<+funcname+>(<+params+>) {{{<+3+>
+" The Default behaviour of virtual function <+funcname+>()
+function! ¡s:function_prefix¡_do_<+funcname+>(<+params+>) abort
+  ¡s:Surround(3, '<+code+>')¡
+endfunction
+MuT:  endif

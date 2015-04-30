@@ -5,8 +5,12 @@ VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
+VimL: let s:title = INPUT("title ?", "")
+VimL: let s:title = empty(s:title) ?  lh#marker#txt("title") : s:title
+VimL: let s:subtitle = lh#marker#txt('subtitle')
 \begin{frame}
-  \frametitle{¡INPUT('title ?', '{+title+}')¡}
+  \frametitle{{+s:title+}}
+  \framesubtitle{{+s:subtitle+}}
   \begin{itemize}
     \item <++>
   \end{itemize}
