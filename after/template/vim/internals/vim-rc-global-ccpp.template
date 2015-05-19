@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" vim-rc-global C/C++ projects File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Dec 2014
 
 " Alternate configuration {{{2

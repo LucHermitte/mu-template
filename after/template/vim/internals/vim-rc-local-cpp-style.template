@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" Reminder of C/C++ options, Luc Hermitte <hermitte {at} free {dot} fr>, 02nd Oct 2013
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
