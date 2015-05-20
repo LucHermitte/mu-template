@@ -58,13 +58,13 @@ endtry
 
 MuT:  endif
 " Setting &path
-exe 'set path+='.FixPathName(b:BTW_compilation_dir).'/**'
+exe 'set path+='.lh#path#fix(b:BTW_compilation_dir).'/**'
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
-exe 'setlocal path+='.FixPathName(b:project_sources_dir).'/**'
+exe 'setlocal path+='.lh#path#fix(b:project_sources_dir).'/**'
 for p in b:includes
   if p !~ '^/usr'
-    exe 'setlocal path+='.FixPathName(p)
+    exe 'setlocal path+='.lh#path#fix(p)
   endif
 endfor
 
@@ -74,16 +74,16 @@ if 0
 
   " spell files
   setlocal spellfile=
-  exe 'setlocal spellfile+='.FixPathName(b:project_sources_dir).'/ignore.utf-8.add'
+  exe 'setlocal spellfile+='.lh#path#fix(b:project_sources_dir).'/ignore.utf-8.add'
   let b:tags_to_spellfile = 'code-symbols.add'
   for p in ['src', 'inc', 'tst/tests-unitaires']
-    " echo 'setlocal spellfile+='.FixPathName(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
-    exe 'setlocal spellfile+='.FixPathName(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
+    " echo 'setlocal spellfile+='.lh#path#fix(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
+    exe 'setlocal spellfile+='.lh#path#fix(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
   endfor
 endif
 
 " ======================[ tags generation {{{2
-let b:tags_dirname = FixPathName(b:project_sources_dir)
+let b:tags_dirname = lh#path#fix(b:project_sources_dir)
 let b:tags_options = ' --exclude="*.dox" --exclude="html" --exclude="*.xml" --exclude="*.xsd" --exclude=".*sw*"'
 let b:tags_options .= ' --exclude="*.txt" --exclude="cmake" --exclude="*.cmake" --exclude="*.o" --exclude="*.os" --exclude="*.tags" --exclude=tags --exclude=buttons --exclude="*.png" --exclude="*.tar"'
 exe 'setlocal tags+='.(b:tags_dirname).'/tags'
@@ -121,7 +121,8 @@ let b:BTW_project_target = ''
 let b:BTW_project_config = {
       \ 'type': 'ccmake',
       \ 'arg': (b:project_sources_dir),
-      \ 'wd' : lh#function#bind(string(b:BTW_compilation_dir))
+      \ 'wd' : lh#function#bind(string(b:BTW_compilation_dir)),
+      \ '_'  : <+s:_prj_config+>
       \ }
 
 " ======================[ Project's style {{{2
@@ -141,7 +142,7 @@ if expand('%:p') =~ b:project_sources_dir.'/Testing'
 endif
 
 " ======================[ Settings for searchfile {{{2
-let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx'
+let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx,txx'
 
 " ======================[ Menus {{{2
 call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
