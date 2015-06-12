@@ -6,5 +6,5 @@ VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
 \begin{itemize}
-  \item {++}
+  \item {+s:Surround(1, lh#marker#txt())+}
 \end{itemize}

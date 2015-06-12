@@ -1,12 +1,12 @@
 "===========================================================================
-" $Id$
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
-"               <URL:http://code.google.com/p/lh-vim/>
-" Last Update:  $Date$
+"		<URL:http://github.com/LucHermitte/mu-template>
+" Last Update:  12th Jun 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.2
+" Version:      3.4.6
+let s:k_version = 346
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -317,6 +317,8 @@
 "       that shall not be reindented.
 "       v3.4.2
 "       (*) Fix incorrect line range to reindent
+"       v3.4.3
+"       (*) + s:IsSurrounding() and s:TerminalPlaceHolder()
 "
 "
 " BUGS: {{{2
@@ -355,7 +357,6 @@
 "
 "}}}1
 "========================================================================
-let s:k_version = 342
 if exists("g:mu_template")
       \ && g:mu_template >= s:k_version
       \ && !exists('g:force_reload_mu_template')

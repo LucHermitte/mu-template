@@ -2,10 +2,10 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.4.5
-let s:version = '3.4.5'
+" Version:	3.4.6
+let s:version = '3.4.6'
 " Created:	06th Nov 2007
-" Last Update:	30th Apr 2015
+" Last Update:	12th Jun 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -20,8 +20,8 @@ endtry
 finish
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
-after/template/addon-info.template
 after/template/_/dollar_id.template
+after/template/addon-info.template
 after/template/c.template
 after/template/c/case.template
 after/template/c/do.template
@@ -127,9 +127,11 @@ after/template/test3.template
 after/template/tex/begin-end.template
 after/template/tex/bold.template
 after/template/tex/center.template
+after/template/tex/color.template
 after/template/tex/down.template
 after/template/tex/down.template
 after/template/tex/emph.template
+after/template/tex/enumerate.template
 after/template/tex/figure.template
 after/template/tex/frac.template
 after/template/tex/frame-beamer.template
@@ -137,6 +139,7 @@ after/template/tex/frame-vhelp-beamer.template
 after/template/tex/italic.template
 after/template/tex/itemize.template
 after/template/tex/note.template
+after/template/tex/tt.template
 after/template/unknown.template
 after/template/vim.template
 after/template/vim/augroup.template
