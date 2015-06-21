@@ -1,0 +1,13 @@
+VimL:" block File Template, Luc Hermitte, 18th Jun 2015
+VimL:" hint: begin{block}...
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+VimL: "let s:blocktype = s:Surround(2, s:Param("blocktype", lh#marker#txt('block')))
+VimL: let s:blocktype = s:Param("blocktype", s:Surround(2, lh#marker#txt('block')))
+VimL: let s:title     = s:Surround(3, s:Param("title", lh#marker#txt('title')))
+\begin{{+s:blocktype+}}{{+s:title+}}
+  {+s:Surround(1,'<++>')+}
+\end{{+s:blocktype+}}{++}

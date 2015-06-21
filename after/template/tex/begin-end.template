@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" begin-end File Template, Luc Hermitte, 25th Jul 2011
 VimL:" hint: \begin{env}-\end{env}
 VimL: let s:marker_open  = '{+'
