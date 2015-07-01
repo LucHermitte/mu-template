@@ -116,12 +116,12 @@ setlocal tw=79
 " let b:cpp_refactor_setter_close = '\n}'
 
 " ## ======================[ Doxygen snippets {{{1
-let b:CppDox_CommentLeadingChar = '*'
-let b:CppDox_TagLeadingChar     = '@'
-let b:CppDox_ingroup            = '0'
-let b:CppDox_brief              = '0'
-let b:CppDox_author_tag         = 'author'
-let b:CppDox_author             = Author('name')
+let b:dox_CommentLeadingChar = '*'
+let b:dox_TagLeadingChar     = '@'
+let b:dox_ingroup            = '0'
+let b:dox_brief              = '0'
+let b:dox_author_tag         = 'author'
+let b:dox_author             = Author('name')
 
 
 " ## ======================[ GOTOIMPL code generation of function bodies {{{1
