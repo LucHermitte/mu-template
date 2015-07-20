@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «post-expand-callback» File Template, Luc Hermitte, 28th Apr 2014
 VimL:" hint: «post-expand-callback-hint»
 VimL: let s:value_start = '¡'
