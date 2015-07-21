@@ -5,8 +5,8 @@
 " Last Update:  12th Jun 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.6
-let s:k_version = 346
+" Version:      3.4.8
+let s:k_version = 348
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -319,6 +319,8 @@ let s:k_version = 346
 "       (*) Fix incorrect line range to reindent
 "       v3.4.3
 "       (*) + s:IsSurrounding() and s:TerminalPlaceHolder()
+"       v3.4.8
+"       (*) new support function for TeX snippets: lh#tex#mut#last_title()
 "
 "
 " BUGS: {{{2

@@ -2,10 +2,10 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.4.7
-let s:version = '3.4.7'
+" Version:	3.4.8
+let s:version = '3.4.8'
 " Created:	06th Nov 2007
-" Last Update:	21st Jun 2015
+" Last Update:	21st Jul 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -192,6 +192,7 @@ after/template/xslt/variable.template
 after/template/xslt/when.template
 after/template/xslt/with-param.template
 autoload/lh/cpp/file.vim
+autoload/lh/tex/mut.vim
 autoload/lh/mut.vim
 autoload/lh/mut/cmake.vim
 autoload/lh/mut/dirs.vim
