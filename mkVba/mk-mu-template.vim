@@ -2,10 +2,10 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.4.8
-let s:version = '3.4.8'
+" Version:	3.4.9
+let s:version = '3.4.9'
 " Created:	06th Nov 2007
-" Last Update:	21st Jul 2015
+" Last Update:	23rd Jul 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -128,7 +128,7 @@ after/template/tex/begin-end.template
 after/template/tex/bold.template
 after/template/tex/center.template
 after/template/tex/color.template
-after/template/tex/down.template
+after/template/tex/description.template
 after/template/tex/down.template
 after/template/tex/emph.template
 after/template/tex/enumerate.template

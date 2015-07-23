@@ -7,4 +7,4 @@ VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
 \begin{enumerate}
   \item {+s:Surround(1, lh#marker#txt())+}
-\end{enumerate}
+\end{enumerate}{+s:TerminalPlaceHolder()+}
