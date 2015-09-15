@@ -1,0 +1,14 @@
+VimL:" lstinput File Template, Luc Hermitte, 18th Jun 2015
+VimL:" hint: \lstinput[params]{file}
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+VimL: let s:params = s:Surround(2, s:Param("params", lh#option#unset()))
+VimL: let s:params2 = lh#option#is_set(s:params) ? '[' . s:params . ']' : lh#marker#txt('[basicstyle=\tiny]')
+VimL: let s:file   = s:Surround(1, s:Param("file", lh#marker#txt('file')))
+\lstinputlisting{+ s:params2 +}{{+s:file+}}
+VimL: unlet s:params
+VimL: unlet s:params2
+VimL: unlet s:file

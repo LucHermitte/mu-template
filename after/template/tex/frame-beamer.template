@@ -5,13 +5,19 @@ VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
-VimL: let s:title = INPUT("title ?", "")
-VimL: let s:title = empty(s:title) ?  lh#marker#txt("title") : s:title
-VimL: let s:subtitle = lh#marker#txt('subtitle')
-\begin{frame}
+VimL: " auto detect tile as the one of the previous (sub)*section
+VimL: silent! unlet s:title
+VimL: let s:title      = lh#tex#mut#last_title()
+VimL: let s:title      = INPUT("title ?", s:title)
+VimL: let s:title      = empty(s:title) ?  lh#marker#txt("title") : s:title
+VimL: let s:subtitle   = lh#marker#txt('subtitle')
+VimL: let s:isFragile  = lh#option#get('mut_are_default_frames_fragiles', 1)
+VimL: let s:fragile    = s:isFragile ? "[fragile]" : ""
+\begin{frame}{+s:fragile+}
   \frametitle{{+s:title+}}
   \framesubtitle{{+s:subtitle+}}
-  \begin{itemize}
-    \item <++>
-  \end{itemize}
+VimL: call s:Include('itemize', 'tex')
 \end{frame}
+VimL: unlet s:title
+VimL: unlet s:subtitle
+VimL: unlet s:fragile

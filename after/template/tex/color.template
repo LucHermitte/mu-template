@@ -1,0 +1,7 @@
+VimL:" color File Template, Luc Hermitte, 12th Jun 2015
+VimL:" hint: {\color{<++>}}<++>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+{\color{{+s:Surround(2, s:Param("color", lh#marker#txt('color')))+}}{+s:Surround(1, s:Param("text", lh#marker#txt('text')))+}}{+s:TerminalPlaceHolder()+}

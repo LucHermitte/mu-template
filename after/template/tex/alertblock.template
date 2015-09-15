@@ -1,0 +1,5 @@
+VimL:" alertblock File Template, Luc Hermitte, 18th Jun 2015
+VimL:" hint: begin{alertblock}...
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: call s:Include('block', 'tex', {'blocktype': 'alertblock'})

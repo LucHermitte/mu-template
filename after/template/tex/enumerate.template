@@ -1,0 +1,10 @@
+VimL:" enumerate File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Jun 2015
+VimL:" hint: \begin{enumerate}\item...
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+\begin{enumerate}
+  \item {+s:Surround(1, lh#marker#txt())+}
+\end{enumerate}{+s:TerminalPlaceHolder()+}

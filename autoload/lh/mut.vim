@@ -3,10 +3,10 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.2
-let s:k_version = 342
+" Version:      3.4.6
+let s:k_version = 346
 " Created:      05th Jan 2011
-" Last Update:  $Date$
+" Last Update:  12th Jun 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -19,6 +19,8 @@ let s:k_version = 342
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.4.6
+"       (*) + s:IsSurrounding() and s:TerminalPlaceHolder()
 "       v3.4.2
 "       (*) Fix incorrect line range to reindent
 "       v3.4.1
@@ -304,12 +306,14 @@ function! lh#mut#surround()
     endif
 
     " 3- insert the template {{{3
+    let s:content.is_surrounding = 1
     if !lh#mut#expand_and_jump(1,file)
       call lh#common#error_msg("muTemplate: Problem to insert the template: <".a:file.'>')
     endif
     return ''
   finally
     silent! unlet s:content[surround_id]
+    silent! unlet s:content.is_surrounding
   endtry
 endfunction
 "------------------------------------------------------------------------
@@ -544,6 +548,17 @@ function! s:Surround(id, default)
         \ ? (s:content[key])
         \ : (a:default)
   endif
+endfunction
+
+" Function: s:IsSurrounding()        {{{3
+function! s:IsSurrounding()
+  return has_key(s:content,"is_surrounding")
+        \ && (s:content.is_surrounding)
+endfunction
+
+" Function: s:TerminalPlaceHolder()  {{{3
+function! s:TerminalPlaceHolder()
+  return !s:IsSurrounding() ? lh#marker#txt() : ''
 endfunction
 
 " Function: s:Line()                 {{{3

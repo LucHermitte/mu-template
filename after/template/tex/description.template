@@ -1,0 +1,10 @@
+VimL:" description File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 24th Apr 2015
+VimL:" hint: \begin{description}\item...
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+\begin{description}
+  \item[{+s:Surround(2, lh#marker#txt())+}] {+s:Surround(1, lh#marker#txt())+}
+\end{description}{+s:TerminalPlaceHolder()+}

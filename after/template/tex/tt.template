@@ -1,0 +1,7 @@
+VimL:" Typed Writer font File Template, Luc Hermitte, 20th Apr 2015
+VimL:" hint: \texttt{<++>}<++>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+\texttt{¡s:Surround(1,'{+text+}')¡}{++}
