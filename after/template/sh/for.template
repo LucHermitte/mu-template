@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" for File Template, Luc Hermitte, 12th Jan 2011
 VimL:" hint: for i in ist ; do ... ; done
 VimL: let s:value_start = '¡'

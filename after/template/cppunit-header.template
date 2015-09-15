@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "C++ TU Header File-Template, Luc Hermitte
 VimL: " hint: class UT : CppUnit::TestFixture
 VimL: let s:TUName = expand('%:t:r')

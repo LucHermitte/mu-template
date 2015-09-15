@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" <SNR> number accessor Template, Luc Hermitte <hermitte {at} free {dot} fr>, 04th Jan 2011
 VimL:" hint: <SNR> number accessor
 VimL:" Sometimes scripts need to acces their <SNR> number in order to pass

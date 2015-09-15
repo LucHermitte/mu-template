@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" <varname/> File Template, Luc Hermitte <hermitte at free.fr>, 18th Feb 2015
 VimL:" hint: <varname>...</varname>
 VimL: let s:value_start = '¡'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" <biblioref/> File Template, Luc Hermitte <hermitte at free.fr>, 13th Feb 2015
 VimL:" hint: <biblioref/>
 VimL: let s:marker_open  = '{+'

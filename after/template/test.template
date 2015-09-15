@@ -1,4 +1,3 @@
-VimL: " $Id
 VimL: " muTemplate Test File-Template, Luc Hermitte
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'

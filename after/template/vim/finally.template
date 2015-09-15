@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" finally File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 10th Mar 2015
 VimL:" hint: try «» finally«» endtry
 VimL: let s:value_start = '¡'

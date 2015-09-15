@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{while} Template-File, Luc Hermitte
 VimL:" hint: while (cond) { action }
 VimL: let s:value_start  = '¡'

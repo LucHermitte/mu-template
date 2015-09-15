@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" LaTeX File Template, Luc Hermitte, 11th Jul 2011
 VimL:" hint: LaTeX new document
 VimL: let s:value_start = '¡'

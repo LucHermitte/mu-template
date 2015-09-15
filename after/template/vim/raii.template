@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" raii File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 10th Mar 2015
 VimL:" hint: try finally cleanup
 VimL: let s:value_start = '¡'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" ``VimL loop on function parameters'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
 VimL:" hint: <+i+>=0; while i<a:0 ; actions ; ++i ; endwhile
 VimL: let s:value_start  = '¡'

@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "«Vim» scripts footer Template File, Luc Hermitte
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save

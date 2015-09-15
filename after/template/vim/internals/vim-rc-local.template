@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "Vim local-vimrc Template File, Luc Hermitte
 VimL: let s:location = fnamemodify(s:path, ':r')
 VimL: " Override s:fn computation for local-vimrc case

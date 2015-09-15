@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" add_subdirectory snippet, Luc Hermitte, 29th Sep 2013
 VimL:" hint: add_subdirectory(dir)
 VimL: let s:marker_open  = '<+'

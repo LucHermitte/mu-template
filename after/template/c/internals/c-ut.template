@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" c-ut File Template, Luc Hermitte, 30th Apr 2014
 VimL:" hint: procedure that identifies UT framework used (boost, gtest, cxxtest, ...)
 VimL: let s:value_start = '¡'

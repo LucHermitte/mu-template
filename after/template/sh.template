@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «sh» File Template, Luc Hermitte, 02nd Jan 2011
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'

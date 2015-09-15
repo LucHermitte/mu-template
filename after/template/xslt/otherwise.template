@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{xsl:otherwise} Template File, Luc Hermitte
 VimL:" hint: <xsl:otherwise></xsl:otherwise>
 VimL: let s:value_start  = '¡'

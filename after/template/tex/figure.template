@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «LaTeX: figure» File Template, Luc Hermitte <hermitte at free.fr>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'

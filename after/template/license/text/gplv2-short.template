@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" GPLv2 File Template, Luc Hermitte, 01st May 2014
 VimL:" hint: GPLv2 short License for mono-file projects
 VimL: let s:value_start = '¡'

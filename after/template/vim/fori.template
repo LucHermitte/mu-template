@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" ``VimL for-int loop'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
 VimL:" hint: <+i+>=0; while i<N ; actions ; ++i ; endwhile
 VimL: let s:value_start  = '¡'

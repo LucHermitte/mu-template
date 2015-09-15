@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «stderr» File Template, Luc Hermitte, 24th Jan 2011
 VimL:" hint: fprintf(stderr,...)
 VimL: let s:value_start = '¡'

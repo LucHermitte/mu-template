@@ -1,5 +1,4 @@
 "=============================================================================
-" $Id$
 " File:		ftplugin/template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim>

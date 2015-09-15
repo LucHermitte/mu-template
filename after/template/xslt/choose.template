@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" {xsl:choose} File Template, Luc Hermitte
 VimL:" hint: <xsl:choose><xsl:when>...</xsl:when></xsl:choose>
 VimL: let s:marker_open  = '{+'

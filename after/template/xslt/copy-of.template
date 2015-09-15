@@ -1,4 +1,3 @@
-VimL:" $Id: xsl-copy-of.template 326 2011-01-06 01:37:00Z luc.hermitte $
 VimL:"{xsl:copy-of} Template File, Luc Hermitte
 VimL:" hint: <xsl:copy-of select="XPath"/>
 VimL: let s:copy_start  = '¡'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" vim-rc-local-jira File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Dec 2014
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start

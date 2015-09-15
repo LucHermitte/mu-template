@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{xsl:when} Template File, Luc Hermitte
 VimL:" hint: <xsl:when test="cond"></xsl:when>
 VimL: let s:value_start  = '¡'

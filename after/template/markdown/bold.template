@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" bold File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 13th Mar 2014
 VimL:" hint: **text**/__text__
 VimL: let s:value_start = '¡'

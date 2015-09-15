@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "C/C++ "function" that builds header gates, Luc Hermitte
 VimL: "
 VimL: " If you prefer to use a uuid, you can instead set s:guard with 

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{xsl:for-each} Template File, Luc Hermitte
 VimL:" hint: <xsl:for-each select="XPath"></xsl:for-each>
 VimL: let s:value_start  = '¡'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" augroup File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 17th Jan 2011
 VimL:" hint: augroup {group} | au! | augroup END
 VimL: let s:value_start = '¡'

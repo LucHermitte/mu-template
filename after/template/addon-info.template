@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" vim-addon-info File Template, Luc Hermitte, 22nd Jan 2013
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start

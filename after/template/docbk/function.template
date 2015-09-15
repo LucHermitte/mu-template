@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" <function> File Template, Luc Hermitte <hermitte at free.fr>, 30th Oct 2013
 VimL:" hint: <function></function>
 VimL: let s:value_start  = '¡'

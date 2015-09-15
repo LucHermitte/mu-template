@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" C++11 autodetection snippet, Luc Hermitte, 30th Sep 2013
 VimL:" hint: Code to autodetect C++11 support
 VimL: let s:value_start = '¡'

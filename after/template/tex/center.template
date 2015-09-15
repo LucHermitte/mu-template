@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «LaTeX: center» File Template, Luc Hermitte <hermitte at free.fr>
 VimL:"
 VimL: let s:value_start  = '¡'

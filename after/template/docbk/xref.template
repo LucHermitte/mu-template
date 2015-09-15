@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" <xref/> File Template, Luc Hermitte <hermitte at free.fr>, 18th Feb 2015
 VimL:" hint: <xref linkend="..."/>
 VimL: let s:value_start  = '¡'

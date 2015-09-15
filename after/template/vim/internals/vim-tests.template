@@ -1,4 +1,3 @@
-VimL: " $Id: vim-plugin.template 188 2010-05-17 01:46:33Z luc.hermitte $
 VimL: "«Vim» tests Template File, Luc Hermitte
 UTSuite [<+suite+>] Testing <+plugin+>
 

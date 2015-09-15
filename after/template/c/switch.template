@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{switch-case} Template-File, Luc Hermitte
 VimL:" hint: switch (cond) { case... default ...}
 VimL: let s:value_start  = '¡'

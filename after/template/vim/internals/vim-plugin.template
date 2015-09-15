@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "«Vim» plugins Template File, Luc Hermitte
 " Avoid global reinclusion {{{1
 if &cp || (exists("g:loaded_¡s:fn¡")

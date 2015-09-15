@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" =item File Template, Luc Hermitte, 02nd Mar 2011
 VimL:" hint: =item + =over
 VimL: let s:value_start = '¡'

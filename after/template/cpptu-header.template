@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "C++ CXXTest File-Template, Luc Hermitte
 VimL:" hint: class UT : public CxxTest::TestSuite
 VimL: let s:TUName = expand('%:t:r')
