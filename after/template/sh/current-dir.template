@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" current-dir File Template, Luc Hermitte, 17th Oct 2011
 VimL:" hint: (bash) Obtains the current directory of the script
 VimL: let s:value_start = '¡'

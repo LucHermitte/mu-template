@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{xsl:if} Template, Luc Hermitte, 30th Jul 2003
 VimL:" hint: <xsl:if test="condition"></xsl:if>
 VimL: let s:value_start  = '¡'

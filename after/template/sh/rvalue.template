@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"  File Template, Luc Hermitte, 29th Jun 2011
 VimL:" hint: extracts bar from foo=bar
 VimL: let s:value_start = '¡'

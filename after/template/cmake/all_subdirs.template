@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" add_subdirectory(*) File Template, Luc Hermitte <hermitte at free.fr>, 19th Mar 2014
 VimL:" hint: add_subdirectory(dir) x all
 VimL: let s:_here = expand('%:p:h')

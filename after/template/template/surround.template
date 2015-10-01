@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" s:Surround() File Template, Luc Hermitte <hermitte at free.fr>, 17th Mar 2014
 VimL:" hint: s:Surround(<+1+>, '<+default+>')
 VimL: let s:value_start = '¡'

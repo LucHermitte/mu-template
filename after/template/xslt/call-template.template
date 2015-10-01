@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" {xsl:call-template} File Template, Luc Hermitte
 VimL:" hint: <xsl:call-template name="name"><xsl:with-param .../></xsl:call-template>
 VimL: let s:value_start = '¡'

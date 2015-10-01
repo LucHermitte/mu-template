@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" «ut-boost» File Template, Luc Hermitte, 30th Apr 2014
 VimL:" hint: «ut-boost-hint»
 VimL: let s:value_start = '¡'

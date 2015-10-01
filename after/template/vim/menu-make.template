@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" lh#menu#make File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 07th Aug 2013
 VimL:" hint: call lh#menu#make(mode, menu_prio, buffer, menu_text, keybinding, action)
 VimL: let s:marker_open  = '<+'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"{for} Template-File, Luc Hermitte
 VimL:" hint: for (init;cond;iter) { action }
 VimL: let s:value_start  = '¡'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" http://forum.ubuntu-fr.org/viewtopic.php?id=737811
 VimL:" hint: \down{<++>}<++>
 VimL: let s:marker_open  = '<+'

@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" CPack snippet, Luc Hermitte, 30th Sep 2013
 VimL:" hint: CPack snippet for CMakeLists.txt
 VimL: let s:marker_open  = '<+'

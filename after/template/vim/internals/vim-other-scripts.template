@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "«Vim» unknown script kind Template File, Luc Hermitte
 let s:cpo_save=&cpo
 set cpo&vim

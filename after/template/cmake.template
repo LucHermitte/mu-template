@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" CMake File Template, Luc Hermitte, 28th Sep 2013
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'

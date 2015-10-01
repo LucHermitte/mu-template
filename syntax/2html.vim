@@ -1,4 +1,3 @@
-" $Id$
 " deactivate mu-template.vim
 let s:mu_template = 
       \ exists('g:mt_IDontWantTemplatesAutomaticallyInserted')

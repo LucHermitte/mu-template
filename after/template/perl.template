@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'

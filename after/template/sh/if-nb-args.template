@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" if-nb-args File Template, Luc Hermitte, 12th Jan 2011
 VimL:" hint: if [ $# -lt 1 ] ; then usage ; exit ; fi
 VimL: let s:value_start = '¡'

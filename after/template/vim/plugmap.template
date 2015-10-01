@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" ``VimL <Plug> mappings'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
 VimL:" hint: <Plug>mapping + default mapping
 VimL: let s:reindent     = 1

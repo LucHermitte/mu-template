@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" header-guard File Template, Luc Hermitte, 22nd Apr 2013
 VimL:" hint: #ifndef GUARD\n#define GUARD\n#endif
 VimL: let s:value_start = '¡'

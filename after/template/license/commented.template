@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" Commented-license File Template, Luc Hermitte, 07th May 2014
 VimL:" hint: Commented Licence file skeleton
 VimL: let s:marker_open  = '<+'

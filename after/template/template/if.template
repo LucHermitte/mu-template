@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" Mut-if File Template, Luc Hermitte, 01st Oct 2013
 VimL:" hint: Mut: if / else . endif
 VimL: let s:value_start = '¡'

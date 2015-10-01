@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" Root CMakeLists File Template, Luc Hermitte, 29th Sep 2013
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'

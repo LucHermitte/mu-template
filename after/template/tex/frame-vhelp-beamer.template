@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" frame for Beamer Template, Luc Hermitte
 VimL: let s:value_start  = '¡'
 VimL: let s:value_start  = '¡'

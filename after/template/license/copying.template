@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" COPYING File Template, Luc Hermitte, 30th Sep 2013
 VimL:" hint: License file skeleton
 VimL: let s:marker_open  = '<+'

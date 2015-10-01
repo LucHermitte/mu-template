@@ -1,4 +1,3 @@
-VimL: " $Id$
 VimL: "Help File Template, Luc Hermitte, Last change: $Date$
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'

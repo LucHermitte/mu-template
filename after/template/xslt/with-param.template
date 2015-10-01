@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:" {xsl:with-param} File Template, Luc Hermitte
 VimL:" hint: <xsl:with-param name="name" select="{+param-value+}" />
 VimL: let s:marker_open  = '{+'

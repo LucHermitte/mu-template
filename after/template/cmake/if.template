@@ -1,4 +1,3 @@
-VimL:" $Id$
 VimL:"IF() Template-File, Luc Hermitte
 VimL:" hint: IF(cond) ... ENDIF(cond)
 VimL: let s:value_start  = '¡'
