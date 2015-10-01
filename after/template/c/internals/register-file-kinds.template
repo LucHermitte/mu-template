@@ -1,0 +1,12 @@
+VimL:" register-file-kinds File Template, Luc Hermitte, 01st Oct 2015
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: " { priority: [ {test, file}, ... ]}
+VimL: " priority within [0, 9]
+VimL: " prio1: tests
+VimL: let s:c_patterns = {}
+VimL: let s:c_patterns[7] = [ {"test": "expand('%:e')=~ '^hh\\=$\\|^hpp$'", "file": "c-header"}]
+VimL: let s:c_patterns[9] = [ {"test": "1", "file": "c-imp"}]
+VimL: call s:Include('register-file-kinds-spe', 'c/internals')

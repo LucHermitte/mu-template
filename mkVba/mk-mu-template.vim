@@ -2,10 +2,10 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.4.9
-let s:version = '3.4.9'
+" Version:	3.4.10
+let s:version = '3.4.10'
 " Created:	06th Nov 2007
-" Last Update:	23rd Jul 2015
+" Last Update:	01st Oct 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -36,6 +36,7 @@ after/template/c/internals/c-header-typical.template
 after/template/c/internals/c-header.template
 after/template/c/internals/c-imp.template
 after/template/c/internals/c-ut.template
+after/template/c/internals/register-file-kinds.template
 after/template/c/internals/ut-boost.template
 after/template/c/main.template
 after/template/c/section-sep.template

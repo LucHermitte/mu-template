@@ -1,7 +1,17 @@
-VimL:" $Id$
 VimL:" C/C++ File Template, Luc Hermitte, 30th mar 2003
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: call s:Include( (expand("%:e") =~ '^hh\=$\|^hpp$') ?'c-header' : 'c-imp', 'c/internals')
+VimL: let s:filename = s:path_from_root(expand("%:p"))
+VimL: " VariationPoint: for file header (copyright, ...)
+VimL: call s:Include("c-file-header", "c/internals")
+VimL: call s:StartIndentingHere()
+VimL: " VariationPoint: To detect the kind of file: header, impl, test, ...
+VimL: call s:Include('register-file-kinds', 'c/internals')
+VimL: let s:c_patterns_sorted = lh#list#accumulate2(values(s:c_patterns), [])
+VimL: let s:c_patterns_idx = lh#list#find_if(s:c_patterns_sorted, 'eval(v:val.test)')
+VimL: " VariationPoint: c-imp, c-header-guard
+MuT:  if s:c_patterns_idx < len(s:c_patterns_sorted)
+VimL:   call s:Include(s:c_patterns_sorted[s:c_patterns_idx].file, 'c/internals')
+MuT:  endif
