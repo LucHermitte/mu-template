@@ -2,10 +2,10 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.4.10
-let s:version = '3.4.10'
+" Version:	3.4.11
+let s:version = '3.4.11'
 " Created:	06th Nov 2007
-" Last Update:	01st Oct 2015
+" Last Update:	02nd Oct 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -27,6 +27,7 @@ after/template/c/case.template
 after/template/c/do.template
 after/template/c/for.template
 after/template/c/fori.template
+after/template/c/function.template
 after/template/c/header-guard.template
 after/template/c/if.template
 after/template/c/internals/c-file-header.template
@@ -122,6 +123,7 @@ after/template/template/param.template
 after/template/template/placeholder.template
 after/template/template/reindent.template
 after/template/template/surround.template
+after/template/template/terminal_placeholder.template
 after/template/test-included.template
 after/template/test.template
 after/template/test3.template

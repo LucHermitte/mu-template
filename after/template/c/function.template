@@ -1,0 +1,5 @@
+VimL:" function File Template, Luc Hermitte, 02nd Oct 2015
+VimL:" hint: function-hint
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+<+s:Surround(4, s:Param("return_type", lh#marker#txt('void')))+> <+s:Surround(2, s:Param("return_type", lh#marker#txt('name')))+>(<+s:Surround(3, s:Param("return_type", lh#marker#txt('parameters')))+>){<+s:Surround(1, s:Param("return_type", lh#marker#txt('code')))+>}<+s:TerminalPlaceHolder()+>

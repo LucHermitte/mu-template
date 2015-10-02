@@ -1,0 +1,5 @@
+VimL:" terminal_placeholder File Template, Luc Hermitte, 02nd Oct 2015
+VimL:" hint: <+s:TerminalPlaceHolder()+>
+VimL: let s:marker_open  = '{<+'
+VimL: let s:marker_close = '+>}'
+<+s:TerminalPlaceHolder()+>
