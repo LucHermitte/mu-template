@@ -7,4 +7,4 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 do{
     ¡s:Surround(1, '<+code+>')¡
-}while(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡);<++>
+}while(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡);<+s:TerminalPlaceHolder()+>

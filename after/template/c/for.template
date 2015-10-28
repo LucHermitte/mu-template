@@ -5,6 +5,6 @@ VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1 
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-for (<+init+>;<+cond+>;<+iteration+>) {
+for(<+init+>;<+cond+>;<+iteration+>){
     ¡s:Surround(1, '<+code+>')¡
-}<++>
+}<+s:TerminalPlaceHolder()+>

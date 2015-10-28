@@ -28,4 +28,4 @@ VimL: call s:_LoopOverCases()
 <+default-code+>;
           break;
 <+s:_with_block?'}':''+>
-}<++>
+}<+s:TerminalPlaceHolder()+>
