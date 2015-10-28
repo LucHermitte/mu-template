@@ -2,10 +2,10 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.4.11
-let s:version = '3.4.11'
+" Version:	3.5.0
+let s:version = '3.5.0'
 " Created:	06th Nov 2007
-" Last Update:	02nd Oct 2015
+" Last Update:	28th Oct 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try

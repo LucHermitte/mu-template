@@ -3,10 +3,10 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.6
-let s:k_version = 346
+" Version:      3.5.0
+let s:k_version = 350
 " Created:      05th Jan 2011
-" Last Update:  12th Jun 2015
+" Last Update:  28th Oct 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -19,6 +19,9 @@ let s:k_version = 346
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.5.0
+"       (*) Fix: Surrounded text is not reformatted through lh-dev apply style
+"       feature.
 "       v3.4.6
 "       (*) + s:IsSurrounding() and s:TerminalPlaceHolder()
 "       v3.4.2
@@ -363,6 +366,10 @@ function! s:Value(text)            " {{{3
   return '\%('.s:value_start . a:text . s:value_end.'\)'
 endfunction
 
+function! s:ValueV(text)           " {{{3
+  return '%('.s:NoRegexV(s:value_start) . a:text . s:NoRegexV(s:value_end).')'
+endfunction
+
 function! s:Command(text)          " {{{3
   return 'VimL:' . a:text
 endfunction
@@ -544,9 +551,11 @@ endfunction
 " Function: s:Surround(id, default)  {{{3
 function! s:Surround(id, default)
   let key = 'surround'.a:id
-  return has_key(s:content,key)
-        \ ? (s:content[key])
-        \ : (a:default)
+  if has_key(s:content, key)
+    let s:content.can_apply_style = 0
+    return s:content[key]
+  else
+    return a:default
   endif
 endfunction
 
@@ -713,9 +722,11 @@ endfunction
 " 'bool_expr ?  act1 : act2' VimL operator ; cf vim.template for examples of
 " use.
 function! s:InterpretValue(what) abort
+  let what = substitute(a:what, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+  " echo "interpret value: " . what
   try
     " todo: can we use eval() now?
-    exe 'let s:__r = ' . a:what
+    exe 'let s:__r = ' . what
     " NB: cannot use a local variable, hence the "s:xxxx"
     return s:__r
   catch /.*/
@@ -774,6 +785,7 @@ function! s:InterpretValues(line) abort
       let tail = ''
       " let may_merge = 0
     else
+      " Style should be applied everywhere but on surrounded things
       let value = s:InterpretValue(split[2])
       let res .= split[1] . value
       let tail = split[3]
@@ -781,6 +793,74 @@ function! s:InterpretValues(line) abort
     endif
   endwhile
   " echomsg "may_merge=".may_merge."  ---  ".res
+  return { 'line' : res, 'may_merge' : may_merge }
+endfunction
+
+" s:InterpretValuesAndMarkers(line) ~ eval markers as expr in {line} {{{3
+" todo merge with s:InterpretValues
+let s:k_first = '\v(.{-})'
+let s:k_last  = '(.*)'
+
+function! s:InterpretValuesAndMarkers(line) abort
+  " @pre must not be defining VimL functions
+  if !empty(s:__function)
+    throw 'already within the definition of a function (no non-VimL code authorized)'
+  endif
+
+  " NB: Styling is applyied on-the-fly, except on surrounded text, i.e.
+  " replaces characters from a list (-> style policies for {, ( regarding
+  " spaces, newlines, etc.
+
+  " echo "line:" . a:line
+  let res = ''
+  let tail = a:line
+  let re_marker = s:MarkerV('(.{-})')
+  let re_value  = s:ValueV('(.{-})')
+  let re =  s:k_first.'%('.re_value.'|'.re_marker.')'.s:k_last
+  let g:re = re
+  let may_merge = 0
+  while strlen(tail)!=0
+    let split = matchlist(tail, re)
+    if len(split) <2 || strlen(split[0]) == 0
+      " nothing found
+      " echo "res .= ".s:ApplyStyling(tail)
+      let res .= s:ApplyStyling(tail)
+      let tail = ''
+      " let may_merge = 0
+    else
+      " Style should be applied everywhere but on surrounded things
+      silent! unlet value
+      let s:content.can_apply_style = 1
+      if !empty(split[2])     " Value to interpret
+        let value = s:InterpretValue(split[2])
+      elseif get(s:, 'dont_eval_markers', 0)
+        let value = substitute(value, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+      else
+        if !empty(split[3]) " Marker to interpret
+          let part = split[3]
+          " There may be an expression within the marker
+          let part = s:InterpretValues(part).line
+          try
+            let value = eval(part)
+          catch /.*/
+            let value = lh#marker#txt(part)
+          endtry
+        else
+          let value = lh#marker#txt()
+        endif
+      endif
+      let sValue = (type(value)!=type("") ? string(value) : value)
+      if get(s:content, 'can_apply_style')
+        let sValue = s:ApplyStyling(sValue)
+      endif
+      " echo "res .= ".s:ApplyStyling(split[1]). '   +   ' .sValue
+      let res .= s:ApplyStyling(split[1]) . sValue
+      let tail = split[4]
+      let may_merge = 1
+    endif
+  endwhile
+  " echomsg "may_merge=".may_merge."  ---  ".res
+  " return res
   return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
@@ -820,15 +900,6 @@ function! s:InterpretMarkers(line) abort
 endfunction
 
 " s:ApplyStyling(line) ~ add spaces or NL before/after brackets{{{3
-function! s:FindMatchingPattern(patterns, string)
-  let i = 0
-  for p in a:patterns
-    if match(p, a:string) >= 0 | return i | endif
-    let i+=1
-  endfor
-  return i
-endfunction
-
 function! s:ApplyStyling(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
@@ -838,34 +909,6 @@ function! s:ApplyStyling(line) abort
   let styles = lh#dev#style#get(&ft)
   if empty(styles) | return a:line | endif
   return lh#dev#style#apply(a:line)
-  let patterns = ((keys(styles)))
-  let replacements = values(styles)
-
-  let res = ''
-  let tail = a:line
-  " todo: recognize when all patterns are 1-char long
-  let re =  '\(.\{-}\)'.'\('.join(patterns, '\|').'\)'.'\(.*\)'
-  let may_merge = 0
-  while strlen(tail)!=0
-    let split = matchlist(tail, re)
-    if len(split) <2 || strlen(split[0]) == 0
-      " nothing found
-      let res .= tail
-      let tail = ''
-      " let may_merge = 0
-    else
-      let pattern_idx = s:FindMatchingPattern(patterns, split[2])
-      " assert pattern_idx < len(replacements)
-      let value = replacements[pattern_idx]
-
-      let res .= split[1] . (type(value)!=type("") ? string(value) : value)
-      let tail = split[3]
-      let may_merge = 1
-    endif
-  endwhile
-  " echomsg "may_merge=".may_merge."  ---  ".res
-  return res
-  " return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
 " s:NoRegex(text)                                              {{{3
@@ -873,9 +916,20 @@ function! s:NoRegex(text)
   return escape(a:text, '\.*/')
 endfunction
 
+" s:NoRegexV(text)                                             {{{3
+function! s:NoRegexV(text)
+  return escape(a:text, '\.*/<+>[](){}')
+endfunction
+
 " s:Marker(text)                                               {{{3
 function! s:Marker(regex)
   return s:NoRegex(s:marker_open) . a:regex . s:NoRegex(s:marker_close)
+endfunction
+
+" s:MarkerV(text)                                              {{{3
+" \vRegex
+function! s:MarkerV(regex)
+  return s:NoRegexV(s:marker_open) . a:regex . s:NoRegexV(s:marker_close)
 endfunction
 
 " s:isBranchActive()                                           {{{3
@@ -959,22 +1013,8 @@ function! s:InterpretLines(first_line)
       "    => We do not interpret empty lines
       "    => s:value_start and s:value_end must always be specified!
 
-      if s:Marker('') != markerCharacters
-        " Replaces plain marker characters into current marker characters.
-        if exists('s:dont_eval_markers') && s:dont_eval_markers
-          let the_line = substitute(the_line, s:Marker('\(.\{-}\)'), Marker_Txt('\1'), 'g')
-        else
-          let the_line = s:InterpretMarkers(the_line)
-        endif
-      endif
-
-      " Replaces expressions by their interpreted value
-      let line = s:InterpretValues(the_line)
+      let line = s:InterpretValuesAndMarkers(the_line)
       let the_line = line.line
-
-      " Replaces characters from a list (-> style policies for {, ( regarding
-      " spaces, newlines, etc.
-      let the_line = s:ApplyStyling(the_line)
 
       if the_line =~ '^\s*$' && line.may_merge
         " The line becomes empty after the evaluation of the expression => strip it

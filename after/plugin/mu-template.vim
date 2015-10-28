@@ -2,11 +2,11 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  12th Jun 2015
+" Last Update:  28th Oct 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.4.8
-let s:k_version = 348
+" Version:      3.5.0
+let s:k_version = 350
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -321,6 +321,9 @@ let s:k_version = 348
 "       (*) + s:IsSurrounding() and s:TerminalPlaceHolder()
 "       v3.4.8
 "       (*) new support function for TeX snippets: lh#tex#mut#last_title()
+"       v3.5.0
+"       (*) Fix: Surrounded text is not reformatted through lh-dev apply style
+"       feature.
 "
 "
 " BUGS: {{{2
