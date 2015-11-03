@@ -5,28 +5,40 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:_prj_config  = s:Param('_prj_config', 'g:'.Marker_Txt('MyProject').'_config')
-VimL: let s:_prj_src_dir = s:Param('_prj_src_dir', Marker_Txt('HEAD'))
+VimL: let s:_prj_src_dir = s:Param('_prj_src_dir', Marker_Txt('expand("<sfile>:p:h")'))
 VimL: let s:_prj_name    = s:Param('_prj_name', Marker_Txt('MyProjectName'))
 
 " ======================[ Global project configuration {{{2
-let s:sources_dir = '<+s:_prj_src_dir+>'
+let cleanup = lh#on#exit()
+      \.restore('g:sources_dir')
+try
+  " We use a global variable that'll be removed at the end of the block in
+  " order to be able to use :LetIfUndef directly
+  " This source directory is a relative path from the root path of the project
+  " to the directory where the source files are.
+  let g:sources_dir = '<+s:_prj_src_dir+>'
 
-" echo expand("<sfile>:p:h")
-" unlet <+s:_prj_config+>
-" Mandatory Project options
-call lh#let#if_undef('<+s:_prj_config+>.paths.trunk', string(expand("<sfile>:p:h")))
-LetIfUndef <+s:_prj_config+>.name             '<+s:_prj_name+>'
-LetIfUndef <+s:_prj_config+>.paths.project    fnamemodify(<+s:_prj_config+>.paths.trunk,':h')
-LetIfUndef <+s:_prj_config+>.paths.doxyfile   <+s:_prj_config+>.paths.project
-" Note: this could be anything like: MyProject_config.build.ARM-release
-LetIfUndef <+s:_prj_config+>.build.Debug      'build/debug'
-LetIfUndef <+s:_prj_config+>.build.Release    'build/release'
+  " echo expand("<sfile>:p:h")
+  " unlet <+s:_prj_config+>
+  " Mandatory Project options
+  " You may have to adapt the relative location of the various files and
+  " directories
+  call lh#let#if_undef('<+s:_prj_config+>.paths.trunk', string(expand("<sfile>:p:h")))
+  LetIfUndef <+s:_prj_config+>.name             '<+s:_prj_name+>'
+  LetIfUndef <+s:_prj_config+>.paths.project    fnamemodify(<+s:_prj_config+>.paths.trunk,':h')
+  LetIfUndef <+s:_prj_config+>.paths.doxyfile   <+s:_prj_config+>.paths.project
+  " Note: this could be anything like: MyProject_config.build.ARM-release
+  LetIfUndef <+s:_prj_config+>.build.Debug      'build/debug'
+  LetIfUndef <+s:_prj_config+>.build.Release    'build/release'
 
-" Here, this matches all the trunk => complete even with test files
-LetIfUndef <+s:_prj_config+>.paths.sources    <+s:_prj_config+>.paths.project.(s:sources_dir)
-" Optional Project options
-LetIfUndef <+s:_prj_config+>.compilation.mode 'Debug'
-LetIfUndef <+s:_prj_config+>.tests.verbosity '-VV'
+  " Here, this matches all the trunk => complete even with test files
+  LetIfUndef <+s:_prj_config+>.paths.sources    <+s:_prj_config+>.paths.project.(g:sources_dir)
+  " Optional Project options
+  LetIfUndef <+s:_prj_config+>.compilation.mode 'Debug'
+  LetIfUndef <+s:_prj_config+>.tests.verbosity '-VV'
+finally
+  call cleanup.finalize()
+endtry
 
 " ======================[ Menus {{{2
 let s:menu_priority = '50.120.'
@@ -56,7 +68,7 @@ let <+s:_prj_config+>_menu = {
       \ '_project': '<+substitute(s:_prj_config, "^g:", "", "")+>',
       \ 'menu': {'priority': s:menu_priority, 'name': s:menu_name}
       \ }
-" <+TODO: uncomment what you won't use+>
+" <+TODO: comment what you won't use+>
 let s:cmake_integration = []
 let s:cmake_integration += [ 'def_toggable_compil_mode' ]
 let s:cmake_integration += [ 'def_toggable_ctest_verbosity' ]

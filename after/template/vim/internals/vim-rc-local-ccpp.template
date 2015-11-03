@@ -90,11 +90,11 @@ exe 'setlocal tags+='.(b:tags_dirname).'/tags'
 if SystemDetected() == 'msdos'
 else
   " You'll have to generate thoses files for your system...
-  setlocal tags+=$HOME/dev/tags/stl.tags
-  setlocal tags+=$HOME/dev/tags/boost.tags
+  call lh#path#munge(&l:tags, $HOME.'/dev/tags/stl.tags')
+  call lh#path#munge(&l:tags, $HOME.'/dev/tags/boost.tags')
   " ITK and OTB
-  " setlocal tags+=$HOME/dev/tags/itk.tags
-  " setlocal tags+=$HOME/dev/tags/otb.tags
+  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/itk.tags')
+  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/otb.tags')
 endif
 " let BTW_make_in_background_in = 'xterm -e'
 
@@ -137,16 +137,19 @@ let b:exception_type = b:cpp_project_namespace.'::Exception'
 
 " Special management of tests and unit tests
 if expand('%:p') =~ b:project_sources_dir.'/Testing'
-  let b:ipf_dox_group = 'gTests'
+  let b:<+project_ns+>_dox_group = 'gTests'
   let b:is_unit_test = 1
 endif
 
-" ======================[ Settings for searchfile {{{2
+" ======================[ Settings for searchfile and gf {{{2
 let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx,txx'
+setlocal suffixesadd+=.h,.H,.C,.cpp,.cxx,.hxx,.txx'
 
 " ======================[ Menus {{{2
+MuT:  if has_key(s:_prj_kind, 'cmake')
 call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile()<cr>')
 call lh#menu#make('nic', '50.12', '&Project.Edit local &CMake file (vertical)', '<localleader>v<F7>', '<buffer>', ':call <+s:_prj_config+>.functions.EditLocalCMakeFile("vert")<cr>')
+MuT:  endif
 " call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
 call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )
 
