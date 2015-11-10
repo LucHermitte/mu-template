@@ -1,8 +1,9 @@
 "=============================================================================
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
+"		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
-"               <URL:http://code.google.com/p/lh-vim/wiki/License>
+"               <URL:http://github.com/LucHermitte/mu-template/License.md>
 " Version:      3.5.0
 let s:k_version = 350
 " Created:      05th Jan 2011
@@ -204,7 +205,9 @@ function! lh#mut#expand_text(NeedToJoin, text, ...) abort
     let res = s:DoExpand(a:NeedToJoin)
     if res && s:Option('jump_to_first_markers',1)
       call lh#mut#jump_to_start()
+      " return [res, lh#mut#jump_to_start()]
     endif
+    " return [res, '']
     return res
   finally
     let s:args = []
@@ -216,23 +219,25 @@ function! lh#mut#jump_to_start()
   " echomsg 'lh#mut#jump_to_start()'
   " set foldopen+=insert,jump
   " Need to be sure there was a marker in the text inserted
-  let marker_line = lh#list#match(s:content.lines, Marker_Txt('.\{-}'))
+  let marker_line = lh#list#match(s:content.lines, lh#marker#txt('.\{-}'))
   let s:therewasamarker = -1 != marker_line
   if s:therewasamarker
     " echomsg "jump from ".(marker_line+s:content.start)
     exe (marker_line+s:content.start)
     " normal! zO
+    let cleanup = lh#on#exit()
+          \.restore_option('marker_select_current_fwd')
     try
-      let save_gscf = lh#option#get('marker_select_current_fwd', 1)
-      let g:marker_select_current_fwd = 1
+      let b:marker_select_current_fwd = 1
       normal !jump!
+      " return Marker_Jump({'direction':1, 'mode':'i'})
     finally
-      let g:marker_select_current_fwd = save_gscf
+      call cleanup.finalize()
     endtry
   else
     :exe s:moveto
   endif
-  silent! delcommand JumpToStart
+  " return ''
 endfunction
 
 " Function: lh#mut#expand_and_jump(needToJoin, ...)        {{{2
@@ -249,9 +254,11 @@ function! lh#mut#expand_and_jump(needToJoin, ...)
           \ ? lh#mut#expand(a:needToJoin, a:1)
           \ : lh#mut#expand(a:needToJoin)
     if res && s:Option('jump_to_first_markers',1)
+      " return [res, lh#mut#jump_to_start()]
       call lh#mut#jump_to_start()
     endif
     return res
+    " return [res, '']
   finally
     let s:args=[]
   endtry
@@ -887,7 +894,7 @@ function! s:InterpretMarkers(line) abort
       try
         let value = eval(split[2])
       catch /.*/
-        let value = Marker_Txt(split[2])
+        let value = lh#marker#txt(split[2])
       endtry
       let res .= split[1] . (type(value)!=type("") ? string(value) : value)
       let tail = split[3]
@@ -983,7 +990,7 @@ endfunction
 " s:InterpretLines(first_line)                                 {{{3
 function! s:InterpretLines(first_line)
   " Constants
-  let markerCharacters = Marker_Txt('')
+  let markerCharacters = lh#marker#txt('')
 
   let s:content.crt = 0
   let pat_command = '\c^'.s:Command('')
@@ -1196,17 +1203,20 @@ function! s:InsertTemplateFile(word,file)
       call confirm("Using the template file: <".a:file.'>', '&ok', 1)
     endif
     " Todo: check what happens with g:mt_jump_to_first_markers off
-    if !lh#mut#expand_and_jump(s:Option('how_to_join',1),a:file)
+    " let [res, act] = lh#mut#expand_and_jump(s:Option('how_to_join',1),a:file)
+    let res = lh#mut#expand_and_jump(s:Option('how_to_join',1),a:file)
+    if ! res
       call lh#common#error_msg("Hum... problem to insert the template: <".a:file.'>')
+      return ""
     endif
     " Note: <esc> is needed to escape from "Visual insertion mode"
     " Workaround a change in Vim 7.0 behaviour
     if s:therewasamarker
+      " return act
       return "\<c-\>\<c-n>\<c-\>\<c-n>gv\<c-g>"
     else
       return "\<c-\>\<c-n>"
     endif
-    " return "\<esc>\<right>"
   else          " 3.B- No template file available for the current word {{{4
     return ""
   endif " }}}4
@@ -1242,7 +1252,7 @@ endfunction
 " s:JoinWithNext(NeedToJoin,last,pos)                          {{{3
 function! s:JoinWithNext(NeedToJoin,pos,last)
   if     a:NeedToJoin >= 2
-    silent exe a:last."normal! A".Marker_Txt('')."\<esc>J!"
+    silent exe a:last."normal! A".lh#marker#txt('')."\<esc>J!"
     let s:moveto = 'call cursor('.a:last.','.virtcol('.').')'
   elseif a:NeedToJoin >= 1
     "Here: problem when merging empty &comments

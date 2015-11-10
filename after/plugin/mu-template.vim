@@ -447,8 +447,7 @@ function! s:TemplateOnBufNewFile()
   let res = lh#mut#expand(0)
   if res && s:Option('jump_to_first_markers',1)
     " Register For After Modeline Event
-    command! -nargs=0 JumpToStart :call lh#mut#jump_to_start()
-    call lh#event#register_for_one_execution_at('BufWinEnter', ':JumpToStart', 'MuT_AfterModeline')
+    call lh#event#register_for_one_execution_at('BufWinEnter', ':call lh#mut#jump_to_start()', 'MuT_AfterModeline')
   endif
   " No more ':startinsert'. It seems useless and redundant with !jump!
   " startinsert
@@ -456,50 +455,20 @@ function! s:TemplateOnBufNewFile()
 endfunction
 
 " i_CTRL-R stubbs                                              {{{2
-if 0
-" s:CTRL_R() {{{3
-" |i_CTRL-R_TAB| : proposes a list of templates
-" |i_CTRL-R_SPACE| : expand the current word
-" |i_CTRL-R_F1| : displays a short help
-function! s:CTRL_R()
-  " let s:alts = '' | let s:cur = 0
-  while 1
-    let key=getchar()
-    let complType=nr2char(key)
-    if -1 != stridx(" \<tab>",complType) ||
-          \ (key =~ "\<F1>")
-      if     complType == " "      | return lh#mut#search_templates("<cword>")
-      elseif complType == "\<tab>" | return lh#mut#search_templates("<cWORD>")
-      elseif key       == "\<F1>"
-        echohl StatusLineNC
-        echo "\r-- mode ^R (/0-9a-z\"%#*+:.-=/<tab>/<F1>)"
-        echohl None
-        " else
-      endif
-    else
-      return "\<c-r>".complType
-    endif
-  endwhile
-endfunction
-
-  " inoremap <silent> <C-R>             <C-R>=<sid>CTRL_R()<cr>
-  inoremap <C-R>                <C-R>=<sid>CTRL_R()<cr>
-else " {{{3
-  "Note: expand('<cword>') is not correct when there are characters after the
-  "current curpor position
-  inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
-  inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
-  " takes a count to specify where the selected texte goes (see while-snippets)
-  vnoremap <silent> <Plug>MuT_Surround :<C-U>call lh#mut#surround()<cr>
-  if !hasmapto('<Plug>MuT_ckword', 'i')
-    imap <unique> <C-R><space>  <Plug>MuT_ckword
-  endif
-  if !hasmapto('<Plug>MuT_cWORD', 'i')
-    imap <unique> <C-R><tab>    <Plug>MuT_cWORD
-  endif
-  if !hasmapto('<Plug>MuT_Surround', 'v')
-    vmap <unique> <C-R><tab>    <Plug>MuT_Surround
-  endif
+"Note: expand('<cword>') is not correct when there are characters after the
+"current curpor position
+inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
+inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
+" takes a count to specify where the selected texte goes (see while-snippets)
+vnoremap <silent> <Plug>MuT_Surround :<C-U>call lh#mut#surround()<cr>
+if !hasmapto('<Plug>MuT_ckword', 'i')
+  imap <unique> <C-R><space>  <Plug>MuT_ckword
+endif
+if !hasmapto('<Plug>MuT_cWORD', 'i')
+  imap <unique> <C-R><tab>    <Plug>MuT_cWORD
+endif
+if !hasmapto('<Plug>MuT_Surround', 'v')
+  vmap <unique> <C-R><tab>    <Plug>MuT_Surround
 endif
 
 " auto completion                                              {{{2

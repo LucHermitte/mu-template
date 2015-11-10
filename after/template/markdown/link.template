@@ -4,8 +4,8 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:_surrounded1_ = s:Surround(1, '') 
-VimL: let s:_link_        = s:Surround(2, '') 
+VimL: let s:_surrounded1_ = s:Surround(1, '')
+VimL: let s:_link_        = s:Surround(2, '')
 VimL: " 1- Set s:_text_
 MuT:  if s:_surrounded1_ =~ '^\(https\=\|s\=ftp\)://\|^mailto:'
 VimL:    let s:_link_ = s:_surrounded1_
@@ -21,4 +21,7 @@ VimL: " 1- Set s:_link_
 MuT:  if empty(s:_link_)
 VimL:    let s:_link_ = lh#marker#txt('link')
 MuT:  endif
-[<+s:_text_+>](<+s:_link_+>)<++>
+[<+s:_text_+>](<+s:_link_+>)<+s:TerminalPlaceHolder()+>
+VimL: silent! unlet s:_text_
+VimL: silent! unlet s:_link_
+VimL: silent! unlet s:_surrounded1_
