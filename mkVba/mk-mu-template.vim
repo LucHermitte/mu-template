@@ -2,22 +2,28 @@
 " File:		mkVba/mk-mu-template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Version:	3.5.0
-let s:version = '3.5.0'
+" License:      GPLv3 with exceptions
+"               <URL:http://github.com/LucHermitte/lh-brackets/License.md>
+" Version:	3.5.1
+let s:version = '3.5.1'
 " Created:	06th Nov 2007
-" Last Update:	28th Oct 2015
+" Last Update:	18th Nov 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
   let save_rtp = &rtp
   let &rtp = expand('<sfile>:p:h:h').','.&rtp
-  exe '21,$MkVimball! mu-template-'.s:version
+  exe '23,$MkVimball! mu-template-'.s:version
   set modifiable
   set buftype=
 finally
   let &rtp = save_rtp
 endtry
 finish
+License.md
+README.md
+VimFlavor
+addon-info.json
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template
 after/template/_/dollar_id.template
@@ -195,13 +201,11 @@ after/template/xslt/variable.template
 after/template/xslt/when.template
 after/template/xslt/with-param.template
 autoload/lh/cpp/file.vim
-autoload/lh/tex/mut.vim
 autoload/lh/mut.vim
 autoload/lh/mut/cmake.vim
 autoload/lh/mut/dirs.vim
+autoload/lh/tex/mut.vim
 doc/mu-template.txt
 ftplugin/template.vim
 mkVba/mk-mu-template.vim
-mu-template-addon-info.txt
-mu-template.README
 syntax/2html.vim
