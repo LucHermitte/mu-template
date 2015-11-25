@@ -5,8 +5,8 @@
 " Last Update:  28th Oct 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.5.0
-let s:k_version = 350
+" Version:      3.5.2
+let s:k_version = 352
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -324,6 +324,9 @@ let s:k_version = 350
 "       v3.5.0
 "       (*) Fix: Surrounded text is not reformatted through lh-dev apply style
 "       feature.
+"       v3.5.2
+"       (*) Enh: s:Param() returns a reference (i.e. if the element did not
+"           exist, it's added)
 "
 "
 " BUGS: {{{2

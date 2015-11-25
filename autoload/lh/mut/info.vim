@@ -10,6 +10,8 @@ let s:k_version = '351'
 " Description:
 "       Extract template information
 "
+" nnoremap £ :put=lh#mut#info#as_markdown(expand('<cWORD>'))<CR><C-W>_zb
+"
 "------------------------------------------------------------------------
 " History:      «history»
 " TODO:         «missing features»

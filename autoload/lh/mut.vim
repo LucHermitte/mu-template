@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.5.0
-let s:k_version = 350
+" Version:      3.5.2
+let s:k_version = 352
 " Created:      05th Jan 2011
-" Last Update:  28th Oct 2015
+" Last Update:  25th Nov 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,9 @@ let s:k_version = 350
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.5.2
+"       (*) Enh: s:Param() returns a reference (i.e. if the element did not
+"           exist, it's added)
 "       v3.5.0
 "       (*) Fix: Surrounded text is not reformatted through lh-dev apply style
 "       feature.
@@ -411,7 +414,7 @@ endfunction
 
 " Function: s:Param(name,default)    {{{3
 " @returns a list. If the list is empty, this mean no parameter was given.
-function! s:Param(name, default)
+function! s:Param(name, default) abort
   if empty(a:name)
     return s:args[-1]
   else
@@ -434,7 +437,9 @@ function! s:Param(name, default)
       endif
       let i -= 1
     endwhile
-    return a:default
+    call add(s:args, {(a:name): a:default })
+    " Force to return a modifiable reference
+    return s:args[-1][a:name]
   endif
   " echomsg string(s:args)
 endfunction
@@ -768,8 +773,8 @@ function! s:InterpretCommand(what) abort
       endif " != :function
     endif
   catch /.*/
-    call lh#common#warning_msg("muTemplate: Cannot execute `".a:what."': ".v:exception)
-    throw "muTemplate: Cannot execute `".a:what."': ".v:exception
+    call lh#common#warning_msg("muTemplate: Cannot execute `".a:what."': ".v:exception.'  ('.v:throwpoint.')')
+    throw "muTemplate: Cannot execute `".a:what."': ".v:exception.'  ('.v:throwpoint.')'
   endtry
 endfunction
 
