@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.5.3
-let s:k_version = 353
+" Version:      3.6.0
+let s:k_version = 360
 " Created:      05th Jan 2011
 " Last Update:  26th Nov 2015
 "------------------------------------------------------------------------
@@ -20,6 +20,8 @@ let s:k_version = 353
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.6.0
+"       (*) Enh: New "MuT:" command: let
 "       v3.5.3
 "       (*) Enh: s:AddPostExpandCallback() and s:Include() exposed as
 "           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.
@@ -132,7 +134,7 @@ endfunction
 "------------------------------------------------------------------------
 " ## Exported functions {{{1
 " Function: lh#mut#edit(path) {{{2
-function! lh#mut#edit(path)
+function! lh#mut#edit(path) abort
   call lh#mut#dirs#update()
   let dir = fnamemodify(a:path, ':h')
   if dir != "" | let dir .= '/' | endif
@@ -221,7 +223,7 @@ function! lh#mut#expand_text(NeedToJoin, text, ...) abort
 endfunction
 
 " Function: lh#mut#jump_to_start()                         {{{2
-function! lh#mut#jump_to_start()
+function! lh#mut#jump_to_start() abort
   " echomsg 'lh#mut#jump_to_start()'
   " set foldopen+=insert,jump
   " Need to be sure there was a marker in the text inserted
@@ -247,7 +249,7 @@ function! lh#mut#jump_to_start()
 endfunction
 
 " Function: lh#mut#expand_and_jump(needToJoin, ...)        {{{2
-function! lh#mut#expand_and_jump(needToJoin, ...)
+function! lh#mut#expand_and_jump(needToJoin, ...) abort
   " echomsg "lh#mut#expand_and_jump(".a:needToJoin.",".join(a:000, ',').")"
   try
     call lh#mut#dirs#update()
@@ -271,7 +273,7 @@ function! lh#mut#expand_and_jump(needToJoin, ...)
 endfunction
 
 " Function: lh#mut#surround()                              {{{2
-function! lh#mut#surround()
+function! lh#mut#surround() abort
   try
     " 1- ask which template to execute {{{3
     let which = INPUT("which snippet?")
@@ -334,7 +336,7 @@ function! lh#mut#surround()
 endfunction
 "------------------------------------------------------------------------
 " Function: lh#mut#search_templates(word)                  {{{2
-function! lh#mut#search_templates(word)
+function! lh#mut#search_templates(word) abort
   let s:args = []
   " 1- Build the list of template files matching the current word {{{3
   let w = substitute(a:word, ':', '-', 'g').'*'
@@ -619,10 +621,10 @@ endfunction
 " }}}2
 "------------------------------------------------------------------------
 " Core Functions {{{2
-let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1], 'callbacks': []}
+let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1], 'callbacks': [], 'variables': []}
 
 " s:LoadTemplateLines(pos, templatepath)                       {{{3
-function! s:LoadTemplateLines(pos, templatepath)
+function! s:LoadTemplateLines(pos, templatepath) abort
   " echomsg "s:LoadTemplateLines(".a:pos.", '".a:templatepath."')"
   try
     let wildignore = &wildignore
@@ -645,7 +647,7 @@ function! s:LoadTemplateLines(pos, templatepath)
 endfunction
 
 " s:LoadTemplate(pos, templatepath [, map_action])             {{{3
-function! s:LoadTemplate(pos, templatepath, ...)
+function! s:LoadTemplate(pos, templatepath, ...) abort
   let lines = s:LoadTemplateLines(a:pos, a:templatepath)
   let lines += [s:Command( 'call s:PopArgs()')]
   if a:0 > 0
@@ -668,6 +670,7 @@ function! s:DoExpand(NeedToJoin) abort
   let s:content.start = pos
   let s:content.scope = [1]
   let s:content.callbacks = []
+  call s:ClearVariables()
   let s:NeedToJoin = a:NeedToJoin
   let foldenable=&foldenable
   silent! set nofoldenable
@@ -937,28 +940,28 @@ function! s:ApplyStyling(line) abort
 endfunction
 
 " s:NoRegex(text)                                              {{{3
-function! s:NoRegex(text)
+function! s:NoRegex(text) abort
   return escape(a:text, '\.*/')
 endfunction
 
 " s:NoRegexV(text)                                             {{{3
-function! s:NoRegexV(text)
+function! s:NoRegexV(text) abort
   return escape(a:text, '\.*/<+>[](){}')
 endfunction
 
 " s:Marker(text)                                               {{{3
-function! s:Marker(regex)
+function! s:Marker(regex) abort
   return s:NoRegex(s:marker_open) . a:regex . s:NoRegex(s:marker_close)
 endfunction
 
 " s:MarkerV(text)                                              {{{3
 " \vRegex
-function! s:MarkerV(regex)
+function! s:MarkerV(regex) abort
   return s:NoRegexV(s:marker_open) . a:regex . s:NoRegexV(s:marker_close)
 endfunction
 
 " s:isBranchActive()                                           {{{3
-function! s:isBranchActive()
+function! s:isBranchActive() abort
   " If there is a 0 in the scope, it means we are with an inactive branch
   " (if/else)
   return min(s:content.scope) == 1
@@ -968,14 +971,14 @@ endfunction
 function! s:InterpretMuTCommand(the_line) abort
   try
     let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
-    if     special_cmd == 'if'
+    if     special_cmd == 'if' " {{{4
       if s:isBranchActive()
         let is_true = eval(cond)
         call insert(s:content.scope, is_true)
       else " Don't bother to evaluate anything, but push a new "if/else/endif"
         call insert(s:content.scope, -2)
       endif
-    elseif special_cmd == 'elseif'
+    elseif special_cmd == 'elseif' " {{{4
       if len(s:content.scope) <= 1
         throw "'MuT: elseif' used, but there was no if"
       endif
@@ -987,26 +990,43 @@ function! s:InterpretMuTCommand(the_line) abort
           let s:content.scope[0] = is_true
         endif
       endif
-    elseif special_cmd == 'else'
+    elseif special_cmd == 'else' " {{{4
       if len(s:content.scope) <= 1
         throw "'MuT: else' used, but there was no if"
       endif
       let s:content.scope[0] = s:content.scope[0] == 0 " only of nothing has ever been true
-    elseif special_cmd == 'endif'
+    elseif special_cmd == 'endif' " {{{4
       if len(s:content.scope) <= 1
         throw "'MuT: else' used, but there was no if"
       endif
       call remove(s:content.scope, 0)
-    else
+    elseif special_cmd == 'let' " {{{4
+      if ! s:isBranchActive()
+        return
+      endif
+      " same as VimL :let, but also does an unlet and register the variable for
+      " later unlet
+      " Moreover, "s:" is automatically added
+      " Note: doesn't support dict, nor lists
+      let [all, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*\zslet\s*(s:)=([a-zA-Z_]+)\s*([.+*/-]=\=)\s*(.*)'))
+      let s:content.variables += [varname]
+      if stridx(expr, varname) == -1 && op == '='
+        silent! unlet s:{varname}
+      endif
+      if empty(script)
+	let all = substitute(all, '\v(s:)@<!<'.varname.'>', 's:&', 'g')
+      endif
+      exe all
+    else " {{{4
       throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
-    endif
+    endif " }}}4"
   catch /.*/
-    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line
+    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line." -- ".v:exception.' ('.v:throwpoint.')'
   endtry
 endfunction
 
 " s:InterpretLines(first_line)                                 {{{3
-function! s:InterpretLines(first_line)
+function! s:InterpretLines(first_line) abort
   " Constants
   let markerCharacters = lh#marker#txt('')
 
@@ -1066,13 +1086,13 @@ function! s:InterpretLines(first_line)
 endfunction
 
 " s:Reencode()                                                 {{{3
-function! s:Reencode()
+function! s:Reencode() abort
   call map(s:content.lines, 'lh#encoding#iconv(v:val, '.string(s:fileencoding).', &enc)')
 endfunction
 
 " s:IsKindOfEmptyLine(lineNo)                                  {{{3
 " @return true on empty lines or on lines containing an empty comment
-function! s:IsKindOfEmptyLine(lineNo)
+function! s:IsKindOfEmptyLine(lineNo) abort
   let line = getline(a:lineNo)
   if     line =~ '^\s*$'
     return 1
@@ -1095,7 +1115,7 @@ function! s:IsKindOfEmptyLine(lineNo)
 endfunction
 
 " s:ChooseByComplete()                                         {{{3
-function! s:ChooseByComplete()
+function! s:ChooseByComplete() abort
   let entries = []
   let i = 0
   for file in s:__complete.files
@@ -1111,7 +1131,7 @@ function! s:ChooseByComplete()
 endfunction
 
 " s:FinishCompletion()                                         {{{3
-function! s:FinishCompletion()
+function! s:FinishCompletion() abort
   let l =getline('.')
   let choice = l[(s:__complete.c-1) : (col('.')-1)]
   " echomsg "finishing! ->" . choice
@@ -1124,7 +1144,7 @@ function! s:FinishCompletion()
 endfunction
 
 " s:getSNR()                                                   {{{3
-function! s:getSNR()
+function! s:getSNR() abort
   if !exists("s:SNR")
     let s:SNR=matchstr(expand("<sfile>"), "<SNR>\\d\\+_\\zegetSNR$")
   endif
@@ -1132,7 +1152,7 @@ function! s:getSNR()
 endfunction
 
 " s:ChooseTemplateFile(files)                                  {{{3
-function! s:ChooseTemplateFile(files, word)
+function! s:ChooseTemplateFile(files, word) abort
   let mt_chooseWith = s:Option('chooseWith', 'complete')
   if mt_chooseWith == 'confirm' && len(a:files) >= (10+26+25)
     call lh#common#error_msg("Too many choices ".len(a:files).
@@ -1187,7 +1207,7 @@ function! s:ChooseTemplateFile(files, word)
 endfunction
 
 " s:InsertTemplateFile(word,file)                              {{{3
-function! s:InsertTemplateFile(word,file)
+function! s:InsertTemplateFile(word,file) abort
   if "" != a:file " 3.A- => YES there is one {{{4
     " 3.1- Remove the current word {{{5
     " Note: <esc> is needed to escape from "Visual insertion mode"
@@ -1268,7 +1288,7 @@ function! s:TryActivateStakeholders(pos,last) abort
 endfunction
 
 " s:JoinWithNext(NeedToJoin,last,pos)                          {{{3
-function! s:JoinWithNext(NeedToJoin,pos,last)
+function! s:JoinWithNext(NeedToJoin,pos,last) abort
   if     a:NeedToJoin >= 2
     silent exe a:last."normal! A".lh#marker#txt('')."\<esc>J!"
     let s:moveto = 'call cursor('.a:last.','.virtcol('.').')'
@@ -1289,7 +1309,7 @@ function! s:JoinWithNext(NeedToJoin,pos,last)
 endfunction
 
 " s:ExecutePostExpandCallbacks()                               {{{3
-function! s:ExecutePostExpandCallbacks()
+function! s:ExecutePostExpandCallbacks() abort
   let nb_lines_added = 0
   for Callback in s:content.callbacks
     if type(Callback) == type(function('has'))
@@ -1301,6 +1321,14 @@ function! s:ExecutePostExpandCallbacks()
     endif
   endfor
   return nb_lines_added
+endfunction
+
+function! s:ClearVariables()
+  call uniq(sort(s:content.variables))
+  for v in s:content.variables
+    silent! unlet s:{v}
+  endfor
+  let s:content.variables = []
 endfunction
 
 " }}}1

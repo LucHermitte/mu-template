@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 14th Mar 2015
+*mu-template.vim*       For Vim version 7+      Last change: 26th Nov 2015
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 3.4.1
+                    Version 3.6.0
 
 
 ==============================================================================
@@ -281,14 +281,14 @@ FEATURES                                    *MuT-features*     {{{1
                                                                 *MuT-markers*
 
     {{{3 Inserting markers                           ~
-                                                            *MuT-Marker_Txt()|*
+                                                            *MuT-lh#marker#txt()|*
     This plugin supports |markers| -- also known as |placeholders| in Srinath
     Avadhanula's imaps.vim plugin, and vim-latex.
 
     To benefit (of?) the power of advanced markers systems, you can:
     - either directly write "<+{marker/placeholder-text}+>" in your
       template-file,
-    - or use the function |Marker_Txt()| within your template-files -- or even
+    - or use the function |lh#marker#txt()| within your template-files -- or even
       |Marker_Open()| or |Marker_Close()|.
     The text will be expanded into "«{parameter}»", "<+{parameter}+>" or
     whatever according to your configuration and your environment. See
@@ -366,7 +366,7 @@ FEATURES                                    *MuT-features*     {{{1
     |:command|s that you can use within your own template-files.
 
     Right now, you can use all the builtin-|functions| that Vim proposes plus
-    some wrappers I propose with µTemplate (see |MuT-Marker_Txt()|,
+    some wrappers I propose with µTemplate (see |MuT-lh#marker#txt()|,
     |s:Include()|) and |ui-functions.vim|.
 
     In |lh-cpp|, a few functions constitute an API (|lh-cpp-API|) that can be
@@ -458,12 +458,12 @@ Q:  "How can I automate the insertion of |markers|/placeholders matching my
     current configuration (defined in lh's bracketing.base.vim, or in Srinath
     Avadhanula's imaps.vim)?"
 A:  There are two ways to accomplish that.
-    1- With |Marker_Txt()| >
-        ¡Marker_Txt('comment text')¡
+    1- With |lh#marker#txt()| >
+        ¡lh#marker#txt('comment text')¡
 <                                                       *MuT-<++>*
     2- It is also possible to just type >
         <+comment text+>
-<   which simplifies the syntax of the template-file.
+<    which simplifies the syntax of the template-file.
     The "<+" and "+>" will be replaced by the current markers characters. In
     order to use other characters, in the template-file (only!), just set
     *s:marker_open* and *s:marker_close* to anything you like. for instance: >
@@ -475,14 +475,14 @@ A:  There are two ways to accomplish that.
 Q:  "How can I insert the current date?"                *MuT-date*
 A:  Use |MuT-expression| with a VimL function that returns the current date. >
         ¡strftime({format})¡
-<   check |strftime()|, and |DateStamp()|
+<    check |strftime()|, and |DateStamp()|
 
 
 Q:  "How can I insert the name of the current file?"    *MuT-filename*
 A:  Use |MuT-expression| with a VimL function that returns the name of the
     current file. >
         ¡expand('%:t')¡
-<   check |expand()|
+<    check |expand()|
 
 
 Q:  "How can I insert my name?"                         *MuT-whoami*
@@ -492,7 +492,7 @@ A:  Have it stored in a VimL variable and use a |MuT-expression|.
     (|MuT-multiprojects|), you'd rather set |g:author| yourself.
     Examples of use: >
         Maintainer: ¡g:author¡
-<   Prefer |Author()|in case its value may change depending on the filetype,
+<    Prefer |Author()|in case its value may change depending on the filetype,
     ... >
         Maintainer: ¡Author()¡
 
@@ -503,8 +503,25 @@ A:  Use the VimL instruction |:let|, and make the scope of the variable to be
     |local-variables| can not be used.
     Ex.: >
         VimL: let s:my_variable = 1 + 2
-<   However, note that some script-symbol are reserved and must not be used. See
+<    However, note that some script-symbol are reserved and must not be used. See
     |MuT-reserved-symbols|.
+
+    You can also use the MuT: command :let >
+        MuT:  let s:my_variable1 = 1 + 2
+        MuT:  let my_variable2 = 1 + 2
+<    which is very similar to |:let| but differs in:
+    - The variable is cleared (with |:silent| |:unlet!|) before being
+      assigned.
+      This permits to workaround |E706|.
+      This is not done if the variable name is found in the right hand side
+      operand.
+    - "s:" is implicit. If not used, it will be forced upon you (local
+      variables are not possible in template-files)
+      Note: For now, |b:var|, |w:var| or |g:var| are not supported.
+      Note: neither dictionary fields nor list elements can be assigned this
+      way for now either.
+    - When a new template-file will be expanded, all variables set with "MuT:
+      let" will be automatically cleared.
 
 
 Q:  "How can I interactively insert things?"            *MuT-UI*
@@ -570,6 +587,10 @@ A:  Three API functions are provided for this purpose:
     - |s:Args()| permits to fetch the arguments passed.
     - |s:Params()| permit to fetch a named argument passed.
       Prefer this method to fetch parameters.
+      Note: |s:Params()| returns a reference to the parameter if it makes
+      sense (|String|, |List|, |Dict|), the parameter is inserted in the
+      parameter stack with the default value specified, it didn't exist
+      before.
 
     In order to support optional arguments, the arguments passed (to
     |s:PushArgs()|, not to |s:Include()|), and fetched, shall be wrapped in a
@@ -675,7 +696,7 @@ Q:  "I want to write a template-file, but I do not succeed to   *MuT-encoding*
     have a utf-8 file."
 A:  To save your template-file in utf-8, save it with >
         :w ++enc=utf-8
-<   See |++enc|, 'encoding', and |MuT-encodings|
+<    See |++enc|, 'encoding', and |MuT-encodings|
 
 
 Q: "How can I refer to the root of my current project?"  *s:path_from_root()*

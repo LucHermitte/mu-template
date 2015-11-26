@@ -5,8 +5,8 @@
 " Last Update:  26th Nov 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.5.3
-let s:k_version = 353
+" Version:      3.6.0
+let s:k_version = 360
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -330,7 +330,8 @@ let s:k_version = 353
 "       v3.5.3
 "       (*) Enh: s:AddPostExpandCallback() and s:Include() exposed as
 "           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.
-"
+"       v3.6.0
+"       (*) Enh: New "MuT:" command: let
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
