@@ -328,8 +328,8 @@ let s:k_version = 353
 "       (*) Enh: s:Param() returns a reference (i.e. if the element did not
 "           exist, it's added)
 "       v3.5.3
-"       (*) Enh: s:AddPostExpandCallback() exposed as
-"           lh#mut#_add_post_expand_callback() as well.
+"       (*) Enh: s:AddPostExpandCallback() and s:Include() exposed as
+"           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.
 "
 "
 " BUGS: {{{2

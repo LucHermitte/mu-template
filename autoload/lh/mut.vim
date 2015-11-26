@@ -21,8 +21,8 @@ let s:k_version = 353
 "       See plugin/mu-template.vim
 " History:
 "       v3.5.3
-"       (*) Enh: s:AddPostExpandCallback() exposed as
-"           lh#mut#_add_post_expand_callback() as well.
+"       (*) Enh: s:AddPostExpandCallback() and s:Include() exposed as
+"           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.
 "       v3.5.2
 "       (*) Enh: s:Param() returns a reference (i.e. if the element did not
 "           exist, it's added)
@@ -464,6 +464,11 @@ function! s:Include(template, ...)
   if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
     call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
+endfunction
+
+" Function: lh#mut#_include(template, ...) {{{3
+function! lh#mut#_include(template, ...) abort
+  return call('s:Include', [a:template]+a:000)
 endfunction
 
 " Function: s:Include_and_map()      {{{3
