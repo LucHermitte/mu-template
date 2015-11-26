@@ -2,11 +2,11 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  28th Oct 2015
+" Last Update:  26th Nov 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.5.2
-let s:k_version = 352
+" Version:      3.5.3
+let s:k_version = 353
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -327,6 +327,9 @@ let s:k_version = 352
 "       v3.5.2
 "       (*) Enh: s:Param() returns a reference (i.e. if the element did not
 "           exist, it's added)
+"       v3.5.3
+"       (*) Enh: s:AddPostExpandCallback() exposed as
+"           lh#mut#_add_post_expand_callback() as well.
 "
 "
 " BUGS: {{{2

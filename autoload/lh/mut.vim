@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.5.2
-let s:k_version = 352
+" Version:      3.5.3
+let s:k_version = 353
 " Created:      05th Jan 2011
-" Last Update:  25th Nov 2015
+" Last Update:  26th Nov 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,9 @@ let s:k_version = 352
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.5.3
+"       (*) Enh: s:AddPostExpandCallback() exposed as
+"           lh#mut#_add_post_expand_callback() as well.
 "       v3.5.2
 "       (*) Enh: s:Param() returns a reference (i.e. if the element did not
 "           exist, it's added)
@@ -506,6 +509,11 @@ endfunction
 " Function: s:AddPostExpandCallback(callback) {{{3
 function! s:AddPostExpandCallback(callback)
   let s:content.callbacks += [a:callback]
+endfunction
+
+" Function: lh#mut#_add_post_expand_callback(callback) {{{3
+function! lh#mut#_add_post_expand_callback(callback)
+  call s:AddPostExpandCallback(a:callback)
 endfunction
 
 " Function: s:Inject(lines)          {{{3
