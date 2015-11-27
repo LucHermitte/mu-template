@@ -22,6 +22,7 @@ let s:k_version = 360
 " History:
 "       v3.6.0
 "       (*) Enh: New "MuT:" command: let
+"       (*) WIP: Limiting s:PushArgs() to "routines" started
 "       v3.5.3
 "       (*) Enh: s:AddPostExpandCallback() and s:Include() exposed as
 "           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.
@@ -442,9 +443,21 @@ function! s:Param(name, default) abort
       endif
       let i -= 1
     endwhile
-    call add(s:args, {(a:name): a:default })
     " Force to return a modifiable reference
-    return s:args[-1][a:name]
+    let res = {(a:name) : a:default }
+    " Try to use last param
+    " TODO: refactor s:PushArgs & co:
+    " -> arguments shall only be pushed on call to include and popped on the
+    "  way back
+    " -> Otherwise, there should be a current stack for local-template and sub-templates
+    " -> This means that if we try to change a s:Param(), we should be able to
+    "  revert modifications on pop.
+    if !empty(s:args) && type(s:args[-1]) == type([])
+      call add(s:args[-1], res)
+    else " push, which should be avoided
+      call s:PushArgs(res)
+    endif
+    return res[a:name]
   endif
   " echomsg string(s:args)
 endfunction
@@ -1017,6 +1030,8 @@ function! s:InterpretMuTCommand(the_line) abort
 	let all = substitute(all, '\v(s:)@<!<'.varname.'>', 's:&', 'g')
       endif
       exe all
+    elseif special_cmd == '"' " comment {{{4
+      " Ignore!
     else " {{{4
       throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
     endif " }}}4"
