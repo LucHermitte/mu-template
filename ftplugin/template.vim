@@ -2,23 +2,24 @@
 " File:		ftplugin/template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim>
-" Version:	2.3.0
+" Version:	3.5.3
 " Created:	13th nov 2002
-" Last Update:	$Date$
+" Last Update:	27th Nov 2015
 "------------------------------------------------------------------------
 " Description:	ftplugin for mu-template's template files
 "   It makes sure that the syntax coloration and ftplugins loaded match the
 "   filetype aimed by the template file, while &filetype values 'template'.
-" 
+"
 "------------------------------------------------------------------------
-" History:	
+" History:
+"    v3.5.3. Syntax file for templates that embeds some of vim syntax
+"    v2.3.0.
+"       n_CTRL-W_f overriden to follow s:Include() calls in template-files.
 "    30th May 2004: v1.02
 "	Installation comment changed. -> better recognition of the target ft
 "    16th Apr 2006: v1.0.0
 "    	empty b:ft won't load every ftplugin
-"    v2.3.0.
-"       n_CTRL-W_f overriden to follow s:Include() calls in template-files.
-" TODO:		
+" TODO:
 " (*) Auto install the patch for $HOME/.vim/filetype.vim:
 "     Hint: source a hook for template files from filetype.vim, and check
 "     filetype.vim sources the hook.
@@ -41,6 +42,7 @@ if exists('b:ft') && strlen(b:ft) && b:ft != 'template'
   exe 'runtime! syntax/'.b:ft.'.vim'
   exe 'runtime! ftplugin/'.b:ft.'.vim ftplugin/'.b:ft.'_*.vim ftplugin/'.b:ft.'/*.vim'
 endif
+runtime syntax/template.vim
 
 nnoremap <buffer> <silent> <c-w>f :call <sid>OpenFile()<cr>
 
