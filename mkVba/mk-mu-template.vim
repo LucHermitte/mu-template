@@ -125,6 +125,7 @@ after/template/template.template
 after/template/template/arg.template
 after/template/template/if.template
 after/template/template/include.template
+after/template/template/let.template
 after/template/template/param.template
 after/template/template/placeholder.template
 after/template/template/reindent.template

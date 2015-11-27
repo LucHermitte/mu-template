@@ -1,0 +1,5 @@
+VimL:" let File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 27th Nov 2015
+VimL:" hint: "MuT: let s:"
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+<+"MuT:  let s:"+><++>
