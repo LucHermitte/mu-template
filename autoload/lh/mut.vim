@@ -1339,7 +1339,7 @@ function! s:ExecutePostExpandCallbacks() abort
 endfunction
 
 function! s:ClearVariables()
-  call uniq(sort(s:content.variables))
+  call lh#list#unique_sort(s:content.variables)
   for v in s:content.variables
     silent! unlet s:{v}
   endfor
