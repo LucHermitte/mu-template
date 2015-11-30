@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.6.0
-let s:k_version = 360
+" Version:      3.6.1
+let s:k_version = 361
 " Created:      05th Jan 2011
-" Last Update:  26th Nov 2015
+" Last Update:  30th Nov 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,9 +20,12 @@ let s:k_version = 360
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.6.1
+"       (*) WIP: Limiting s:PushArgs() to "routines" started
+"       (*) BUG: old vim versions don't have uniq()
+"       (*) ENH: more flexible comment format behind 'MuT'
 "       v3.6.0
 "       (*) Enh: New "MuT:" command: let
-"       (*) WIP: Limiting s:PushArgs() to "routines" started
 "       v3.5.3
 "       (*) Enh: s:AddPostExpandCallback() and s:Include() exposed as
 "           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.

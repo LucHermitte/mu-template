@@ -2,11 +2,11 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  26th Nov 2015
+" Last Update:  30th Nov 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.6.0
-let s:k_version = 360
+" Version:      3.6.1
+let s:k_version = 361
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -332,6 +332,10 @@ let s:k_version = 360
 "           lh#mut#_add_post_expand_callback() and lh#mut#_include() as well.
 "       v3.6.0
 "       (*) Enh: New "MuT:" command: let
+"       v3.6.1
+"       (*) WIP: Limiting s:PushArgs() to "routines" started
+"       (*) BUG: old vim versions don't have uniq()
+"       (*) ENH: more flexible comment format behind 'MuT'
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
@@ -365,7 +369,6 @@ let s:k_version = 360
 "         default choice
 "       - Write a helper plugin that will help us navigate in the tree of
 "         included templates.
-"       - support named parameters in s:Args()
 "
 "}}}1
 "========================================================================
