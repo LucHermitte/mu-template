@@ -1030,7 +1030,7 @@ function! s:InterpretMuTCommand(the_line) abort
 	let all = substitute(all, '\v(s:)@<!<'.varname.'>', 's:&', 'g')
       endif
       exe all
-    elseif special_cmd == '"' " comment {{{4
+    elseif special_cmd =~ '^.*"' " comment {{{4
       " Ignore!
     else " {{{4
       throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
