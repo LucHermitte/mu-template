@@ -123,6 +123,7 @@ after/template/sh/rvalue.template
 after/template/tcl.template
 after/template/template.template
 after/template/template/arg.template
+after/template/template/comment.template
 after/template/template/if.template
 after/template/template/include.template
 after/template/template/let.template
