@@ -6,4 +6,6 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  if lh#vcs#is_svn(fnamemodify(bufname('%'), ':p:h'))
 " ¡'$'¡Date$
+MuT:  else
+<+lh#time#date()+>
 MuT:  endif

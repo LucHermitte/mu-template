@@ -337,7 +337,8 @@ let s:k_version = 362
 "       (*) BUG: old vim versions don't have uniq()
 "       (*) ENH: more flexible comment format behind 'MuT'
 "       v3.6.2
-"       (*) ENH: Author() takes a more usefull parameter
+"       (*) ENH: Author() takes a more useful parameter
+"       (*) ENH: s:Include() can be used from an expression now
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .

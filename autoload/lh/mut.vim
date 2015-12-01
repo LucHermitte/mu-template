@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.6.1
-let s:k_version = 361
+" Version:      3.6.2
+let s:k_version = 362
 " Created:      05th Jan 2011
-" Last Update:  30th Nov 2015
+" Last Update:  01st Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 361
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.6.1
+"       (*) ENH: s:Include() can be used from an expression now
 "       v3.6.1
 "       (*) WIP: Limiting s:PushArgs() to "routines" started
 "       (*) BUG: old vim versions don't have uniq()
@@ -466,10 +468,16 @@ function! s:Param(name, default) abort
 endfunction
 
 " Function: s:Include()              {{{3
-function! s:Include(template, ...)
+function! s:Include(template, ...) abort
   let pos = s:content.crt
   " let correction = s:NeedToJoin > 0
-  let correction = 0
+  " if include is called from an expression, clean and prepare for line merging
+  if s:content.lines[pos] =~ '\v'.s:ValueV('s:Include\(.*\)').'|'.s:MarkerV('s:Include\(.*\)')
+    let correction = 1
+    call s:AddPostExpandCallback({'join': pos+1})
+  else
+    let correction = 0
+  endif
   let dir = fnamemodify(a:template, ':h')
   if dir != "" | let dir .= '/' | endif
   if a:0>0 && !empty(a:1)
@@ -479,9 +487,10 @@ function! s:Include(template, ...)
   " todo: mark the line where s:Pop should be applied
   " todo: check if pushing while no file found as no pop will get executed
   call s:PushArgs(a:0>1 ? a:000[1:] : [])
-  if 0 == s:LoadTemplate(pos-correction, dir.a:template.'.template')
+  if 0 == s:LoadTemplate(pos+correction, dir.a:template.'.template')
     call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
   endif
+  return ""
 endfunction
 
 " Function: lh#mut#_include(template, ...) {{{3
@@ -1327,18 +1336,36 @@ function! s:JoinWithNext(NeedToJoin,pos,last) abort
 endfunction
 
 " s:ExecutePostExpandCallbacks()                               {{{3
+" Let's suppose lines added may be anywhere, and that they search where to be
+" inserted
+" => join lines before adding anything
 function! s:ExecutePostExpandCallbacks() abort
+  " 1- first: lines to join
+  let lines_to_join = lh#list#possible_values(s:content.callbacks, 'join')
+  call reverse(lines_to_join)
+  for l in lines_to_join
+    let lines = getline(l, l+1)
+    let lines[0] .= lines[1]
+    undojoin | silent call setline(l, lines[0])
+    undojoin | silent exe (l+1).'delete _'
+  endfor
+
+  " 2- then line to add
   let nb_lines_added = 0
   for Callback in s:content.callbacks
     if type(Callback) == type(function('has'))
       let nb_lines_added += Callback()
     elseif type(Callback) == type({})
-      let nb_lines_added +=  lh#function#execute(Callback)
+      if has_key(Callback, 'join')
+        let lines_to_join += [Callback.join]
+      else
+	let nb_lines_added +=  lh#function#execute(Callback)
+      endif
     else
       execute 'let nb_lines_added += '.Callback
     endif
   endfor
-  return nb_lines_added
+  return nb_lines_added - len(lines_to_join)
 endfunction
 
 function! s:ClearVariables()

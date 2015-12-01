@@ -10,16 +10,15 @@ VimL: let s:align = repeat(' ', 49-strlen(s:path))
 VimL: let s:mkvba = expand('%:p')[0:-1+stridx(expand('%:p'), s:path)] . 'mkVba/mk-*.vim'
 VimL: let s:mkvba = glob(s:mkvba)
 MuT:  if !empty(s:mkvba) && -1 == stridx(s:mkvba, "\n")
-VImL:   let s:version_lines = filter(readfile(s:mkvba), 'v:val =~ "let\\s\\+s:\\(k_\\)\\=version\\s*="')
+VImL:   let s:version_lines = filter(readfile(s:mkvba), 'v:val =~ "\\vlet\\s+s:(k_)=version\\s*\\="')
 VimL:   let s:version = empty(s:version_lines) ? lh#marker#txt('001') : matchstr(substitute(s:version_lines[0], '\.', '', 'g'), '.*=\s*\zs.*')
 MuT:  else
 VimL:   let s:version = lh#marker#txt('001')
 MuT:  endif
 " Version:      <+substitute(substitute(s:version, "'", '', 'g'), '\d', '&.', 'g')+>
 let s:k_version = <+s:version+>
-" Created:      ¡DateStamp()¡
-" Last Update:
-VimL: call s:Include('dollar_date', '_')
+" Created:      <+lh#time#date()+>
+" Last Update:  <+s:Include('dollar_date', '_')+>
 "------------------------------------------------------------------------
 VimL: let s:_prj_description = s:Param('description', lh#marker#txt('description'))
 " Description:
