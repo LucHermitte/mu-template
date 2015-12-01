@@ -5,8 +5,8 @@
 " Last Update:  30th Nov 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.6.1
-let s:k_version = 361
+" Version:      3.6.2
+let s:k_version = 362
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -336,6 +336,8 @@ let s:k_version = 361
 "       (*) WIP: Limiting s:PushArgs() to "routines" started
 "       (*) BUG: old vim versions don't have uniq()
 "       (*) ENH: more flexible comment format behind 'MuT'
+"       v3.6.2
+"       (*) ENH: Author() takes a more usefull parameter
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
@@ -412,7 +414,11 @@ endfunction
 
 " g:author : recurrent special variable                    {{{2
 function! Author(...)
-  let short = (a:0>0 && (a:1==1 ||a:1=='short')) ? '_short' : ''
+  let short
+        \ = a:0 == 0                    ? ''
+        \ : type(a:1) == type('string') ? '_'.a:1
+        \ : a:1 == 1                    ? '_short'
+        \ :                               ''
   if     exists('b:author'.short) | return b:author{short}
   elseif exists('g:author'.short) | return g:author{short}
   elseif exists('$USERNAME')      | return $USERNAME    " win32
@@ -422,6 +428,7 @@ function! Author(...)
 endfunction
 
 " Default implementation  for DateStamp()                  {{{2
+" Deprecated: prefer lh#time#date()
 if !exists('*DateStamp')
   function! DateStamp(...)
     if a:0 > 0
