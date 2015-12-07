@@ -1,0 +1,12 @@
+VimL:" while File Template, Luc Hermitte <hermitte {at} free {dot} fr>, lun. 07 déc. 2015 20:31:23 CET
+VimL:" hint: while ...
+VimL: " surround 1: code
+VimL: " surround 2: condition
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+while <+ s:Param("condition", s:Surround(2, lh#marker#txt('cond'))) +>
+  ¡s:Surround(1, '<+code+>')¡
+endwhile<+s:TerminalPlaceHolder()+>

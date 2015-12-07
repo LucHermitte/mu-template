@@ -1,0 +1,9 @@
+VimL:" catch File Template, Luc Hermitte <hermitte {at} free {dot} fr>, lun. 07 déc. 2015 20:35:27 CET
+VimL:" hint: :catch /.*/
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+catch /.*/
+  <+s:Param('catch', s:Surround(1, lh#marker#txt('catch')))+>

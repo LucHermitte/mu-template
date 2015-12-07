@@ -1,11 +1,13 @@
 VimL:" ``VimL for-each loop'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
 VimL:" hint: for var in list
+VimL: " surround 1: code
+VimL: " surround 2: dict name
+VimL: " surround 3: iterated element
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-for <+var+> in <+list+>
+for <+ s:Param("element", s:Surround(3, lh#marker#txt('var'))) +> in <+s:Param("collection", s:Surround(2, lh#marker#txt('list')))+>
   ¡s:Surround(1, '<+code+>')¡
-endfor<++>
-
+endfor<+s:TerminalPlaceHolder()+>

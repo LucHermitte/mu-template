@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/lh-brackets/License.md>
-" Version:	3.6.2
-let s:version = '3.6.2'
+" Version:	3.6.3
+let s:version = '3.6.3'
 " Created:	06th Nov 2007
-" Last Update:	01st Dec 2015
+" Last Update:	07th Dec 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -155,7 +155,9 @@ after/template/unknown.template
 after/template/vim.template
 after/template/vim/augroup.template
 after/template/vim/autoload-debug.template
+after/template/vim/catch.template
 after/template/vim/finally.template
+after/template/vim/fordict.template
 after/template/vim/foreach.template
 after/template/vim/fori.template
 after/template/vim/function.template
@@ -186,6 +188,8 @@ after/template/vim/option-protect.template
 after/template/vim/plugmap.template
 after/template/vim/raii.template
 after/template/vim/snr.template
+after/template/vim/try.template
+after/template/vim/while.template
 after/template/xslt/apply-template.template
 after/template/xslt/attribute.template
 after/template/xslt/call-template.template
