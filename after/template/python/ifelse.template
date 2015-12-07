@@ -1,0 +1,6 @@
+VimL:" ife File Template, Luc Hermitte, lun. 07 déc. 2015 20:46:57 CET
+VimL:" hint: if : else :
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: call s:Include('if', 'python', {'code': s:SurroundableParam("code-if", 1) })
+VimL: call s:Include('else', 'python', {'code': s:SurroundableParam("code-else ", 3) })

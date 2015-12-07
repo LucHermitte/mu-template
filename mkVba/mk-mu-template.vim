@@ -109,6 +109,8 @@ after/template/markdown/link.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template
+after/template/python/class.template
+after/template/python/def.template
 after/template/python/elif.template
 after/template/python/else.template
 after/template/python/if.template
