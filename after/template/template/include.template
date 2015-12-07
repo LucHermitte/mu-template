@@ -5,6 +5,13 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
+MuT:  if expand('%:p:h:t') == 'template'
+MuT:    let s:name = expand('%:t:r').'-'.lh#marker#txt('name')
+MuT:    let s:dir  = expand('%:t:r').lh#marker#txt('/internals')
+MuT:  else
+MuT:    let s:name = lh#marker#txt('name')
+MuT:    let s:dir  = expand('%:p:h:t')
+MuT:  endif
 VimL: let s:ft = expand('%:t:r')
-¡'VimL:'¡ call s:Include('¡s:ft¡-<+name+>', '¡s:ft¡/<+internals+>')
-<++>
+¡'VimL:'¡ call s:Include('<+s:name+>', '<+s:dir+>')
+<+s:TerminalPlaceHolder()+>
