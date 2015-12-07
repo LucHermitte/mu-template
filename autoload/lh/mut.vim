@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.6.2
-let s:k_version = 362
+" Version:      3.7.0
+let s:k_version = 370
 " Created:      05th Jan 2011
-" Last Update:  01st Dec 2015
+" Last Update:  07th Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 362
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.7.0
+"       (*) ENH: New function: s:SurroundableParam()
 "       v3.6.1
 "       (*) ENH: s:Include() can be used from an expression now
 "       v3.6.1
@@ -609,6 +611,12 @@ function! s:Surround(id, default)
   else
     return a:default
   endif
+endfunction
+
+" Function: s:SurroundableParam(name, surround_id, [default=«name»]) {{{3
+function! s:SurroundableParam(name, surround_id, ...) abort
+  let default = a:0 > 1 ? a:1 : lh#marker#txt(a:name)
+  return s:Param(a:name, s:Surround(a:surround_id, default))
 endfunction
 
 " Function: s:IsSurrounding()        {{{3
