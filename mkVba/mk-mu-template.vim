@@ -139,6 +139,7 @@ after/template/template/param.template
 after/template/template/placeholder.template
 after/template/template/reindent.template
 after/template/template/surround.template
+after/template/template/surroundable-param.template
 after/template/template/terminal_placeholder.template
 after/template/test-included.template
 after/template/test.template

@@ -4,4 +4,6 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-s:Param("<+parameter+>", <+lh#marker#txt('lh#marker#txt(default)')+>)
+MuT:  let s:parameter = s:SurroundableParam('parameter', 1)
+MuT:  let s:default   = s:SurroundableParam('default', 2, lh#marker#txt('lh#marker#txt("default")'))
+s:Param("<+s:parameter+>", <+s:default+>)<+s:TerminalPlaceHolder()+>

@@ -1,0 +1,15 @@
+VimL:" surroundable-param File Template, Luc Hermitte <hermitte {at} free {dot} fr>, jeu. 10 déc. 2015 18:23:24 CET
+VimL:" hint: s:SurroundableParam(name, id [, text=<+name+>])
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:name = s:SurroundableParam('name', 1)
+MuT:  let s:id   = s:SurroundableParam('id', 2, lh#marker#txt(1))
+MuT:  let s:default = s:SurroundableParam('default', 3, lh#option#unset())
+MuT:  if lh#option#is_unset(s:default)
+MuT:    let s:default = lh#marker#txt(' , def')
+MuT:  else
+VimL:   let s:default = ', '.s:default
+MuT:  endif
+s:SurroundableParam(<+s:name+>, <+s:id+><+s:default+>)<+s:TerminalPlaceHolder()+>
