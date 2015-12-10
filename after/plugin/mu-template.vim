@@ -341,7 +341,6 @@ let s:k_version = 371
 "       (*) ENH: s:Include() can be used from an expression now
 "       v3.7.0
 "       (*) ENH: New function: s:SurroundableParam()
-"       v3.7.1
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "
 " BUGS: {{{2

@@ -20,9 +20,8 @@ let s:k_version = 371
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
-"       v3.7.1
-"       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "       v3.7.0
+"       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "       (*) ENH: New function: s:SurroundableParam()
 "       v3.6.1
 "       (*) ENH: s:Include() can be used from an expression now
