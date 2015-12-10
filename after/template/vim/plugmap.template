@@ -3,11 +3,21 @@ VimL:" hint: <Plug>mapping + default mapping
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:mode = INPUT('Mode (invox)?', Marker_Txt('mode'))
-VimL: let s:plug = INPUT('<Plug>?', Marker_Txt('name'))
+MuT:  let s:mapmode = s:SurroundableParam('mode', 1, lh#option#unset())
+MuT:  let s:plugname = s:SurroundableParam('plug', 2, lh#option#unset())
+MuT:  if lh#option#is_unset(s:mapmode)
+MuT:    let s:mapmode = INPUT('Mode (invox)?', lh#marker#txt('mode'))
+MuT:  endif
+MuT:  if lh#option#is_unset(s:plugname)
+MuT:    let s:plugname =  INPUT('<Plug>?',       lh#marker#txt('name'))
+MuT:  endif
 VimL: call s:Include('get-script-kind', 'vim/internals')
 VimL: let s:buffer = s:ftplug ? '<buffer> ' : ''
-<+s:mode+>noremap <+s:buffer+><silent> <Plug><+s:plug+> <+definition+>
-if !hasmapto('<Plug><+s:plug+>', '<+s:mode+>')
-    <+s:mode+>map <+s:buffer+><silent> <unique> <+keybinding+> <Plug><+s:plug+>
+MuT:  if strlen(s:mapmode) == 1 || lh#marker#is_a_marker(s:mapmode)
+<+s:mapmode+>noremap <+s:buffer+><silent> <Plug><+s:plugname+> <+definition+>
+if !hasmapto('<Plug><+s:plugname+>', '<+s:mapmode+>')
+  <+s:mapmode+>map <+s:buffer+><silent> <unique> <+keybinding+> <Plug><+s:plugname+>
 endif
+MuT:  else
+VimL:    for mode in split(s:mapmode, '\zs') | call s:Include('plugmap', 'vim', {'mode': mode, 'plug': s:plugname}) | endfor
+MuT:  endif
