@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.7.1
-let s:k_version = 371
+" Version:      3.7.0
+let s:k_version = 370
 " Created:      05th Jan 2011
 " Last Update:  10th Dec 2015
 "------------------------------------------------------------------------
@@ -616,7 +616,7 @@ endfunction
 
 " Function: s:SurroundableParam(name, surround_id, [default=«name»]) {{{3
 function! s:SurroundableParam(name, surround_id, ...) abort
-  let default = a:0 > 1 ? a:1 : lh#marker#txt(a:name)
+  let default = a:0 > 0 ? a:1 : lh#marker#txt(a:name)
   return s:Param(a:name, s:Surround(a:surround_id, default))
 endfunction
 
