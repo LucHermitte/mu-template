@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.7.0
-let s:k_version = 370
+" Version:      3.7.1
+let s:k_version = 371
 " Created:      05th Jan 2011
-" Last Update:  07th Dec 2015
+" Last Update:  10th Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 370
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.7.1
+"       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "       v3.7.0
 "       (*) ENH: New function: s:SurroundableParam()
 "       v3.6.1
@@ -245,7 +247,7 @@ function! lh#mut#jump_to_start() abort
           \.restore_option('marker_select_current_fwd')
     try
       let b:marker_select_current_fwd = 1
-      normal !jump!
+      exe "normal \<Plug>MarkersJumpF"
       " return Marker_Jump({'direction':1, 'mode':'i'})
     finally
       call cleanup.finalize()
@@ -1159,7 +1161,7 @@ function! s:ChooseByComplete() abort
   let c = col('.')
   let l = c - strlen(s:__complete.word) +1
   let s:__complete.c = l
-  let g:entries = {"c":c, "l":l, "entries": entries}
+  " let g:entries = {"c":c, "l":l, "entries": entries}
   " inoremap <buffer> <silent> <cr> <c-\><c-n>:call <sid>FinishCompletion()<cr>
   call lh#icomplete#run(l, entries, (s:getSNR()."FinishCompletion"))
   return ''

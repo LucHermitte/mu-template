@@ -5,8 +5,8 @@
 " Last Update:  07th Dec 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.7.0
-let s:k_version = 370
+" Version:      3.7.1
+let s:k_version = 371
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -341,6 +341,8 @@ let s:k_version = 370
 "       (*) ENH: s:Include() can be used from an expression now
 "       v3.7.0
 "       (*) ENH: New function: s:SurroundableParam()
+"       v3.7.1
+"       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
