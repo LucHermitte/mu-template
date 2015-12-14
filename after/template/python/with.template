@@ -2,7 +2,7 @@ VimL:" with File Template, Luc Hermitte, lun. 07 déc. 2015 20:50:42 CET
 VimL:" hint: with <++> as <++>
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:reindent     = 1
+VimL: let s:reindent     = 'python'
 with <+ s:SurroundableParam("expression", 2) +> as <+ s:SurroundableParam("var", 3) +>:
     <+ s:SurroundableParam("code", 1) +>
 <+s:TerminalPlaceHolder()+>

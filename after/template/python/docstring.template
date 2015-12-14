@@ -1,0 +1,11 @@
+VimL:" docstring File Template, Luc Hermitte, ven. 11 déc. 2015 12:32:07 CET
+VimL:" hint: """ doc """
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+MuT:  let s:doc = s:SurroundableParam('doc', 1)
+"""
+<+s:doc+>
+"""

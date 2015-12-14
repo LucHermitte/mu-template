@@ -1,0 +1,10 @@
+VimL:" class File Template, Luc Hermitte, lun. 07 déc. 2015 20:55:58 CET
+VimL:" hint: class :
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+class <+s:SurroundableParam('cls-name', 2)+>:
+VimL: call s:Include('docstring', 'python', {'indented': 1, 'doc': s:Param("cls-doc", lh#marker#txt("class documentation")) })
+
+VimL: call s:Include('init', 'python', {'indented': 1, 'params': s:SurroundableParam("params", 3)})
+<+s:TerminalPlaceHolder()+>

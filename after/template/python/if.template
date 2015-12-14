@@ -2,7 +2,7 @@ VimL:" if File Template, Luc Hermitte, lun. 07 déc. 2015 20:45:15 CET
 VimL:" hint: if :
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:reindent     = 1
+VimL: let s:reindent     = 'python'
 if <+ s:SurroundableParam("condition", 2) +>:
     <+ s:SurroundableParam("code", 1) +>
 <+s:TerminalPlaceHolder()+>

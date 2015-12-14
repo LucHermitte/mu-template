@@ -2,7 +2,8 @@ VimL:" def File Template, Luc Hermitte, lun. 07 déc. 2015 21:23:48 CET
 VimL:" hint: def fn():
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:reindent     = 1
+VimL: let s:reindent     = 'python'
 def <+s:SurroundableParam('name', 2) +>(<+s:SurroundableParam('params', 3)+>):
-    <+s:SurroundableParam('code', 1)+>
+VimL: call s:Include('docstring', 'python', {'indented': 1})
+    <+s:SurroundableParam('pass', 1)+>
 <+s:TerminalPlaceHolder()+>
