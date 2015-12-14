@@ -1,0 +1,5 @@
+VimL:" from-import File Template, Luc Hermitte, lun. 14 déc. 2015 17:10:08 CET
+VimL:" hint: from ... import
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+from <+ s:SurroundableParam('package', 1)+> import <+ s:SurroundableParam('symbol', 2)+>

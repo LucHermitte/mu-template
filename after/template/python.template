@@ -1,0 +1,8 @@
+VimL:" python File Template, Luc Hermitte, ven. 11 déc. 2015 12:27:47 CET
+VimL:" hint: python template file
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+#!/usr/bin/env python
+# -*- coding: <+&fenc+> -*-

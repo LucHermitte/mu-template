@@ -1,0 +1,4 @@
+VimL:" init File Template, Luc Hermitte, lun. 14 déc. 2015 17:00:19 CET
+VimL:" hint: def __init__(self, ...)
+VimL: let s:reindent     = 'python'
+VimL: call s:Include('def', 'python', {'indented': s:Param("indented", 0), 'name': '__init__', 'params': 'self, '.s:SurroundableParam("params", 3), 'doc': s:SurroundableParam('doc', 4, 'constructor') })

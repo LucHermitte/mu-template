@@ -693,8 +693,16 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
   let lines += [s:Command( 'call s:PopArgs()')]
   if a:0 > 0
     let map_action = a:1
-    let pat_not_text = '\c\(^'.s:Command('').'\|'.s:Special('').'\)'
+    let pat_not_text = '\v\c(^'.s:Command('').'|'.s:Special('').')'
     call map(lines, "v:val =~ pat_not_text ? (v:val) : ".map_action)
+  endif
+  if get(s:, 'reindent') == 'python'
+    let s:content.crt_indent = a:pos > 0
+          \ ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
+          \ : indent('.')
+    let s:content.crt_indent += &sw * s:Param('indented', 0)
+    let indent = repeat(' ', s:content.crt_indent)
+    call map(lines, 'indent . v:val')
   endif
   call extend(s:content.lines, lines, a:pos)
   return len(lines)
@@ -760,7 +768,8 @@ function! s:DoExpand(NeedToJoin) abort
     call s:TryActivateStakeholders(pos, last)
 
     " Reindent {{{4
-    if exists('s:reindent') && s:reindent
+    " Other indenting scheme: "python", managed elsewhere
+    if get(s:, 'reindent', 0) == 1
       silent exe get(s:content, 'first_line_indented', pos).','.(last).'normal! =='
       unlet s:reindent
     endif
@@ -1074,9 +1083,9 @@ function! s:InterpretLines(first_line) abort
   let markerCharacters = lh#marker#txt('')
 
   let s:content.crt = 0
-  let pat_command = '\c^'.s:Command('')
-  let pat_special = '\c^'.s:Special('')
-  let command_extract_re = '\c^'.s:Command('\s*').'\zs.*'
+  let pat_command = '\c^\s*'.s:Command('')
+  let pat_special = '\c^\s*'.s:Special('')
+  let command_extract_re = '\c^\s*'.s:Command('\s*').'\zs.*'
   while s:content.crt < len(s:content.lines)
     " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt]
     let the_line = s:content.lines[s:content.crt]

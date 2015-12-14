@@ -1,8 +1,7 @@
 VimL:" path-exists File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 21st Apr 2015
 VimL:" hint: os.path.exists()
-VimL: let s:value_start = '¡'
-VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
 VimL: call s:AddPostExpandCallback('lh#dev#import#add("os", {"symbol": "path"})')
-os.path.exists(¡s:Surround(1, '<+type+>')¡)<++>
+os.path.exists(¡s:Surround(1, '<+type+>')¡)<+s:TerminalPlaceHolder()+>

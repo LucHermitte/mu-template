@@ -89,7 +89,7 @@ template-files are not |MuT-trojan-horse|s. Actually, it is exactly the same
 issue as using someone else's plugins.
 
 Note: Since Version 2.0.0 template-files naming policy has drastically
-changed. From "template.{id}", it has become "{id}.template". Here is a little
+changed. From `template.{id}`, it has become `{id}.template`. Here is a little
 oneliner that may help you convert filenames (the *nix tools find, xargs, and
 perl are required) >
  find /some/pathname/ -name "template.*" | perl -pe 's/(.*)(template)\.(.*)/$1$2.$3 $1$3.$2/ ' | xargs -l1 mv
@@ -126,10 +126,10 @@ There are several ways to load template-files:
                                         *:MuTemplate*
     We can explicitly load and interpret the template-file whose name matches:
         {path}/{extension}.template
-    thanks to the command:
+    thanks to the command: >
         :MuTemplate {extension}
 
-    Note: {path} still refers to directories listed within |$VIMTEMPLATES| or
+<    Note: {path} still refers to directories listed within |$VIMTEMPLATES| or
     |{runtimepath}/template/|.
 
 
@@ -152,9 +152,9 @@ There are several ways to load template-files:
                                         *MuT-snippets*
                                         *i_CTRL-R_SPACE* *i_CTRL-R_TAB*
     This plugin defines two default insert-mode mappings:
-    (*) i_CTRL-R_SPACE
+    (*) `i_CTRL-R_SPACE`
         uses as a {pattern}: the keyword (check 'iskeyword') before the cursor.
-    (*) i_{WORD}_CTRL-R_TAB
+    (*) `i_{WORD}_CTRL-R_TAB`
         uses as a {pattern}: the |WORD| before the cursor.
 
     ]Contrary to |expand()|, "before" means "whose first character is placed on
@@ -175,7 +175,7 @@ There are several ways to load template-files:
       For instance, let's suppose the xslt line: >
         blah xsl:val foo
 <     with the cursor just after "val".
-      Hitting CTRL-R_TAB expands the line into: >
+      Hitting `CTRL-R_TAB` expands the line into: >
         blah <xsl:value-of select=«XPath»/> foo
 
 <   In order to replace these mapping keybindings with some you found more
@@ -184,10 +184,10 @@ There are several ways to load template-files:
                                                     *g:mt_chooseWith*
     mu-template offers two ways to choose the template-file to expand when
     several match:
-    - When g:mt_chooseWith values "complete", the choices are displayed with a
+    - When `g:mt_chooseWith` values `"complete"`, the choices are displayed with a
       |ins-completion-menu|. A hint about the snippet will be displayed (if
       available). This is the default behaviour (since v2.2.0).
-    - When g:mt_chooseWith values "confirm", the choices are displayed with a
+    - When `g:mt_chooseWith` values `"confirm"`, the choices are displayed with a
       |confirm()| box.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,7 +195,7 @@ There are several ways to load template-files:
                                         *MuT-surround*
                                         *v_CTRL-R_TAB*
     This plugin defines one default visual-mode mapping:
-    (*) v_CTRL-R_TAB
+    (*) `v_CTRL-R_TAB`
         asks the user which snippet to use,
         and surrounds the selected text with the snippet selected.
 
@@ -289,7 +289,7 @@ FEATURES                                    *MuT-features*     {{{1
     - either directly write "<+{marker/placeholder-text}+>" in your
       template-file,
     - or use the function |lh#marker#txt()| within your template-files -- or even
-      |Marker_Open()| or |Marker_Close()|.
+      |lh#marker#open()| or |lh#marker#close()|.
     The text will be expanded into "«{parameter}»", "<+{parameter}+>" or
     whatever according to your configuration and your environment. See
     |marker|.
@@ -380,10 +380,10 @@ FEATURES                                    *MuT-features*     {{{1
     {{{3 Other things provided if not yet defined ...~
     *g:author* *Author()*       ([$USER/$USERNAME]/"")
     This function is used in some templates.
-    - Author([0]) tries to return in order: b:author, or g:author, or
-      $USERNAME (win32), or $USER (unix), or an empty string
-    - Author(1) tries to return in order: b:author_short, or g:author_short,
-      or $USERNAME (win32), or $USER (unix), or an empty string
+    - `Author([0])` tries to return in order: `b:author`, or `g:author`, or
+      `$USERNAME` (win32), or `$USER` (unix), or an empty string
+    - `Author(1)` tries to return in order: `b:author_short`, or `g:author_short`,
+      or `$USERNAME` (win32), or `$USER` (unix), or an empty string
 
     *DateStamp()*
     Used in some templates. See this function as a overrideable |strftime()|.
@@ -464,7 +464,7 @@ A:  There are two ways to accomplish that.
     2- It is also possible to just type >
         <+comment text+>
 <    which simplifies the syntax of the template-file.
-    The "<+" and "+>" will be replaced by the current markers characters. In
+    The `"<+"` and `"+>"` will be replaced by the current markers characters. In
     order to use other characters, in the template-file (only!), just set
     *s:marker_open* and *s:marker_close* to anything you like. for instance: >
         VimL: let s:marker_open  ='<<<'
@@ -515,13 +515,13 @@ A:  Use the VimL instruction |:let|, and make the scope of the variable to be
       This permits to workaround |E706|.
       This is not done if the variable name is found in the right hand side
       operand.
-    - "s:" is implicit. If not used, it will be forced upon you (local
+    - `"s:"` is implicit. If not used, it will be forced upon you (local
       variables are not possible in template-files)
       Note: For now, |b:var|, |w:var| or |g:var| are not supported.
       Note: neither dictionary fields nor list elements can be assigned this
       way for now either.
-    - When a new template-file will be expanded, all variables set with "MuT:
-      let" will be automatically cleared.
+    - When a new template-file will be expanded, all variables set with
+      "MuT: let" will be automatically cleared.
 
 
 Q:  "How can I interactively insert things?"            *MuT-UI*
@@ -557,6 +557,15 @@ A:  Set the special variable |s:reindent| to 1. Then, the inserted lines will
     be automatically re-indented according to the current indent scheme. >
         VimL: let s:reindent = 1
 <    Examples: check */*.template.
+
+Q:  "But how can it work with python?"
+    In that case, set |s:reindent| to `"python"`. mu-template will then apply
+    last indent to new lines.
+    And if your template/snippet wants to include another one and if the
+    included one shall be indented, then call |s:Include()| with
+    `{'indented':1'}` parameter. >
+        VimL: call s:Include('python', 'docstring', {'indented':1})
+<    Examples: check python/def.template
 
 Q:  "How do I specify where the automated insertion starts?" *s:StartIndentingHere()*
 A:  Call s:StartIndentingHere: >
@@ -727,11 +736,11 @@ A: The |Dictionary| |s:content| contains the lines already interpreted, and
 
 
 Q: "How to define a snippet that surrounds the current selection?" *s:Surround()*
-A: You can use the s:Surround() function that takes two parameters:
+A: You can use the `s:Surround()` function that takes two parameters:
    - a surround-id tied to the count passed to the mapping (see |MuT-surround|),
    - and a default text in case no surrounding is done (snippet used in
      INSERT-mode, or with an incompatible count).
-For instance, C-is snippet looks like:
+For instance, |C-if| snippet looks like:
   >
     if (¡s:Surround(2,'<+cond+>')¡) {
         ¡s:Surround(1,'<+code+>')¡
@@ -759,13 +768,13 @@ latin2.
 - However, non ASCII characters (even «») were not correctly translated in
   latin2. In latin1, I had no such problems.
   Please note that my version of vim is compiled with |+iconv/dyn|. However,
-  neither "has('iconv')", nor "has('iconv/dyn')" return 1.
+  neither `has('iconv')`, nor `has('iconv/dyn')` return 1.
 
 The completely unsuccessful approach was to have the template-file in latin1,
 and load them in a buffer while being in utf-8. To be more exact, it worked
 only with |s:value_start| and |s:value_end| set to plain ASCII characters (1
 or more characters coded on 7bits) -- in that case, the main difficulty is to
-avoid meaningful characters like "!" in C template-files.
+avoid meaningful characters like `!` in C template-files.
 
 
 THIS MEANS
@@ -801,7 +810,7 @@ The (non) exhaustive list of the reserved symbols is:
 - s:Option().
 - s:NoRegex(), s:Marker(), s:Value(), s:Command(), s:Special(), s:Comment()
 
-Moreover, all s: variables starting will a double underscore will be reserved.
+Moreover, all `s:` variables starting will a double underscore will be reserved.
 
 ==============================================================================
 CONFIGURATION                               *MuT-config*       {{{1
