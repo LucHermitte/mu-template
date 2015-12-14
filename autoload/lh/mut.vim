@@ -7,7 +7,7 @@
 " Version:      3.7.0
 let s:k_version = 370
 " Created:      05th Jan 2011
-" Last Update:  10th Dec 2015
+" Last Update:  14th Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -21,6 +21,7 @@ let s:k_version = 370
 "       See plugin/mu-template.vim
 " History:
 "       v3.7.0
+"       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "       (*) ENH: New function: s:SurroundableParam()
 "       v3.6.1
@@ -490,8 +491,14 @@ function! s:Include(template, ...) abort
   " todo: mark the line where s:Pop should be applied
   " todo: check if pushing while no file found as no pop will get executed
   call s:PushArgs(a:0>1 ? a:000[1:] : [])
-  if 0 == s:LoadTemplate(pos+correction, dir.a:template.'.template')
-    call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+  " There is at least always one line: the PopArgs()
+  if 1 == s:LoadTemplate(pos+correction, dir.a:template.'.template')
+    if correction == 1
+      " only set when called from an expression
+      return a:template
+    else
+      call lh#common#warning_msg("muTemplate: No template file matching <".dir.a:template.'.template'.">\r".'dir='.dir.'|'.a:template.'|'.string(a:000))
+    endif
   endif
   return ""
 endfunction
@@ -690,7 +697,7 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
     call map(lines, "v:val =~ pat_not_text ? (v:val) : ".map_action)
   endif
   call extend(s:content.lines, lines, a:pos)
-  return len(s:content.lines)
+  return len(lines)
 endfunction
 
 " s:DoExpand(NeedToJoin)                                       {{{3
@@ -927,7 +934,7 @@ function! s:InterpretValuesAndMarkers(line) abort
 endfunction
 
 " s:InterpretMarkers(line) ~ eval markers as expr in {line}    {{{3
-" todo merge with s:InterpretValues
+" deprecated
 function! s:InterpretMarkers(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
@@ -1373,6 +1380,7 @@ function! s:ExecutePostExpandCallbacks() abort
     else
       execute 'let nb_lines_added += '.Callback
     endif
+    unlet Callback
   endfor
   return nb_lines_added - len(lines_to_join)
 endfunction
