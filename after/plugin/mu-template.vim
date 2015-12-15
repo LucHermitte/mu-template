@@ -2,11 +2,11 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  07th Dec 2015
+" Last Update:  15th Dec 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.7.1
-let s:k_version = 371
+" Version:      3.7.0
+let s:k_version = 370
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -340,8 +340,11 @@ let s:k_version = 371
 "       (*) ENH: Author() takes a more useful parameter
 "       (*) ENH: s:Include() can be used from an expression now
 "       v3.7.0
-"       (*) ENH: New function: s:SurroundableParam()
+"       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
+"       (*) ENH: New function: s:SurroundableParam()
+"       (*) ENH: s:Include() can be used from an expression surrounded by
+"           text
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
@@ -375,6 +378,8 @@ let s:k_version = 371
 "         default choice
 "       - Write a helper plugin that will help us navigate in the tree of
 "         included templates.
+"       - <+s:foo+>foo<+s:Include(...)+><+s:bar+>
+"         has many incorrect side-effects
 "
 "}}}1
 "========================================================================

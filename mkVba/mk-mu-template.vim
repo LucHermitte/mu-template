@@ -7,7 +7,7 @@
 " Version:	3.7.0
 let s:version = '3.7.0'
 " Created:	06th Nov 2007
-" Last Update:	07th Dec 2015
+" Last Update:	15th Dec 2015
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -111,10 +111,13 @@ after/template/perl/item.template
 after/template/perl/over.template
 after/template/python/class.template
 after/template/python/def.template
+after/template/python/docstring.template
 after/template/python/elif.template
 after/template/python/else.template
+after/template/python/from.template
 after/template/python/if.template
 after/template/python/ifelse.template
+after/template/python/init.template
 after/template/python/path-exists.template
 after/template/python/while.template
 after/template/python/with.template

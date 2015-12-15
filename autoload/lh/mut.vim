@@ -7,7 +7,7 @@
 " Version:      3.7.0
 let s:k_version = 370
 " Created:      05th Jan 2011
-" Last Update:  14th Dec 2015
+" Last Update:  15th Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -24,7 +24,9 @@ let s:k_version = 370
 "       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
 "       (*) ENH: New function: s:SurroundableParam()
-"       v3.6.1
+"       (*) ENH: s:Include() can be used from an expression surrounded by
+"           text
+"       v3.6.2
 "       (*) ENH: s:Include() can be used from an expression now
 "       v3.6.1
 "       (*) WIP: Limiting s:PushArgs() to "routines" started
@@ -801,12 +803,14 @@ endfunction
 " use.
 function! s:InterpretValue(what) abort
   let what = substitute(a:what, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+  " Special case: s:Include => need to split the line before and after
+  let nl = what =~ 's:Include' ? '\r' : ''
   " echo "interpret value: " . what
   try
     " todo: can we use eval() now?
     exe 'let s:__r = ' . what
     " NB: cannot use a local variable, hence the "s:xxxx"
-    return s:__r
+    return nl . s:__r . nl
   catch /.*/
     call lh#common#warning_msg("muTemplate: Cannot interpret `".a:what."': ".v:exception)
     return a:what
@@ -919,7 +923,8 @@ function! s:InterpretValuesAndMarkers(line) abort
           " There may be an expression within the marker
           let part = s:InterpretValues(part).line
           try
-            let value = eval(part)
+            let nl = part =~ 's:Include' ? "\n" : ''
+            let value = nl. eval(part) .nl
           catch /.*/
             let value = lh#marker#txt(part)
           endtry
