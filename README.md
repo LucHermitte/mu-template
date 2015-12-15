@@ -1,3 +1,5 @@
+# µTemplate [![Build Status](https://secure.travis-ci.org/LucHermitte/mu-template.png?branch=master)](http://travis-ci.org/LucHermitte/mu-template) [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
+
 ## Introduction
 
 µTemplate is a template-files loader for Vim. Once loaded, templates are interpreted and expanded according to a flexible syntax.
@@ -5,6 +7,7 @@
   * [Features](#features)
   * [Shipped templates](#shipped-templates)
     * [Vim](#vim)
+    * [Python](#python)
     * [C & C++](#c--c)
     * [LaTeX](#latex)
     * [XSLT](#xslt)
@@ -33,7 +36,7 @@
   * VimL instructions can be executed during the expansion ;
   * Template-files can include other template-files in a function-like manner (parameters are even supported);
   * Fully integrated with my [placeholders-system](http://github.com/LucHermitte/lh-brackets) ;
-  * Supports re-indentation (if desired) ;
+  * Supports re-indentation (if desired), and Python indentation ;
   * Works well with vim folding ;
   * I18n friendly ;
   * The expansion happens after any [_local vimrcs_](http://github.com/LucHermitte/local_vimrc) present are loaded -- in order to set project-specific variables before the expansion is done.
@@ -41,7 +44,7 @@
   * Thanks to [Tom Link's StakeHolders](http://www.vim.org/scripts/script.php?script_id=3326) plugin, µTemplate does now have tied placeholders (modifying one named placeholder modifies other placeholders with the same name). Not installing Stakeholders will not prevent you from using µTemplate.
 
 However, it misses the following features:
-  * Several snippets per template-file -- It's extremely unlikely that µtemplate will ever work this way.
+  * Several snippets per template-file -- It's extremely unlikely that µTemplate will ever work this way.
   * One key that does everything: expansion of snippets/previously typed keywords/dictionary/..., or jump to the next placeholder depending on the context.
 
 ## Shipped templates
@@ -62,13 +65,20 @@ However, it misses the following features:
 > All the choices made are the result of what I've come to consider over the years to be good practices regarding vim files contents.
 > Each part may be individually overridden in your local settings (`:h MuT-paths-override`)
 
-  * The snippets _foreach_, _fori_, and _loop-arg_ expand respectively to the `:for` vim-loop, or a `:while` vim-loop that increments _i_, or another index variable.
+  * The snippets _foreach_, _fori_, _fordict_, _loop-arg_, and _while_ expand respectively to the `:for` vim-loop, a `:for` on dictionary `items()`, a `:while` vim-loop that increments _i_, or another index variable, or a simple `:while` loop.
+  * The snippets _try_, _catch_, _finally_, and _raii_ expand into `:try`-`:catch`, `:catch`, `:try`-`:finally`, and `:try`-`:finally` combined with [`lh#on#exit()`](http://github.com/LucHermitte/lh-vim-lib)
+  * The snippets _menu-make_, and _option-project_, expand into calls to
+   [`lh#menu#make`](http://github.com/LucHermitte/lh-vim-lib).
 
   * The snippet _plugmap_ expands into an overridable _plug-mapping_.
+  * The snippet _augroup_ expands into a cleared `:augroup` ready to defined
+    new `:autocommand`s.
 
   * The snippet _autoload-debug_ expands into the debug-oriented functions added by default to autoload-plugins -- its purpose is to add simply those functions to autoload-plugins that don't have them yet.
 
   * The snippet _function_ expands into a `:function!` definition. If the current script is an autoload-plugin, the function name matches the autoload-plugin name -- to insert other kinds of functions, just use the `fu` abbreviation from `vim_snippets.vim`. Otherwise, the function name will just start with a `s:`.
+  * The snippet _nvi-function_ expands into a NVI-like pair of function for [lh-dev](http://github.com/LucHermitte/lh-dev)
+  * The snippet _snr_ expands into an helper function to obtain a valid VimL `function()` from a script function.
 
   * On creation of a new vim help file (1), the file is pre-filed with:
     * a header compatible with what is expected by `:h local-additions`, your name, and a `$Date$`,
@@ -81,8 +91,15 @@ However, it misses the following features:
 :MuTemplate
 ```
 
+NB: there are no µTemplate snippets for `:if`, _etc._ because they are maintained independently thanks to [my bracketing system](http://github.com/LucHermitte/lh-brackets) in `vim_snippets.vim` (todo: add link).
 
-NB: there are no µTemplate snippets for `:if`, `:try`, _etc._ because they are maintained independently thanks to [my bracketing system](http://github.com/LucHermitte/lh-brackets) in `vim_snippets.vim` (todo: add link).
+### Python
+  *  On creation of a new Python file, the shebang line and the encoding
+     line matching the current `&fileencoding` are inserted.
+  * Snippets for the main control statements are provided: `if`, `ifelse`,
+    `elif`, `else`, `while`
+  * Snippets for `class`, `def`, `init` and _docstring_ are also provided
+  * Plus a few other snippets: `from`-`import`, `with`, ...
 
 ### C & C++
 Most of my C and C++ template-files are shipped with [lh-cpp](http://github.com/LucHermitte/lh-cpp). However a few ones are still shipped with µTemplate:
@@ -139,6 +156,7 @@ A few examples are better than a long speech, check the [documentation](doc/mu-t
 Note: all the default template-files shipped with mu-template can be browsed from the [repository](after/template/)
 
 ### C-`if` snippet
+Snippet that uses `¡`, `s:Surround()`, [lh-dev's styling feature](http://github.com/LucHermitte/lh-dev#formatting.of.brackets.characters)
 ```
 VimL:"{if} Template-File, Luc Hermitte
 VimL:" hint: if (cond) { action }
@@ -149,10 +167,11 @@ VimL: let s:marker_open = '<+'
 VimL: let s:marker_close = '+>'
 if(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡){
 ¡s:Surround(1, '<+code+>')¡
-}<++>
+}<+s:TerminalPlaceHolder()+>
 ```
 
 ### C-`case` snippet
+Snippet that uses `¡`, `s:TerminalPlaceHolder()`, [lh-dev's styling feature](http://github.com/LucHermitte/lh-dev#formatting.of.brackets.characters), and that takes options.
 ```
 VimL:" {case:} File Template, Luc Hermitte, 05th Jan 2011
 VimL:" hint: case {tag: ...; break;}
@@ -161,13 +180,43 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end = s:value_start
 VimL: let s:marker_open = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:case = empty(s:Args()) ? Marker_Txt('case') : (s:Args()[0])
+VimL: let s:case = empty(s:Args()) ? lh#marker#txt('case') : (s:Args()[0])
 VimL: let s:_with_block2 = len(s:Args()) <= 1 ? INPUT("Insert a block for the case (0/1) ?") : (s:Args()[1])
 case <+s:case+>:
 <+s:_with_block2?'{':''+>
-<+¡substitute(s:case, Marker_Txt('\(.\{-}\)'), '\1', '')¡-code+>;
+<+¡substitute(s:case, lh#marker#txt('\(.\{-}\)'), '\1', '')¡-code+>;
 break;
 <+s:_with_block2?'}':''+>
+```
+
+### Vim-`plugmap` snippet
+Recursive snippet that takes options, uses `s:Include()`,
+`s:SurroundableParam()`, `:MuT`-commands, and that contain a loop
+
+```
+VimL:" ``VimL <Plug> mappings'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
+VimL:" hint: <Plug>mapping + default mapping
+VimL: let s:reindent     = 1
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:mapmode = s:SurroundableParam('mode', 1, lh#option#unset())
+MuT:  let s:plugname = s:SurroundableParam('plug', 2, lh#option#unset())
+MuT:  if lh#option#is_unset(s:mapmode)
+MuT:    let s:mapmode = INPUT('Mode (invox)?', lh#marker#txt('mode'))
+MuT:  endif
+MuT:  if lh#option#is_unset(s:plugname)
+MuT:    let s:plugname =  INPUT('<Plug>?',       lh#marker#txt('name'))
+MuT:  endif
+VimL: call s:Include('get-script-kind', 'vim/internals')
+VimL: let s:buffer = s:ftplug ? '<buffer> ' : ''
+MuT:  if strlen(s:mapmode) == 1 || lh#marker#is_a_marker(s:mapmode)
+<+s:mapmode+>noremap <+s:buffer+><silent> <Plug><+s:plugname+> <+definition+>
+if !hasmapto('<Plug><+s:plugname+>', '<+s:mapmode+>')
+  <+s:mapmode+>map <+s:buffer+><silent> <unique> <+keybinding+> <Plug><+s:plugname+>
+endif
+MuT:  else
+VimL:    for mode in split(s:mapmode, '\zs') | call s:Include('plugmap', 'vim', {'mode': mode, 'plug': s:plugname}) | endfor
+MuT:  endif
 ```
 
 ### Interactive template-file: C++ Class Template
@@ -285,7 +334,12 @@ VimL: silent! unlet s:times
 ```vim
 ActivateAddons mu-template@lh
 ```
-  * N.B.: installing [lh-cpp](http://github.com/LucHermitte/lh-cpp) or [lh-refactor](http://github.com/LucHermitte/lh-refactor) with VAM will also install µtemplate.
+  * or you can use [vim-flavor](https://github.com/kana/vim-flavor) that also
+    supports dependencies
+```
+flavor 'LucHermitte/mu-template'
+```
+  * N.B.: installing [lh-cpp](http://github.com/LucHermitte/lh-cpp) or [lh-refactor](http://github.com/LucHermitte/lh-refactor) with VAM or vim-flavor will also install µTemplate.
   * or you can clone the git repositories
 ```
 git clone git@github.com:LucHermitte/lh-vim-lib.git
@@ -314,4 +368,3 @@ Bundle 'tomtom/stakeholders_vim'
 ## See also
 There are many other template-files loaders for Vim, see the [non exhaustive list of vim.wikia](http://vim.wikia.com/wiki/Category:Automated_Text_Insertion), or the [comparative matrix](http://vim-wiki.mawercer.de/wiki/topic/text-snippets-skeletons-templates.html) in Marc Weber's vim wiki.
 
-[![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
