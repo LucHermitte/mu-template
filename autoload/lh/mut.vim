@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.7.0
-let s:k_version = 370
+" Version:      3.8.0
+let s:k_version = 380
 " Created:      05th Jan 2011
 " Last Update:  15th Dec 2015
 "------------------------------------------------------------------------
@@ -20,6 +20,9 @@ let s:k_version = 370
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v3.8.0
+"       (*) BUG: "MuT:let" does not support variables with digits
+"       (*) ENH: "MuT: debug let" is now supported
 "       v3.7.0
 "       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
@@ -1025,7 +1028,7 @@ endfunction
 " s:InterpretMuTCommand(the_line)                              {{{3
 function! s:InterpretMuTCommand(the_line) abort
   try
-    let [dummy, special_cmd, cond;tail] = matchlist(a:the_line, s:Special('\s*\(\S\+\)\(\s\+.*\)\='))
+    let [dummy, special_cmd, cond; tail] = matchlist(a:the_line, s:Special('\v\s*(\S+)(\s+.*)='))
     if     special_cmd == 'if' " {{{4
       if s:isBranchActive()
         let is_true = eval(cond)
@@ -1055,7 +1058,7 @@ function! s:InterpretMuTCommand(the_line) abort
         throw "'MuT: else' used, but there was no if"
       endif
       call remove(s:content.scope, 0)
-    elseif special_cmd == 'let' " {{{4
+    elseif special_cmd == 'let' || (special_cmd == 'debug' && cond =~ '\v^\s*let>') " {{{4
       if ! s:isBranchActive()
         return
       endif
@@ -1063,7 +1066,7 @@ function! s:InterpretMuTCommand(the_line) abort
       " later unlet
       " Moreover, "s:" is automatically added
       " Note: doesn't support dict, nor lists
-      let [all, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*\zslet\s*(s:)=([a-zA-Z_]+)\s*([.+*/-]=\=)\s*(.*)'))
+      let [all, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*%(debug\s+)=\zslet\s*(s:)=(\w+)\s*([.+*/-]=\=)\s*(.*)'))
       let s:content.variables += [varname]
       if stridx(expr, varname) == -1 && op == '='
         silent! unlet s:{varname}
@@ -1078,7 +1081,7 @@ function! s:InterpretMuTCommand(the_line) abort
       throw "Unsupported 'Mut: ".special_cmd."' MuT-command"
     endif " }}}4"
   catch /.*/
-    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line." -- ".v:exception.' ('.v:throwpoint.')'
+    throw substitute(v:exception, '^Vim\((.\{-})\)\=:', '', '')." when parsing ".a:the_line." --  (".v:throwpoint.')'
   endtry
 endfunction
 
