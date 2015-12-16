@@ -6,9 +6,9 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL:"  echomsg "case -> " .(empty(s:Args()) ? 'empty' : string(s:Args()))
-VimL: let s:case = empty(s:Args()) ? lh#marker#txt('case') : (s:Args()[0])
-VimL: let s:_with_block2 = len(s:Args()) <= 1 ? INPUT("Insert a block for the case (0/1) ?") : (s:Args()[1])
+MuT:  let s:case = s:Param('case', lh#marker#txt('case'))
+MuT:  debug let s:_with_block2 = s:ParamOrAsk('use_blocks', "Insert a block for the case (0/1) ?")
 case <+s:case+>:<+s:_with_block2?'{':''+>
-    <+¡substitute(s:case, lh#marker#txt('\(.\{-}\)'), '\1', '')¡-code+>;
+    <+¡substitute(s:case, lh#marker#txt('\v(.{-})'), '\1', '')¡-code+>;
     break;
 <+s:_with_block2?'}':''+>

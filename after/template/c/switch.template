@@ -1,26 +1,24 @@
 VimL:"{switch-case} Template-File, Luc Hermitte
 VimL:" hint: switch (cond) { case... default ...}
-VimL: let s:value_start  = '¡'
-VimL: let s:value_end    = '¡'
-VimL: let s:reindent     = 1 
+VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: function! s:_LoopOverCases()
+VimL: function! s:_LoopOverCases() abort
 VimL:"  echomsg "switch args -> " .string(s:Args())
-VimL:   if empty(s:Args())
-VimL:     call s:Include('case', 'c')
+VimL:   let args = s:Param('values', [])
+VimL:   if empty(args)
+VimL:     call s:Include('case', 'c', {'use_blocks': s:_with_block})
 VimL:   else
-VimL:     let args = s:Args()[0].values
 VimL:     for arg in args
 VimL:       if arg !~ 'MAX__$'
-VimL:         call s:Include('case', 'c', arg, s:_with_block)
+VimL:         call s:Include('case', 'c', {'case': arg, 'use_blocks': s:_with_block})
 VimL:       endif
 VimL:     endfor
 VimL:   endif
 VimL: endfunction
 VimL: "
-VimL: let s:_expr = empty(s:Args()) ? Marker_Txt('expr') : s:Args()[0].name
-VimL: let s:_with_block = len(s:Args()) <= 1 ? INPUT("Insert a block for each case (0/1) ?") : (s:Args()[1])
+VimL: let s:_expr = s:Param('name', lh#marker#txt('expr'))
+MuT:  let s:_with_block = s:ParamOrAsk('use_blocks', "Insert a block for each case (0/1) ?")
 switch(<+s:_expr+>){
 VimL: call s:_LoopOverCases()
     default:
