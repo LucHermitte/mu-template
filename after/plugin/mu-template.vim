@@ -348,6 +348,7 @@ let s:k_version = 380
 "       v3.8.0
 "       (*) BUG: "MuT:let" does not support variables with digits
 "       (*) ENH: "MuT: debug let" is now supported
+"       (*) ENH: New function s:ParamOrAsk()
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .

@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.8.0
-let s:k_version = 380
+" Version:      3.7.0
+let s:k_version = 370
 " Created:      05th Jan 2011
 " Last Update:  15th Dec 2015
 "------------------------------------------------------------------------
@@ -23,6 +23,7 @@ let s:k_version = 380
 "       v3.8.0
 "       (*) BUG: "MuT:let" does not support variables with digits
 "       (*) ENH: "MuT: debug let" is now supported
+"       (*) ENH: New function s:ParamOrAsk()
 "       v3.7.0
 "       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
@@ -474,6 +475,13 @@ function! s:Param(name, default) abort
     return res[a:name]
   endif
   " echomsg string(s:args)
+endfunction
+
+" Function: s:ParamOrAsk(name, ...)  {{{3
+function! s:ParamOrAsk(name, ...)
+  let res = s:Param(a:name, lh#option#unset())
+  if lh#option#is_set(res) | return res | endif
+  return call('INPUT',a:000)
 endfunction
 
 " Function: s:Include()              {{{3
