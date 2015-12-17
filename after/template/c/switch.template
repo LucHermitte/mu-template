@@ -7,7 +7,7 @@ VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: function! s:_LoopOverCases() abort
-VimL:   let args = reverse(s:Param('values', s:CmdLineParams()))
+VimL:   let args = reverse(copy(s:Param('values', s:CmdLineParams())))
 VimL:   if empty(args)
 VimL:     call s:Include('case', 'c', {'use_blocks': s:_with_block})
 VimL:   else
