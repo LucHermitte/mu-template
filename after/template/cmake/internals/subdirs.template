@@ -4,13 +4,12 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: "
 VimL: function! s:_LoopOverDirs()
-VimL: " echomsg "dirs -> " .string(s:Args())
-VimL:   if empty(s:Args()) || empty(s:Args()[0])
+VimL:   let args = reverse(s:Param('directories', []))
+VimL:   if empty(args)
 VimL:     call s:Include('add_subdirectory', 'cmake')
 VimL:   else
-VimL:     let args = s:Args()[0]
 VimL:     for arg in args
-VimL:       call s:Include('add_subdirectory', 'cmake', arg)
+VimL:       call s:Include('add_subdirectory', 'cmake', {'directory': arg})
 VimL:     endfor
 VimL:   endif
 VimL: endfunction

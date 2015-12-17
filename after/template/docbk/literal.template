@@ -5,4 +5,4 @@ VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
-<literal>¡s:Surround(1, '<++>')¡</literal>
+<literal>¡s:Surround(1, '<++>')¡</literal>{+s:TerminalPlaceHolder()+}

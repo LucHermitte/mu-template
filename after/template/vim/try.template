@@ -1,0 +1,9 @@
+VimL:" try File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 10th Mar 2015
+VimL:" hint: try «» catch /.*/ «» endtry
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+try
+  <+s:Surround(1, s:Param('code', lh#marker#txt('code')))+>
+VimL: call s:Include('catch', 'vim', {'catch': s:Param("catch", s:Surround(2, lh#marker#txt('catch'))) })
+endtry

@@ -7,17 +7,15 @@ VimL: " generate the Doxyfile used by doxygen
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: "
-VimL: " Typical scenario: included by cmake.template => Doxyfile* is provided 
+VimL: " Typical scenario: included by cmake.template => Doxyfile* is provided
 VimL: " other scenarii: manually included => need to search for Doxyfile* at that time
-VimL: silent! unlet s:_doxyfile
-MuT:  if !empty(s:Args())
-VimL:   let s:_doxyfile = (s:Args()[0].doxyfile)
-MuT:  else
+MuT:  let s:_doxyfile = s:Param("doxyfile", '')
+MuT:  if empty(s:_doxyfile)
 VimL:   let s:_doxyfiles = lh#mut#cmake#find_doxyfile(s:_here)
 MuT:    if !empty(s:_doxyfiles )
 VimL:       let s:_doxyfile =  s:_doxyfiles[0]
 MuT:    else
-VimL:       let s:_doxyfile =  'Doxyfile' 
+VimL:       let s:_doxyfile =  'Doxyfile'
 MuT:    endif
 MuT:  endif
 VimL: let s:_doxyfile_is_a_template = s:_doxyfile =~ '\.in$'
@@ -93,7 +91,7 @@ MuT: endif
         COMMENT "Generating API documentation with Doxygen" VERBATIM
         )
 else(DOXYGEN_FOUND)
-    message(FATAL_ERROR 
+    message(FATAL_ERROR
         "Doxygen is needed to build the documentation. Please install it correctly")
 endif(DOXYGEN_FOUND)
 

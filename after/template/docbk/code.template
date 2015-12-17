@@ -4,4 +4,4 @@ VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
-<code>¡s:Surround(1, '{++}')¡</code>
+<code>{+ s:SurroundableParam('code', 1, lh#marker#txt('')) +}</code>{+s:TerminalPlaceHolder()+}

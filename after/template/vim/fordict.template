@@ -1,0 +1,14 @@
+VimL:" fordict File Template, Luc Hermitte <hermitte {at} free {dot} fr>, lun. 07 déc. 2015 20:15:33 CET
+VimL:" hint: for [key,value] in items(dict)
+VimL: " surround 1: code
+VimL: " surround 2: dict name
+VimL: " surround 3: key
+VimL: " surround 4: value
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:snip_params  = {}
+VimL: let s:snip_params.element    = '['.  s:Param("key", s:Surround(3, lh#marker#txt('key'))).', '.  s:Param("value", s:Surround(4, lh#marker#txt('value'))).']'
+VimL: let s:snip_params.collection = s:Param('collection', 'items('.s:Surround(2, lh#marker#txt('dict')).')')
+VimL: call s:Include('foreach', 'vim', s:snip_params)

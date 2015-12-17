@@ -2,5 +2,5 @@ VimL:" placeholder File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 24
 VimL:" hint: lh#marker#txt(<++>)
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
-VimL: let s:placeholdername = empty(s:Args()) ? lh#marker#txt('placeholder') : (s:Args()[0])
-lh#marker#txt(¡s:Surround(1, s:placeholdername)¡)
+MuT:  let s:placeholdername = s:SurroundableParam('placeholdername', 1)
+lh#marker#txt(¡s:placeholdername¡)

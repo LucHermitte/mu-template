@@ -138,7 +138,7 @@ function! lh#mut#dirs#get_short_list_of_TF_matching(word, filetype)
   call s:UpdateHints(files)
   let strings = lh#mut#dirs#shorten_template_filenames(files)
   return strings
-endfunction
+endfunction "}}}3
 
 " Function: lh#mut#dirs#hint(name)                             {{{2
 function! lh#mut#dirs#hint(name)

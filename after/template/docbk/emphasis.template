@@ -2,7 +2,7 @@ VimL:" <emphasis> File Template, Luc Hermitte <hermitte at free.fr>, 30th Oct 20
 VimL:" hint: <emphasis></emphasis>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
-VimL: let s:marker_open  = '<+'
-VimL: let s:marker_close = '+>'
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
-<emphasis>¡s:Surround(1, '<++>')¡</emphasis>
+<emphasis>{+ s:SurroundableParam('emph', 1, lh#marker#txt(''))+}</emphasis>{+s:TerminalPlaceHolder()+}

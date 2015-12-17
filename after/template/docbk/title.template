@@ -5,5 +5,5 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
-VimL: let s:title = empty(s:Args()) ? Marker_Txt('title') : (s:Args()[0])
-<title>¡s:Surround(1, s:title)¡</title>{++}
+VimL: let s:title = s:SurroundableParam('title', 1)
+<title>¡s:title¡</title>¡s:TerminalPlaceHolder()¡

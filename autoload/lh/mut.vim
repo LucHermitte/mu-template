@@ -26,6 +26,8 @@ let s:k_version = 400
 "       (*) ENH: New function s:ParamOrAsk()
 "       (*) BUG: Styling was not applied on expression where /^/ is part of the
 "           matching regex
+"       (*) DPR: s:Arg() is to be replaced with s:CmdLineParams()
+"           Objective: s:args becomes a list of dictionaries
 "       v3.7.0
 "       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
@@ -217,7 +219,7 @@ function! lh#mut#expand(NeedToJoin, ...) abort
 
   " 3- Expand the lines {{{3
   return s:DoExpand(a:NeedToJoin)
-endfunction
+endfunction "}}}3
 
 " Function: lh#mut#expand_text(NeedToJoin, text, ...)      {{{2
 function! lh#mut#expand_text(NeedToJoin, text, ...) abort
@@ -273,7 +275,9 @@ function! lh#mut#expand_and_jump(needToJoin, ...) abort
     call lh#mut#dirs#update()
     let s:args = []
     if a:0 > 1
-      call s:PushArgs(a:000[1:])
+      " When calling from :MuTemplate, the type of the elements will be string
+      let arg = type(a:2) == type('string') ? {'cmdline': a:000[1:]} : a:000[1:]
+      call s:PushArgs(arg)
       " echomsg 'all: ' . string(s:args)
     endif
     let res = (a:0>0)
@@ -484,6 +488,14 @@ function! s:ParamOrAsk(name, ...)
   let res = s:Param(a:name, lh#option#unset())
   if lh#option#is_set(res) | return res | endif
   return call('INPUT',a:000)
+endfunction
+
+" Function: s:CmdLineParams(...)     {{{3
+function! s:CmdLineParams(...)
+  let args = lh#list#flatten(copy(s:args))
+  " call filter(args, 'has_key(v:val, "cmdline")')
+  let cmdline = lh#list#transform_if(args, [], 'v:val.cmdline', 'type(v:val) == type({}) && has_key(v:val, "cmdline")')
+  return !empty(cmdline) ? cmdline[-1] : a:000
 endfunction
 
 " Function: s:Include()              {{{3
@@ -807,7 +819,7 @@ function! s:DoExpand(NeedToJoin) abort
       silent! exe (pos).','.(last).'foldopen!'
     endif
   endtry
-endfunction
+endfunction "}}}4
 
 " s:InterpretValue() will interpret a sequence between ¡.\{-}¡ {{{3
 " ... and return the computed value.
@@ -1078,7 +1090,7 @@ function! s:InterpretMuTCommand(the_line) abort
       " later unlet
       " Moreover, "s:" is automatically added
       " Note: doesn't support dict, nor lists
-      let [all, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*%(debug\s+)=\zslet\s*(s:)=(\w+)\s*([.+*/-]=\=)\s*(.*)'))
+      let [all, debug, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*(debug\s+)=\zslet\s*(s:)=(\w+)\s*([.+*/-]=\=)\s*(.*)'))
       let s:content.variables += [varname]
       if stridx(expr, varname) == -1 && op == '='
         silent! unlet s:{varname}

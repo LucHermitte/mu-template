@@ -1,24 +1,26 @@
 VimL:" Commented-license File Template, Luc Hermitte, 07th May 2014
 VimL:" hint: Commented Licence file skeleton
+VimL: "Usage: Takes a globbing pattern as parameter
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL:" 
-VimL: let s:_args = empty(s:Args()) ? "" : (s:Args()[0])
+VimL:"
+MuT:  let s:_args = s:CmdLineParams()
 MuT:  if !empty(s:_args)
-VimL:   let s:_license = s:_args
+MuT:    let s:_pattern = s:_args[0].'*'
 MuT:  else
+MuT:    let s:_pattern = '*'
+MuT:  endif
 VimL:   " We search for all licenses installed in mu-template license/text directories
 VimL:   " and ask the use to choose one.
-VimL:   let s:_licenses = map(lh#mut#dirs#get_short_list_of_TF_matching('*', 'license/text'), 'substitute(v:val, "^license[/\\\\]text[/\\\\]", "", "")')
+MuT:    let s:_licenses = map(lh#mut#dirs#get_short_list_of_TF_matching(s:_pattern, 'license/text'), 'substitute(v:val, "^license[/\\\\]text[/\\\\]", "", "")')
 MuT:    if len(s:_licenses) == 1
-VimL:      let s:_license = s:_licenses[0]
+MuT:       let s:_license = s:_licenses[0]
 MuT:    else
 VimL:      let b:mt_chooseWith = 'confirm'
 VimL:      let s:_choice = s:ChooseTemplateFile(s:_licenses, '')
 VimL:      " check choice > 1
-VimL:      let s:_license = s:_licenses[s:_choice - 2]
+MuT:       let s:_license = s:_licenses[s:_choice - 2]
 MuT:    endif
-MuT:  endif
 VimL: let s:_comment = lh#dev#_line_comment()
 MuT:  if !empty(s:_comment)
 VimL: call s:Include_and_map(s:_license, string(s:_comment.' ').".v:val", 'license/text')

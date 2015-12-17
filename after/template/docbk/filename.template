@@ -5,4 +5,4 @@ VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
-<filename>¡s:Surround(1, '<++>')¡</filename>
+<filename>{+ s:SurroundableParam('filename', 1, lh#marker#txt('')) +}</filename>{+s:TerminalPlaceHolder()+}

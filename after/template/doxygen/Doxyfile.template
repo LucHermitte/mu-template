@@ -5,8 +5,8 @@ VimL: let s:marker_close = '+>'
 VimL: "
 VimL: "----------------------------------------------------------------------
 VimL: " Options:
-VimL: " * Passed through s:Include()/s:Args() interface:
-VimL: "   - a dicttionary with the following keys set: name, brief, version, in_dir, out_dir
+VimL: " * Passed through s:Include()/s:Param() interface:
+VimL: "   - a dictionary with the following keys set: name, brief, version, in_dir, out_dir
 VimL: " * Passed through global/local variables: :h lh#dev#option#get()
 VimL: "   - dox_file_pattern ; default: h, c, hpp, cpp, dox
 VimL: "   - dox_project_logo: default: nothing
@@ -18,25 +18,26 @@ VimL: " Todo:
 VimL: " * Have all doxygen options tunable from lh#dev interface
 VimL: "
 VimL: "----------------------------------------------------------------------
-MuT: if !empty(s:Args())
-VimL: let g:__mut_args = s:Args()
-MuT: elseif expand('%:e') == 'in'
+VimL: let g:__mut_args = s:Param("doxyfile", lh#option#unset())
+MuT:  if lh#option#is_unset(g:__mut_args)
 VimL:   let g:__mut_args = {}
-VimL:   let g:__mut_args.name    = '@CPACK_PACKAGE_NAME@'
-VimL:   let g:__mut_args.brief   = '@CPACK_PACKAGE_DESCRIPTION_SUMMARY@'
-VimL:   let g:__mut_args.version = '@CPACK_PACKAGE_VERSION@'
-VimL:   let g:__mut_args.in_dir  = '@INPUT_DOXYGEN_DIRECTORY@'
-VimL:   let g:__mut_args.out_dir = '@OUTPUT_DOXYGEN_DIRECTORY@'
-VimL:   let g:__mut_args.have_dot= '@HAVE_DOT@'
-VimL:   let g:__mut_args.dot_path= '@DOXYGEN_DOT_PATH@'
-MuT: endif
-VimL: LetIfUndef g:__mut_args.name     Marker_Txt('@CPACK_PACKAGE_NAME@')
-VimL: LetIfUndef g:__mut_args.brief    Marker_Txt('@CPACK_PACKAGE_DESCRIPTION_SUMMARY@')
-VimL: LetIfUndef g:__mut_args.version  Marker_Txt('@CPACK_PACKAGE_VERSION@')
-VimL: LetIfUndef g:__mut_args.in_dir   Marker_Txt('@INPUT_DOXYGEN_DIRECTORY@')
-VimL: LetIfUndef g:__mut_args.out_dir  Marker_Txt('@OUTPUT_DOXYGEN_DIRECTORY@')
-VimL: LetIfUndef g:__mut_args.have_dot Marker_Txt('YES')
-VimL: LetIfUndef g:__mut_args.dot_path executable('dot')?'':Marker_Txt('@DOXYGEN_DOT_PATH@')
+MuT:    if expand('%:e') == 'in'
+VimL:     let g:__mut_args.name    = '@CPACK_PACKAGE_NAME@'
+VimL:     let g:__mut_args.brief   = '@CPACK_PACKAGE_DESCRIPTION_SUMMARY@'
+VimL:     let g:__mut_args.version = '@CPACK_PACKAGE_VERSION@'
+VimL:     let g:__mut_args.in_dir  = '@INPUT_DOXYGEN_DIRECTORY@'
+VimL:     let g:__mut_args.out_dir = '@OUTPUT_DOXYGEN_DIRECTORY@'
+VimL:     let g:__mut_args.have_dot= '@HAVE_DOT@'
+VimL:     let g:__mut_args.dot_path= '@DOXYGEN_DOT_PATH@'
+MuT:    endif
+MuT:  endif
+VimL: LetIfUndef g:__mut_args.name     lh#marker#txt('@CPACK_PACKAGE_NAME@')
+VimL: LetIfUndef g:__mut_args.brief    lh#marker#txt('@CPACK_PACKAGE_DESCRIPTION_SUMMARY@')
+VimL: LetIfUndef g:__mut_args.version  lh#marker#txt('@CPACK_PACKAGE_VERSION@')
+VimL: LetIfUndef g:__mut_args.in_dir   lh#marker#txt('@INPUT_DOXYGEN_DIRECTORY@')
+VimL: LetIfUndef g:__mut_args.out_dir  lh#marker#txt('@OUTPUT_DOXYGEN_DIRECTORY@')
+VimL: LetIfUndef g:__mut_args.have_dot lh#marker#txt('YES')
+VimL: LetIfUndef g:__mut_args.dot_path executable('dot')?'':lh#marker#txt('@DOXYGEN_DOT_PATH@')
 VimL: LetIfUndef g:__mut_args.encoding toupper(!empty(&fenc)?&fenc:&enc)
 VimL:"======================================================================
 # Doxyfile 1.7.3

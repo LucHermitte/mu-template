@@ -3,5 +3,5 @@ VimL:" hint: add_subdirectory(dir)
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: "
-VimL: let s:_dir = empty(s:Args()) ? lh#marker#txt('directory') : (s:Args()[0])
+MuT:  let s:_dir = s:SurroundableParam('directory', 1)
 add_subdirectory(<+s:_dir+>)

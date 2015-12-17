@@ -7,5 +7,5 @@ VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
 <section>
 VimL: call s:Include('title', 'docbk')
-VimL: call s:Include('para', 'docbk')
-</section>{++}
+VimL: call s:Include('para', 'docbk', {'para': s:SurroundableParam('para', 2, lh#marker#txt('text')) })
+</section>{+s:TerminalPlaceHolder()+}

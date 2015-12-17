@@ -1,11 +1,13 @@
 VimL:"{switch-case} Template-File, Luc Hermitte
 VimL:" hint: switch (cond) { case... default ...}
+VimL: " Usage:
+VimL: " - :MuTemplate c/swith un deux trois
+VimL: " - call lh#mut#expand_and_jump(0, 'c/switch', {'values': ['un', 'deux', 'trois'] })
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: function! s:_LoopOverCases() abort
-VimL:"  echomsg "switch args -> " .string(s:Args())
-VimL:   let args = s:Param('values', [])
+VimL:   let args = reverse(s:Param('values', s:CmdLineParams()))
 VimL:   if empty(args)
 VimL:     call s:Include('case', 'c', {'use_blocks': s:_with_block})
 VimL:   else
@@ -17,13 +19,12 @@ VimL:     endfor
 VimL:   endif
 VimL: endfunction
 VimL: "
-VimL: let s:_expr = s:Param('name', lh#marker#txt('expr'))
+VimL: let s:_expr = s:Param('expr', lh#marker#txt('expr'))
 MuT:  let s:_with_block = s:ParamOrAsk('use_blocks', "Insert a block for each case (0/1) ?")
 switch(<+s:_expr+>){
 VimL: call s:_LoopOverCases()
-    default:
-<+s:_with_block?'{':''+>
-<+default-code+>;
+    default:<+s:_with_block?'{':''+>
+          <+default-code+>;
           break;
 <+s:_with_block?'}':''+>
 }<+s:TerminalPlaceHolder()+>

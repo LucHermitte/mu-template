@@ -4,7 +4,7 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " Last Update:  15th Dec 2015
 " License:      GPLv3 with exceptions
-"               <URL:http://code.google.com/p/lh-vim/wiki/License>
+"               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.0.0
 let s:k_version = 400
 "
@@ -351,6 +351,8 @@ let s:k_version = 400
 "       (*) ENH: New function s:ParamOrAsk()
 "       (*) BUG: Styling was not applied on expression where /^/ is part of the
 "           matching regex
+"       (*) DPR: s:Arg() is to be replaced with s:CmdLineParams()
+"           Objective: s:args becomes a list of dictionaries
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .

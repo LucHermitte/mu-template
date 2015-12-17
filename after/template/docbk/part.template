@@ -5,6 +5,6 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 <part>
-VimL: call s:Include('title', 'docbk')
-VimL: call s:Include('chapter', 'docbk')
-</part>{++}
+VimL: call s:Include('title', 'docbk', {'title': s:SurroundableParam('part-title', 1) })
+VimL: call s:Include('chapter', 'docbk', {'title': s:SurroundableParam('chapter-title', 2), 'para': s:SurroundableParam('para', 3, lh#marker#txt('text'))  })
+</part>{+s:TerminalPlaceHolder()+}
