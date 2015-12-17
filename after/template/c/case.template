@@ -1,13 +1,15 @@
 VimL:" {case:} File Template, Luc Hermitte, 05th Jan 2011
 VimL:" hint: case {tag: ...; break;}
 VimL: let s:value_start = '¡'
-VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  let s:case = s:Param('case', lh#marker#txt('case'))
 MuT:  let s:_with_block2 = s:ParamOrAsk('use_blocks', "Insert a block for the case (0/1) ?")
 case <+s:case+>:<+s:_with_block2?'{':''+>
-    <+¡substitute(s:case, lh#marker#txt('\v(.{-})'), '\1', '')¡-code+>;
+MuT:  let s:code = substitute(s:case, lh#marker#txt('\v(.{-})'), '\1', '') . '-code'
+    <+lh#marker#txt(s:code)+>;
     break;
 <+s:_with_block2?'}':''+>
+VimL: unlet s:code
+VimL: unlet s:case

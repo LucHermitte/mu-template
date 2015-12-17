@@ -24,7 +24,7 @@ MuT:  let s:_with_block = s:ParamOrAsk('use_blocks', "Insert a block for each ca
 switch(<+s:_expr+>){
 VimL: call s:_LoopOverCases()
     default:<+s:_with_block?'{':''+>
-          <+default-code+>;
+          <+ lh#marker#txt("default-code") +>;
           break;
 <+s:_with_block?'}':''+>
 }<+s:TerminalPlaceHolder()+>

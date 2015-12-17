@@ -949,6 +949,7 @@ function! s:InterpretValuesAndMarkers(line) abort
           let part = s:InterpretValues(part).line
           try
             let nl = part =~ 's:Include' ? "\n" : ''
+            "BUG in Vim7.3: eval() may not fail but return 0
             let value = nl. eval(part) .nl
           catch /.*/
             let value = lh#marker#txt(part)
