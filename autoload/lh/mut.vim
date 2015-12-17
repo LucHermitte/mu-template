@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      3.7.0
-let s:k_version = 370
+" Version:      4.0.0
+let s:k_version = 400
 " Created:      05th Jan 2011
-" Last Update:  15th Dec 2015
+" Last Update:  17th Dec 2015
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,10 +20,12 @@ let s:k_version = 370
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
-"       v3.8.0
+"       v4.0.0
 "       (*) BUG: "MuT:let" does not support variables with digits
 "       (*) ENH: "MuT: debug let" is now supported
 "       (*) ENH: New function s:ParamOrAsk()
+"       (*) BUG: Styling was not applied on expression where /^/ is part of the
+"           matching regex
 "       v3.7.0
 "       (*) BUG: Incorrect use of result of s:LoadTemplate()
 "       (*) BUG: Resist to lh-brackets v3.0.0 !jump! deprecation
@@ -426,7 +428,7 @@ function! s:PopArgs()
 endfunction
 
 " Function: s:Args()                 {{{3
-" @returns a list. If the list is empty, this mean no parameter was given.
+" @returns a list. If the list is empty, this means no parameter was given.
 let s:args = []
 function! s:Args()
   " echomsg string(s:args)
@@ -945,10 +947,12 @@ function! s:InterpretValuesAndMarkers(line) abort
       endif
       let sValue = (type(value)!=type("") ? string(value) : value)
       if get(s:content, 'can_apply_style')
-        let sValue = s:ApplyStyling(sValue)
+        " When not on the start of line, styling that expect /^/ don't know it
+        " => combine style application
+        let res .= s:ApplyStyling(split[1] . sValue)
+      else
+        let res .= s:ApplyStyling(split[1]) . sValue
       endif
-      " echo "res .= ".s:ApplyStyling(split[1]). '   +   ' .sValue
-      let res .= s:ApplyStyling(split[1]) . sValue
       let tail = split[4]
       let may_merge = 1
     endif
