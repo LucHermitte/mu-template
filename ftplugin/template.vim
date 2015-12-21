@@ -2,9 +2,9 @@
 " File:		ftplugin/template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim>
-" Version:	3.5.3
+" Version:	4.0.0
 " Created:	13th nov 2002
-" Last Update:	27th Nov 2015
+" Last Update:	21st Dec 2015
 "------------------------------------------------------------------------
 " Description:	ftplugin for mu-template's template files
 "   It makes sure that the syntax coloration and ftplugins loaded match the
@@ -12,6 +12,7 @@
 "
 "------------------------------------------------------------------------
 " History:
+"    v4.0.0: Better n_CTRL-W on s:Include()
 "    v3.5.3. Syntax file for templates that embeds some of vim syntax
 "    v2.3.0.
 "       n_CTRL-W_f overriden to follow s:Include() calls in template-files.
@@ -58,12 +59,12 @@ endif
 let g:loaded_ftplug_template = s:k_version
 " unlet b:ft
 
-function! s:OpenFile()
+function! s:OpenFile() abort
   let l = getline('.')
   if l !~ 's:Include('
     exe "normal! \<c-w>f"
   else
-    let [a, file, path ; tail] = matchlist(l, 's:Include(\s*\([^,]\+\),\s*\([^)]\+\))')
+    let [a, file, path ; tail] = matchlist( l, '\vs:Include\(\s*([^,]+),\s*([^,\)]+)(,\s*[^\)]+)=\)')
     let file = eval(file)
     let path = eval(path)
     call lh#mut#edit(path.'/'.file)
