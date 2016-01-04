@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/License.md>
-" Version:      4.0.0
-let s:k_version = 400
+" Version:      4.0.1
+let s:k_version = 401
 " Created:      05th Jan 2011
 " Last Update:  17th Dec 2015
 "------------------------------------------------------------------------
@@ -20,6 +20,8 @@ let s:k_version = 400
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.0.1
+"       (*) BUG: Dirty fix for <+s:Include()+>
 "       v4.0.0
 "       (*) BUG: "MuT:let" does not support variables with digits
 "       (*) ENH: "MuT: debug let" is now supported
@@ -505,6 +507,7 @@ function! s:Include(template, ...) abort
   " if include is called from an expression, clean and prepare for line merging
   if s:content.lines[pos] =~ '\v'.s:ValueV('s:Include\(.*\)').'|'.s:MarkerV('s:Include\(.*\)')
     let correction = 1
+    call s:AddPostExpandCallback({'join': pos+2})
     call s:AddPostExpandCallback({'join': pos+1})
   else
     let correction = 0

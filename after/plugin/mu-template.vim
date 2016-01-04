@@ -5,8 +5,8 @@
 " Last Update:  15th Dec 2015
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.0.0
-let s:k_version = 400
+" Version:      4.0.1
+let s:k_version = 401
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -353,6 +353,8 @@ let s:k_version = 400
 "           matching regex
 "       (*) DPR: s:Arg() is to be replaced with s:CmdLineParams()
 "           Objective: s:args becomes a list of dictionaries
+"       v4.0.1
+"       (*) BUG: Dirty fix for <+s:Include()+>
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
