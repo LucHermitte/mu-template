@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/lh-brackets/License.md>
-" Version:	3.7.0
-let s:version = '3.7.0'
+" Version:	4.0.1
+let s:version = '4.0.1'
 " Created:	06th Nov 2007
 " Last Update:	15th Dec 2015
 "------------------------------------------------------------------------
@@ -44,6 +44,7 @@ after/template/c/internals/c-header.template
 after/template/c/internals/c-imp.template
 after/template/c/internals/c-ut.template
 after/template/c/internals/register-file-kinds.template
+after/template/c/internals/register-file-kinds-spe.template
 after/template/c/internals/ut-boost.template
 after/template/c/main.template
 after/template/c/section-sep.template

@@ -1,0 +1,29 @@
+VimL:" register-file-kinds-spe File Template, Luc Hermitte, lun. 04 janv. 2016 18:02:57 CET
+VimL:" hint: File to specialize
+VimL: "
+VimL: " This file is a variation point. It's meant to be specialized to fill project needs.
+VimL: " It's done by filling the priority-list `s:c_pattern` (implemented as a dictionary of priority-list)
+VimL: " Each element of the lists is a dictionary made of the following mandatory keys:
+VimL: " - "test": string that describes the boolean expression to test
+VimL: " - "file": template-file to include if the test returns true
+VimL: "
+VimL: " For instance, my specialization for ITK and OTB project contains the following.
+VimL: "
+VimL: "    VimL: let s:c_patterns[5] = [ {"test": "expand('%:p')=~ '/test/'", "file": "c-test"}]
+VimL: "    VimL: let s:c_patterns[7] = [ {"test": "expand('%:e')=~ '^hh\\=$\\|^hxx$'", "file": "c-header"}]
+VimL: "
+VimL: " This tells that when:
+VimL: " - the pathname of the current file matches "/test/", "c-test" template-file shall be included (from "c/internals") (with a priority of 5)
+VimL: " - the extension matches "h", "hh", or "hxx", "c-header" template-file shall be included (from "c/internals") (with a priority of 7)
+VimL: "
+VimL: " Note: ITK/OTB "c/internals/c-test.template" file contains:
+VimL: "    VimL:" Body of ITK test unit files
+VimL: "    VimL: let s:crt_name = expand('%:t:r')
+VimL: "    #include "<+s:crt_name+>.h"
+VimL: "    <+other includes+>
+VimL: "
+VimL: "    int <+s:crt_name+>(int,char*[])
+VimL: "    {
+VimL: "    <++>
+VimL: "      return EXIT_SUCCESS;
+VimL: "    }
