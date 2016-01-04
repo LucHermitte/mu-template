@@ -3,11 +3,11 @@
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
-"               <URL:http://github.com/LucHermitte/mu-template/License.md>
+"               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.0.1
 let s:k_version = 401
 " Created:      05th Jan 2011
-" Last Update:  17th Dec 2015
+" Last Update:  04th Jan 2016
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
