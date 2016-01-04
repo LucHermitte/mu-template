@@ -361,9 +361,10 @@ Bundle 'tomtom/stakeholders_vim'
 ```
 
 ## Credits
-  * Gergely Kontra is the author of the first version of µTemplate
-  * Luc Hermitte (LH) is the current maintainer of this enhanced version of mu-template
+  * Gergely Kontra is the author of the first version of µTemplate.
+  * Luc Hermitte (LH) is the current maintainer of this enhanced version of mu-template.
   * Robert Kelly IV, Zdenek Sekera for their insight and the feedback they provided me (LH).
+  * Troy Curtis Jr, for his intensive testing.
 
 ## See also
 There are many other template-files loaders for Vim, see the [non exhaustive list of vim.wikia](http://vim.wikia.com/wiki/Category:Automated_Text_Insertion), or the [comparative matrix](http://vim-wiki.mawercer.de/wiki/topic/text-snippets-skeletons-templates.html) in Marc Weber's vim wiki.
