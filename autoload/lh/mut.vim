@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.0.1
-let s:k_version = 401
+" Version:      4.1.0
+let s:k_version = 410
 " Created:      05th Jan 2011
-" Last Update:  04th Jan 2016
+" Last Update:  05th Jan 2016
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 401
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.1.0
+"       (*) ENH: Using new lh-vim-lib omni-completion engine
 "       v4.0.1
 "       (*) BUG: Dirty fix for <+s:Include()+>
 "       v4.0.0
@@ -1213,15 +1215,16 @@ function! s:ChooseByComplete() abort
   let l = c - strlen(s:__complete.word) +1
   let s:__complete.c = l
   " let g:entries = {"c":c, "l":l, "entries": entries}
-  " inoremap <buffer> <silent> <cr> <c-\><c-n>:call <sid>FinishCompletion()<cr>
-  call lh#icomplete#run(l, entries, (s:getSNR()."FinishCompletion"))
-  return ''
+  call lh#icomplete#new(l-1, entries, function(s:getSNR("FinishCompletion")))
+        \.start_completion()
+  return ""
 endfunction
 
 " s:FinishCompletion()                                         {{{3
-function! s:FinishCompletion() abort
+function! s:FinishCompletion(choice) abort
   let l =getline('.')
-  let choice = l[(s:__complete.c-1) : (col('.')-1)]
+  let choice = a:choice
+  " let choice = l[(s:__complete.c-1) : (col('.')-1)]
   " echomsg "finishing! ->" . choice
   let post_action = s:InsertTemplateFile(choice, choice)
   if !empty(post_action)
@@ -1231,12 +1234,12 @@ function! s:FinishCompletion() abort
   endif
 endfunction
 
-" s:getSNR()                                                   {{{3
-function! s:getSNR() abort
+" s:getSNR([func_name])                                        {{{3
+function! s:getSNR(...)
   if !exists("s:SNR")
-    let s:SNR=matchstr(expand("<sfile>"), "<SNR>\\d\\+_\\zegetSNR$")
+    let s:SNR=matchstr(expand('<sfile>'), '<SNR>\d\+_\zegetSNR$')
   endif
-  return s:SNR
+  return s:SNR . (a:0>0 ? (a:1) : '')
 endfunction
 
 " s:ChooseTemplateFile(files)                                  {{{3
@@ -1282,9 +1285,7 @@ function! s:ChooseTemplateFile(files, word) abort
       let s:__complete = {}
       let s:__complete.files = a:files
       let s:__complete.word  = a:word
-      call feedkeys ("\<c-r>=".s:getSNR()."ChooseByComplete()\<cr>")
-      " call feedkeys("\<c-x>\<c-u>")
-      " call feedkeys("\<c-o>:call ".s:getSNR()."FinishCompletion()\<cr>")
+      call s:ChooseByComplete()
       let choice = 0
     finally
     endtry
