@@ -3,11 +3,11 @@
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
-"               <URL:http://github.com/LucHermitte/lh-brackets/License.md>
-" Version:	4.0.1
-let s:version = '4.0.1'
+"               <URL:http://github.com/LucHermitte/mu-template/tree/master/License.md>
+" Version:	4.1.0
+let s:version = '4.1.0'
 " Created:	06th Nov 2007
-" Last Update:	15th Dec 2015
+" Last Update:	08th Jan 2016
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try

@@ -7,7 +7,7 @@
 " Version:      4.1.0
 let s:k_version = 410
 " Created:      05th Jan 2011
-" Last Update:  05th Jan 2016
+" Last Update:  08th Jan 2016
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 410
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.0.2
+"       (*) ENH: Use the new lh-vim-lib logging framework
 "       v4.1.0
 "       (*) ENH: Using new lh-vim-lib omni-completion engine
 "       v4.0.1
@@ -144,13 +146,17 @@ function! lh#mut#verbose(...)
   return s:verbose
 endfunction
 
-function! s:Verbose(expr)
+function! s:Log(...)
+  call call('lh#log#this', a:000)
+endfunction
+
+function! s:Verbose(...)
   if s:verbose
-    echomsg a:expr
+    call call('s:Log', a:000)
   endif
 endfunction
 
-function! lh#mut#debug(expr)
+function! lh#on#debug(expr) abort
   return eval(a:expr)
 endfunction
 
@@ -202,9 +208,9 @@ endfunction
 
 " Function: lh#mut#expand(NeedToJoin, ...)                 {{{2
 function! lh#mut#expand(NeedToJoin, ...) abort
+  call s:Verbose('lh#mut#expand('.a:NeedToJoin.string(a:000).')')
   let s:content.lines = []
 
-  " echomsg 'lh#mut#expand('.a:NeedToJoin.string(a:000).')'
   " 1- Determine the name of the template file expected {{{3
   if a:0 > 0
     let dir = fnamemodify(a:1, ':h')
@@ -248,7 +254,7 @@ endfunction
 
 " Function: lh#mut#jump_to_start()                         {{{2
 function! lh#mut#jump_to_start() abort
-  " echomsg 'lh#mut#jump_to_start()'
+  call s:Verbose('lh#mut#jump_to_start()')
   " set foldopen+=insert,jump
   " Need to be sure there was a marker in the text inserted
   let marker_line = lh#list#match(s:content.lines, lh#marker#txt('.\{-}'))
@@ -274,7 +280,7 @@ endfunction
 
 " Function: lh#mut#expand_and_jump(needToJoin, ...)        {{{2
 function! lh#mut#expand_and_jump(needToJoin, ...) abort
-  " echomsg "lh#mut#expand_and_jump(".a:needToJoin.",".join(a:000, ',').")"
+  call s:Verbose("lh#mut#expand_and_jump(".a:needToJoin.",".join(a:000, ',').")")
   try
     call lh#mut#dirs#update()
     let s:args = []
@@ -698,7 +704,7 @@ let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1], 'callbacks
 
 " s:LoadTemplateLines(pos, templatepath)                       {{{3
 function! s:LoadTemplateLines(pos, templatepath) abort
-  " echomsg "s:LoadTemplateLines(".a:pos.", '".a:templatepath."')"
+  call s:Verbose("s:LoadTemplateLines(".a:pos.", '".a:templatepath."')")
   try
     let wildignore = &wildignore
     let &wildignore  = ""
@@ -1235,7 +1241,7 @@ function! s:FinishCompletion(choice) abort
 endfunction
 
 " s:getSNR([func_name])                                        {{{3
-function! s:getSNR(...)
+function! s:getSNR(...) abort
   if !exists("s:SNR")
     let s:SNR=matchstr(expand('<sfile>'), '<SNR>\d\+_\zegetSNR$')
   endif

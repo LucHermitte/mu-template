@@ -2,7 +2,7 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  05th Jan 2016
+" Last Update:  08th Jan 2016
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.1.0
@@ -355,6 +355,8 @@ let s:k_version = 410
 "           Objective: s:args becomes a list of dictionaries
 "       v4.0.1
 "       (*) BUG: Dirty fix for <+s:Include()+>
+"       v4.0.2
+"       (*) ENH: Use the new lh-vim-lib logging framework
 "       v4.1.0
 "       (*) ENH: Using new lh-vim-lib omni-completion engine
 "
