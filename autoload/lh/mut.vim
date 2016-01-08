@@ -1215,8 +1215,8 @@ function! s:ChooseByComplete() abort
   let l = c - strlen(s:__complete.word) +1
   let s:__complete.c = l
   " let g:entries = {"c":c, "l":l, "entries": entries}
-  call lh#icomplete#new(l-1, entries, function(s:getSNR("FinishCompletion")))
-        \.start_completion()
+  let FinishCompletion = function(s:getSNR("FinishCompletion"))
+  call lh#icomplete#new(l-1, entries, FinishCompletion).start_completion()
   return ""
 endfunction
 
