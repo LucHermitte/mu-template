@@ -9,21 +9,23 @@ function! ¡s:function_prefix¡version()
 endfunction
 
 " # Debug   {{{2
-if !exists('s:verbose')
-  let s:verbose = 0
-endif
+let s:verbose = get(s:, 'verbose', 0)
 function! ¡s:function_prefix¡verbose(...)
   if a:0 > 0 | let s:verbose = a:1 | endif
   return s:verbose
 endfunction
 
+function! s:Log(expr)
+  call lh#log#this(a:expr)
+endfunction
+
 function! s:Verbose(expr)
   if s:verbose
-    echomsg a:expr
+    call s:Log(a:expr)
   endif
 endfunction
 
-function! ¡s:function_prefix¡debug(expr)
+function! ¡s:function_prefix¡debug(expr) abort
   return eval(a:expr)
 endfunction
 

@@ -4,8 +4,8 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/lh-brackets/License.md>
-" Version:	4.0.1
-let s:version = '4.0.1'
+" Version:	4.0.2
+let s:version = '4.0.2'
 " Created:	06th Nov 2007
 " Last Update:	15th Dec 2015
 "------------------------------------------------------------------------
