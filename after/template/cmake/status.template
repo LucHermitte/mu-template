@@ -2,4 +2,4 @@ VimL:" message-status File Template, Luc Hermitte <hermitte at free.fr>, 17th Ma
 VimL:" hint: MESSAGE(STATUS "")
 VimL: "
 VimL: let s:reindent     = 1
-MESSAGE(STATUS "¡s:Surround(1, '<+message+>')¡")<++>
+message(STATUS "¡s:Surround(1, '<+message+>')¡")<++>

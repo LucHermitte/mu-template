@@ -64,6 +64,7 @@ after/template/cmake/find-boost.template
 after/template/cmake/if.template
 after/template/cmake/internals/root.template
 after/template/cmake/internals/subdirs.template
+after/template/cmake/replace.template
 after/template/cmake/status.template
 after/template/cpp.template
 after/template/cpptu-header.template
@@ -125,6 +126,7 @@ after/template/python/with.template
 after/template/sh.template
 after/template/sh/case.template
 after/template/sh/current-dir.template
+after/template/sh/default_value.template
 after/template/sh/does_match.template
 after/template/sh/field.template
 after/template/sh/for.template

@@ -1,0 +1,7 @@
+VimL:" default_value File Template, Luc Hermitte, 21st Jan 2016
+VimL:" hint: ${param:-word}
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+${<+var+>:-<+value+>}
