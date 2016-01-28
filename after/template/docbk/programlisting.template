@@ -2,6 +2,6 @@ VimL:" <programlisting> File Template, Luc Hermitte <hermitte at free.fr>, 30th 
 VimL:" hint: <programlisting></programlisting>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
-VimL: let s:marker_open  = '<+'
-VimL: let s:marker_close = '+>'
-<programlisting>¡s:Surround(1, '<++>')¡</programlisting>{+s:TerminalPlaceHolder()+}
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+<programlisting>¡s:Surround(1, '{++}')¡</programlisting>{+s:TerminalPlaceHolder()+}

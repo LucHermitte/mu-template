@@ -2,7 +2,7 @@ VimL:" <filename> File Template, Luc Hermitte <hermitte at free.fr>, 30th Oct 20
 VimL:" hint: <filename></filename>
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
-VimL: let s:marker_open  = '<+'
-VimL: let s:marker_close = '+>'
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
 <filename>{+ s:SurroundableParam('filename', 1, lh#marker#txt('')) +}</filename>{+s:TerminalPlaceHolder()+}
