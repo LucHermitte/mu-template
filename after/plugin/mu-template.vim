@@ -5,8 +5,8 @@
 " Last Update:  08th Jan 2016
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.0.2
-let s:k_version = 402
+" Version:      4.1.0
+let s:k_version = 410
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -357,6 +357,8 @@ let s:k_version = 402
 "       (*) BUG: Dirty fix for <+s:Include()+>
 "       v4.0.2
 "       (*) ENH: Use the new lh-vim-lib logging framework
+"       v4.1.0
+"       (*) ENH: Using new lh-vim-lib omni-completion engine
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
