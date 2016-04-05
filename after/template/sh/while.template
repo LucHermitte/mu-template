@@ -1,10 +1,10 @@
-VimL:" for File Template, Luc Hermitte, 12th Jan 2011
-VimL:" hint: for i in ist ; do ... ; done
+VimL:" while File Template, Luc Hermitte <hermitte {at} free {dot} fr>, mar. 05 avril 2016 11:24:22 CEST
+VimL:" hint: while «» ; do ... ; done
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
-for <+i+> in ¡s:Surround(2, '$<+list+>')¡ ; do
+while <+s:SurroundableParam('cond', 2)+> ; do
     ¡s:Surround(1, '<+code+>')¡
 done

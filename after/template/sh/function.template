@@ -1,10 +1,11 @@
-VimL:" for File Template, Luc Hermitte, 12th Jan 2011
-VimL:" hint: for i in ist ; do ... ; done
+VimL:" function File Template, Luc Hermitte <hermitte {at} free {dot} fr>, mar. 05 avril 2016 18:06:20 CEST
+VimL:" hint: function(){}
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
-for <+i+> in ¡s:Surround(2, '$<+list+>')¡ ; do
+function <+name+>()
+{
     ¡s:Surround(1, '<+code+>')¡
-done
+}
