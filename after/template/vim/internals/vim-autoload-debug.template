@@ -15,13 +15,13 @@ function! ¡s:function_prefix¡verbose(...)
   return s:verbose
 endfunction
 
-function! s:Log(expr)
-  call lh#log#this(a:expr)
+function! s:Log(expr, ...)
+  call call('lh#log#this',[a:expr]+a:000)
 endfunction
 
-function! s:Verbose(expr)
+function! s:Verbose(expr, ...)
   if s:verbose
-    call s:Log(a:expr)
+    call call('s:Log',[a:expr]+a:000)
   endif
 endfunction
 
