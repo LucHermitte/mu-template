@@ -1,7 +1,7 @@
 "=============================================================================
 " File:         autoload/lh/mut.vim                               {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-"		<URL:http://github.com/LucHermitte/mu-template>
+"               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.1.0
@@ -942,7 +942,7 @@ function! s:InterpretValuesAndMarkers(line) abort
     if len(split) <2 || strlen(split[0]) == 0
       " nothing found
       " echo "res .= ".s:ApplyStyling(tail)
-      let res .= s:ApplyStyling(tail)
+      let res .= get(s:content, 'can_apply_style', 1) ? s:ApplyStyling(tail) : tail
       let tail = ''
       " let may_merge = 0
     else
@@ -970,7 +970,7 @@ function! s:InterpretValuesAndMarkers(line) abort
         endif
       endif
       let sValue = (type(value)!=type("") ? string(value) : value)
-      if get(s:content, 'can_apply_style')
+      if get(s:content, 'can_apply_style', 1)
         " When not on the start of line, styling that expect /^/ don't know it
         " => combine style application
         let res .= s:ApplyStyling(split[1] . sValue)
@@ -1108,7 +1108,7 @@ function! s:InterpretMuTCommand(the_line) abort
         silent! unlet s:{varname}
       endif
       if empty(script)
-	let all = substitute(all, '\v(s:)@<!<'.varname.'>', 's:&', 'g')
+        let all = substitute(all, '\v(s:)@<!<'.varname.'>', 's:&', 'g')
       endif
       exe all
     elseif special_cmd =~ '^.*"' " comment {{{4
@@ -1427,7 +1427,7 @@ function! s:ExecutePostExpandCallbacks() abort
       if has_key(Callback, 'join')
         let lines_to_join += [Callback.join]
       else
-	let nb_lines_added +=  lh#function#execute(Callback)
+        let nb_lines_added +=  lh#function#execute(Callback)
       endif
     else
       execute 'let nb_lines_added += '.Callback
