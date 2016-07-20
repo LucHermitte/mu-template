@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.1.0
-let s:k_version = 410
+" Version:      4.2.0
+let s:k_version = 420
 " Created:      05th Jan 2011
-" Last Update:  08th Jan 2016
+" Last Update:  20th Jul 2016
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,8 +20,9 @@ let s:k_version = 410
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
-"       v4.0.2
+"       v4.2.0
 "       (*) ENH: Use the new lh-vim-lib logging framework
+"       (*) ENH: Store `v:count` into `s:content.count0`
 "       v4.1.0
 "       (*) ENH: Using new lh-vim-lib omni-completion engine
 "       v4.0.1
@@ -332,6 +333,7 @@ function! lh#mut#surround() abort
     let file = files[choice - 2]
 
     " 2- extract the thing to be surrounded {{{3
+    let s:content.count0 = v:count
     let surround_id = 'surround'.v:count1
     let s:content[surround_id] = lh#visual#cut()
     " The following hack is required in line-wise surrounding to not expand the

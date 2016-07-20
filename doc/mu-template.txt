@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 04th Jan 2016
+*mu-template.vim*       For Vim version 7+      Last change: 20th Jul 2016
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 4.0.1
+                    Version 4.2.0
 
 
 ==============================================================================
@@ -728,11 +728,21 @@ A: This information can be obtained thanks to a call to |s:Line()|
 Q: "How may I know the content of the lines being expanded?" *s:content*
 A: The |Dictionary| |s:content| contains the lines already interpreted, and
    those that will be. Its fields are:
-   - "lines": a |List| of all the lines,
-   - "start": line number where the first line of a:content.lines will be
+   - "`lines`": a |List| of all the lines,
+   - "`start`": line number where the first line of a:content.lines will be
      inserted,
-   - "crt": number of the line being currently interpreted.
-   NB: This is an implementation detail. This can be deprecated at moment.
+   - "`first_line_indented`": line number where the indentation starts,
+   - "`crt_indent`": current indent value (used in Python)
+   - "`crt`": number of the line being currently interpreted,
+   - "`callbacks`": stored the |MuT-post-expand-hooks|,
+   - "`variables`": list of variables to clear,
+   - "`scope`": used to implement |MuT-if|  and so on,
+   - "`can_apply_style`": tells whether |lhdev-style| shall be applied,
+   - Surrounding related fields (|MuT-surround|):
+       - "`count0`": which stores |v:count| when surrounding selection,
+       - "`surround`{n}]": surround id internally used (may be deprecated),
+       - "`is_surrounding`": tells whether we are surrounding a selection.
+   NB: This is an implementation detail. This can be deprecated at any moment.
 
 
 Q: "How to define a snippet that surrounds the current selection?" *s:Surround()*
