@@ -47,6 +47,7 @@ after/template/c/internals/register-file-kinds.template
 after/template/c/internals/register-file-kinds-spe.template
 after/template/c/internals/ut-boost.template
 after/template/c/main.template
+after/template/c/printf.template
 after/template/c/section-sep.template
 after/template/c/stderr.template
 after/template/c/switch.template

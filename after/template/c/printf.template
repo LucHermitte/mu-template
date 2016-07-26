@@ -1,7 +1,7 @@
-VimL:" «stderr» File Template, Luc Hermitte, 24th Jan 2011
-VimL:" hint: fprintf(stderr,...)
+VimL:" «printf» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, mar. 26 juil. 2016 17:29:50 CEST
+VimL:" hint: printf("fmt",...)
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  let s:ns = &ft == 'cpp' ? 'std::' : ''
 VimL: call s:AddPostExpandCallback('lh#dev#import#add("<'. (&ft=='cpp' ? 'cstdio': 'stdio.h') .'>")')
-<+s:ns+>fprintf(stderr, "<++>\n", <++>);<++>
+<+s:ns+>printf("<++>\n", <++>);<++>
