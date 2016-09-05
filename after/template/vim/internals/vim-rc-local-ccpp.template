@@ -3,7 +3,7 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:_prj_config = s:Param('_prj_config', 'g:'.Marker_Txt('MyProject').'_config')
+VimL: let s:_prj_config = s:Param('_prj_config', 'g:'.lh#marker#txt('MyProject').'_config')
 
 " ======================[ &path {{{2
 " don't search into included file how to complete
@@ -82,22 +82,6 @@ if 0
   endfor
 endif
 
-" ======================[ tags generation {{{2
-let b:tags_dirname = lh#path#fix(b:project_sources_dir)
-let b:tags_options = ' --exclude="*.dox" --exclude="html" --exclude="*.xml" --exclude="*.xsd" --exclude=".*sw*"'
-let b:tags_options .= ' --exclude="*.txt" --exclude="cmake" --exclude="*.cmake" --exclude="*.o" --exclude="*.os" --exclude="*.tags" --exclude=tags --exclude=buttons --exclude="*.png" --exclude="*.tar"'
-exe 'setlocal tags+='.(b:tags_dirname).'/tags'
-if SystemDetected() == 'msdos'
-else
-  " You'll have to generate thoses files for your system...
-  call lh#path#munge(&l:tags, $HOME.'/dev/tags/stl.tags')
-  call lh#path#munge(&l:tags, $HOME.'/dev/tags/boost.tags')
-  " ITK and OTB
-  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/itk.tags')
-  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/otb.tags')
-endif
-" let BTW_make_in_background_in = 'xterm -e'
-
 " ======================[ Settings for compil_hints {{{2
 let b:compil_hints_autostart = 1
 
@@ -124,6 +108,23 @@ let b:BTW_project_config = {
       \ 'wd' : lh#function#bind('b:BTW_compilation_dir'),
       \ '_'  : <+s:_prj_config+>
       \ }
+
+" ======================[ tags generation {{{2
+" Be sure tags are automatically updated on the current file
+LetIfUndef b:tags_options.no_auto 0
+" Declare the indexed filetypes
+call lh#tags#add_indexed_ft('c', 'cpp')
+" Update Vim &tags option w/ the tag file produced for the current project
+call lh#tags#update_tagfiles() " uses b:project_sources_dir/BTW_project_config
+
+if SystemDetected() != 'msdos'
+  " You'll have to generate thoses files for your system...
+  call lh#path#munge(&l:tags, $HOME.'/dev/tags/stl.tags')
+  call lh#path#munge(&l:tags, $HOME.'/dev/tags/boost.tags')
+  " ITK and OTB
+  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/itk.tags')
+  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/otb.tags')
+endif
 
 " ======================[ Project's style {{{2
 silent! source <sfile>:p:h/_vimrc_cpp_style.vim
