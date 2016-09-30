@@ -109,6 +109,7 @@ after/template/markdown/bold.template
 after/template/markdown/emph.template
 after/template/markdown/italic.template
 after/template/markdown/link.template
+after/template/markdown/pre.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template

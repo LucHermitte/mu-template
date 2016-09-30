@@ -1,0 +1,8 @@
+VimL:" «pre» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, ven. 30 sept. 2016 16:35:00 CEST
+VimL:" hint: ```lang\n```
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+```<+lang+>
+```
