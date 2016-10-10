@@ -5,4 +5,5 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 ```<+lang+>
+<+s:Surround(1, lh#marker#txt("code"))+>
 ```
