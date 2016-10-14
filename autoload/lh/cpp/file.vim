@@ -38,7 +38,7 @@ endfunction
 "------------------------------------------------------------------------
 " # Public {{{2
 function! lh#cpp#file#IncludedPaths()
-  let paths = copy(lh#option#get("cpp_included_paths", [], 'bg'))
+  let paths = copy(lh#option#get("cpp_included_paths", []))
   call add(paths, '.')
   return paths
 endfunction

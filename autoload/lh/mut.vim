@@ -635,14 +635,19 @@ endfunction
 
 function! s:path_from_root(path)   " {{{3
   let path = a:path
-  if exists('b:sources_root')
-    let s = strlen(b:sources_root)
+  let sources_root = lh#option#get('sources_root')
+  if lh#option#is_unset(sources_root) 
+    unlet sources_root
+    let sources_root = lh#option#get('paths.sources')
+  endif
+  if lh#option#is_set(sources_root) 
+    let s = strlen(sources_root)
     if b:sources_root[s-1] !~ '/\|\\'
       let b:sources_root .=
             \ ((!exists('shellslash')||&shellslash)?'/':'\')
       let s += 1
     endif
-    let p = stridx(path, b:sources_root)
+    let p = stridx(path, sources_root)
     if 0 == p
       let path = strpart(path, s)
     endif
