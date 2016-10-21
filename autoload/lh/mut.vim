@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.2.0
-let s:k_version = 420
+" Version:      4.3.0
+let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  20th Jul 2016
+" Last Update:  21st Oct 2016
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,9 @@ let s:k_version = 420
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.3.0
+"       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
+"       (*) ENH: Support fuzzier snippet expansion
 "       v4.2.0
 "       (*) ENH: Use the new lh-vim-lib logging framework
 "       (*) ENH: Store `v:count` into `s:content.count0`
@@ -141,7 +144,7 @@ function! lh#mut#version()
 endfunction
 
 " # Debug   {{{2
-let s:verbose = 0
+let s:verbose = get(s:, 'verbose', 0)
 function! lh#mut#verbose(...)
   if a:0 > 0 | let s:verbose = a:1 | endif
   return s:verbose
@@ -371,20 +374,24 @@ endfunction
 "------------------------------------------------------------------------
 " Function: lh#mut#search_templates(word)                  {{{2
 function! lh#mut#search_templates(word) abort
+  call s:Verbose('Expand snippet for `%1`', a:word)
   let s:args = []
   " 1- Build the list of template files matching the current word {{{3
-  let w = substitute(a:word, ':', '-', 'g').'*'
+  " The substitute() is used with languages like xlst
+  let w = '*'.substitute(a:word, ':', '-', 'g').'*'
+  " let w = substitute(a:word, ':', '-', 'g').'*'
   " call confirm("w =  #".w."#", '&ok', 1)
   let files = lh#mut#dirs#get_short_list_of_TF_matching(w, &ft)
 
   " 2- Select one template file only {{{3
   let nbChoices = len(files)
-  " call confirm(nbChoices."\n".files, '&ok', 1)
+
+  call s:Verbose("%1 choices:\n%2", nbChoices, files)
   if (nbChoices == 0)
     call lh#common#warning_msg("muTemplate: No template file matching <".w."> for ".&ft." files")
     return ""
   elseif (nbChoices > 1)
-    let choice = s:ChooseTemplateFile(files, w)
+    let choice = s:ChooseTemplateFile(files, a:word)
     if choice <= 1 | return "" | endif
   else
     let choice = 2
@@ -392,7 +399,7 @@ function! lh#mut#search_templates(word) abort
 
   " File <- n^th choice
   let file = files[choice - 2]
-  " call confirm("choice=".choice."\nfile=".file, '&ok', 1)
+  call s:Verbose("choice=%1\nfile=%2", choice, file)
 
   " 3- Template-file to insert ? {{{3
   return s:InsertTemplateFile(a:word,file)
@@ -636,11 +643,11 @@ endfunction
 function! s:path_from_root(path)   " {{{3
   let path = a:path
   let sources_root = lh#option#get('sources_root')
-  if lh#option#is_unset(sources_root) 
+  if lh#option#is_unset(sources_root)
     unlet sources_root
     let sources_root = lh#option#get('paths.sources')
   endif
-  if lh#option#is_set(sources_root) 
+  if lh#option#is_set(sources_root)
     let s = strlen(sources_root)
     if b:sources_root[s-1] !~ '/\|\\'
       let b:sources_root .=
@@ -1225,7 +1232,7 @@ function! s:ChooseByComplete() abort
     call add(entries, {"word": file, "menu": (lh#mut#dirs#hint(file)) })
   endfor
   let c = col('.')
-  let l = c - strlen(s:__complete.word) +1
+  let l = c - strlen(s:__complete.word)
   let s:__complete.c = l
   " let g:entries = {"c":c, "l":l, "entries": entries}
   let FinishCompletion = function(s:getSNR("FinishCompletion"))
@@ -1339,9 +1346,7 @@ function! s:InsertTemplateFile(word,file) abort
     " silent exe "normal! i\<cr>\<esc>\<up>$"
 
     " 3.2- Insert the template {{{5
-    if s:verbose >= 1
-      call confirm("Using the template file: <".a:file.'>', '&ok', 1)
-    endif
+    call s:Verbose("Using the template file: <%1>", a:file)
     " Todo: check what happens with g:mt_jump_to_first_markers off
     " let [res, act] = lh#mut#expand_and_jump(s:Option('how_to_join',1),a:file)
     let res = lh#mut#expand_and_jump(s:Option('how_to_join',1),a:file)

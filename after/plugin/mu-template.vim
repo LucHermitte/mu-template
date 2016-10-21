@@ -2,11 +2,11 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  08th Jan 2016
+" Last Update:  21st Oct 2016
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.1.0
-let s:k_version = 410
+" Version:      4.3.0
+let s:k_version = 430
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -359,6 +359,12 @@ let s:k_version = 410
 "       (*) ENH: Use the new lh-vim-lib logging framework
 "       v4.1.0
 "       (*) ENH: Using new lh-vim-lib omni-completion engine
+"       v4.2.0
+"       (*) ENH: Use the new lh-vim-lib logging framework
+"       (*) ENH: Store `v:count` into `s:content.count0`
+"       v4.3.0
+"       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
+"       (*) ENH: Support fuzzier snippet expansion
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
