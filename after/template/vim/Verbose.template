@@ -1,0 +1,8 @@
+VimL:" Verbose File Template, Luc Hermitte <hermitte {at} free {dot} fr>, ven. 21 oct. 2016 11:14:48 CEST
+VimL:" hint: s:Verbose('fmt %1', arg)
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:_fmt = s:SurroundableParam('format', 1)
+call s:Verbose(<+s:_fmt+>, <+vars+>)<+s:TerminalPlaceHolder()+>

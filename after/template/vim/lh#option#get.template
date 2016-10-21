@@ -1,0 +1,8 @@
+VimL:" File Template, Luc Hermitte <hermitte {at} free {dot} fr>, ven. 21 oct. 2016 10:43:13 CEST
+VimL:" hint: lh#option#get('option.name', default, scopes)
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:_varname = s:SurroundableParam('name', 1)
+lh#option#get(<+s:_varname+><+, default, 'bpg'+>)<+s:TerminalPlaceHolder()+>

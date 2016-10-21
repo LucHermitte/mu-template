@@ -1,0 +1,9 @@
+VimL:" let_to File Template, Luc Hermitte <hermitte {at} free {dot} fr>, ven. 21 oct. 2016 10:48:49 CEST
+VimL:" hint: lh#let#to('var.name', value)
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:_varname = s:SurroundableParam('name', 1)
+MuT:  let s:_value   = s:SurroundableParam('value', 2)
+call lh#let#to('<+s:_varname+>', <+value+>)<+s:TerminalPlaceHolder()+>

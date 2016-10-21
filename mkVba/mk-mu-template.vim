@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/tree/master/License.md>
-" Version:	4.2.0
-let s:version = '4.2.0'
+" Version:	4.3.0
+let s:version = '4.3.0'
 " Created:	06th Nov 2007
-" Last Update:	20th Jul 2016
+" Last Update:	21st Oct 2016
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -200,7 +200,11 @@ after/template/vim/internals/vim-rc-local-global-cmake-def.template
 after/template/vim/internals/vim-rc-local-jira.template
 after/template/vim/internals/vim-rc-local-ycm.template
 after/template/vim/internals/vim-rc-local.template
+after/template/vim/Verbose.template
 after/template/vim/internals/vim-tests.template
+after/template/vim/lh#let#if_undef.template
+after/template/vim/lh#let#to.template
+after/template/vim/lh#option#get.template
 after/template/vim/loop-arg.template
 after/template/vim/menu-make.template
 after/template/vim/option-protect.template
