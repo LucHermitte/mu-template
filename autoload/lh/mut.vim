@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  21st Oct 2016
+" Last Update:  08th Nov 2016
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -648,12 +648,8 @@ function! s:path_from_root(path)   " {{{3
     let sources_root = lh#option#get('paths.sources')
   endif
   if lh#option#is_set(sources_root)
+    let sources_root = lh#path#to_dirname(sources_root)
     let s = strlen(sources_root)
-    if b:sources_root[s-1] !~ '/\|\\'
-      let b:sources_root .=
-            \ ((!exists('shellslash')||&shellslash)?'/':'\')
-      let s += 1
-    endif
     let p = stridx(path, sources_root)
     if 0 == p
       let path = strpart(path, s)
