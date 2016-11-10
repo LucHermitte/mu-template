@@ -12,74 +12,68 @@ setlocal complete-=i
 " No sub project
 " let b:project_crt_sub_project = matchstr(lh#path#strip_common([<+s:_prj_config+>.paths.trunk, expand('%:p:h')])[1], '[^/\\]*[/\\][^/\\]*')
 
-" Tells BTW the compilation directory
-let b:BTW_compilation_dir = <+s:_prj_config+>.paths._build
 " Local vimrc variable for source dir
-let b:project_sources_dir = <+s:_prj_config+>.paths.sources
+" Will be simplified eventually to use p:paths.sources everywhere
+let s:project_sources_dir = lh#option#get('paths.sources')
+call lh#let#to('p:project_sources_dir', s:project_sources_dir)
+
 " Option for Mu-Template-> |s:path_from_root()|
-let b:sources_root = <+s:_prj_config+>.paths.sources
+" Now: p:paths.sources is enough!
 
 " Used by mu-template to generate file headers and header-gates.
-let b:cpp_included_paths = [b:project_sources_dir]
+let s:cpp_included_paths = lh#let#to('p:cpp_included_paths', [s:project_sources_dir])
+
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
-" let b:cpp_included_paths += [b:BTW_compilation_dir]
+" let s:cpp_included_paths += [lh#option#get('BTW.compilation_dir')]
 
 " Configures lh-cpp complete includes sub-plugin -> ftplugin/c/c_AddInclude.vim
-let b:includes = [ b:project_sources_dir . '/**']
-" For config.h.in files and alike
+call lh#let#to('p:includes',
+      \ [ lh#path#to_dirname(s:project_sources_dir) . '**'
+      \ , lh#path#to_dirname(lh#option#get('BTW.compilation_dir')) . '**'])
+"      For config.h.in files and alike
+"      let b:includes += [lh#option#get(BTW.compilation_dir) . '/**']
 " todo: adapt it automatically to the current compilation dir
-let b:includes += [b:BTW_compilation_dir . '/**']
+
 if SystemDetected() == 'unix'
   " Add your 3rd party libraries used in the project here
-  call lh#path#add_path_if_exists('b:includes', '/usr/local/include/**')
-  call lh#path#add_path_if_exists('b:includes', '/usr/include/**')
+  call lh#path#add_path_if_exists('p:includes', $HOME.'/dev/boost/1_51_0/install/include/')
+  call lh#path#add_path_if_exists('p:includes', '/usr/local/include/**')
+  call lh#path#add_path_if_exists('p:includes', '/usr/include/**')
 endif
 
 MuT:  if has_key(s:_prj_kind, 'cmake')
 " Fetch INCLUDED paths from cmake cache configuration, and merge every thing
-" into b:includes
-try
-  let included_paths = lh#cmake#get_variables('INCLUDE')
-  call filter(included_paths, 'v:val.value!~"NOTFOUND"')
-  let uniq_included = {}
-  silent! unlet incl
-  for incl in values(included_paths)
-    let uniq_included[incl.value] = 1
-  endfor
-  silent! unlet incl
-  for incl in b:includes
-    let uniq_included[incl] = 1
-  endfor
-  let b:includes = keys(uniq_included)
-catch /.*/
-  call lh#common#warning_msg(v:exception)
-endtry
+" into p:includes
+function! s:UpdateIncludesFromCmake()
+  try
+    let included_paths = lh#cmake#get_variables('INCLUDE')
+    call filter(included_paths, 'v:val.value!~"NOTFOUND"')
+    let cmake_paths = values(map(copy(included_paths), 'v:val.value'))
+    let includes = lh#option#get('includes') " reference to actual variable!
+    let includes += cmake_paths
+    call uniq(sort(includes))
+  catch /.*/
+    call lh#common#warning_msg(v:exception)
+  endtry
+endfunction
+call s:UpdateIncludesFromCmake()
 
 MuT:  endif
 " Setting &path
-exe 'set path+='.lh#path#fix(b:BTW_compilation_dir).'/**'
+call s:project.set('&path', '+='.lh#path#fix(lh#option#get('BTW.compilation_dir')).'/**')
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
-exe 'setlocal path+='.lh#path#fix(b:project_sources_dir).'/**'
-for p in b:includes
+" sources dir is automatically added thanks to lh-tags v2
+for p in lh#option#get('includes')
   if p !~ '^/usr'
-    exe 'setlocal path+='.lh#path#fix(p)
+    call s:project.set('&path', '+='.lh#path#fix(p))
   endif
 endfor
 
 if 0
   " gcov output path
-  let b:gcov_files_path = <+s:_prj_config+>.paths.sources.'/obj/debug/Testing/CoverageInfo'
-
-  " spell files
-  setlocal spellfile=
-  exe 'setlocal spellfile+='.lh#path#fix(b:project_sources_dir).'/ignore.utf-8.add'
-  let b:tags_to_spellfile = 'code-symbols.add'
-  for p in ['src', 'inc', 'tst/tests-unitaires']
-    " echo 'setlocal spellfile+='.lh#path#fix(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
-    exe 'setlocal spellfile+='.lh#path#fix(b:project_sources_dir.'/'.p.'/'.b:tags_to_spellfile)
-  endfor
+  let b:gcov_files_path = lh#option#get('paths.sources').'/obj/debug/Testing/CoverageInfo'
 endif
 
 " ======================[ Settings for compil_hints {{{2
@@ -104,18 +98,18 @@ call <+s:_prj_config+>_menu.def_ctest_targets.set_ctest_argument()
 let b:BTW_project_target = ''
 let b:BTW_project_config = {
       \ 'type': 'ccmake',
-      \ 'arg': (b:project_sources_dir),
+      \ 'arg': (s:project_sources_dir),
       \ 'wd' : lh#function#bind('b:BTW_compilation_dir'),
       \ '_'  : <+s:_prj_config+>
       \ }
 
 " ======================[ tags generation {{{2
 " Be sure tags are automatically updated on the current file
-LetIfUndef b:tags_options.no_auto 0
+LetIfUndef p:tags_options.no_auto 0
 " Declare the indexed filetypes
 call lh#tags#add_indexed_ft('c', 'cpp')
 " Update Vim &tags option w/ the tag file produced for the current project
-call lh#tags#update_tagfiles() " uses b:project_sources_dir/BTW_project_config
+call lh#tags#update_tagfiles() " uses s:project_sources_dir/BTW_project_config
 
 if SystemDetected() != 'msdos'
   " You'll have to generate thoses files for your system...
@@ -128,18 +122,15 @@ endif
 
 " ======================[ Project's style {{{2
 silent! source <sfile>:p:h/_vimrc_cpp_style.vim
-let b:ProjectVersion        = '<+_version_+>'
-let b:cpp_project_namespace = '<+project_ns+>'
-" Where templates related to the project will be stored. You'll have to
-" adjust the number of ':h', -> :h expand()
-let b:mt_templates_paths = fnamemodify(b:project_sources_dir, ":h").'/templates'
+LetTo p:ProjectVersion        = '<+_version_+>'
+let s:ns = lh#let#to('p:cpp_project_namespace', '<+project_ns+>')
 " Expecting your project has a <+project_ns+>::Exception type
-let b:exception_type = b:cpp_project_namespace.'::Exception'
+call lh#let#to('p:exception_type', s:ns.'::Exception')
 
 " Special management of tests and unit tests
-if expand('%:p') =~ b:project_sources_dir.'/Testing'
-  let b:<+project_ns+>_dox_group = 'gTests'
-  let b:is_unit_test = 1
+if expand('%:p') =~ s:project_sources_dir.'/Testing'
+  LetIfUndef p:<+project_ns+>_dox_group = 'gTests'
+  LetIfUndef p:is_unit_test = 1
 endif
 
 " ======================[ Settings for searchfile and gf {{{2
@@ -156,8 +147,8 @@ call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le
 
 " ======================[ Local variables to automagically import in QuickFix buffer {{{2
 QFImport tags_select
-QFImport &path
-QFImport BTW_project_target
-QFImport BTW_compilation_dir
-QFImport BTW_project_config
-QFImport includes
+" QFImport &path
+" QFImport BTW_project_target
+" QFImport BTW_compilation_dir
+" QFImport BTW_project_config
+" QFImport includes
