@@ -3,9 +3,11 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:_prj_config = s:Param('_prj_config', 'g:'.lh#marker#txt('MyProject').'_config')
+MuT:  let s:_prj_config = s:Param('_prj_config', 'g:'.lh#marker#txt('MyProject').'_config')
 
 " ======================[ &path {{{2
+" Alternate-lite configuration: .h and .cpp are in the same directory
+LetIfUndef p:alternates.searchpath = 'sfr:.'
 " don't search into included file how to complete
 setlocal complete-=i
 
@@ -73,11 +75,11 @@ endfor
 
 if 0
   " gcov output path
-  let b:gcov_files_path = lh#option#get('paths.sources').'/obj/debug/Testing/CoverageInfo'
+  LetIfUndef p:gcov_files_path = lh#option#get('paths.sources').'/obj/debug/Testing/CoverageInfo'
 endif
 
 " ======================[ Settings for compil_hints {{{2
-let b:compil_hints_autostart = 1
+LetIfUndef p:compil_hints_autostart = 1
 
 " ======================[ Settings for BTW {{{2
 if SystemDetected() == 'msdos'
@@ -90,18 +92,18 @@ if SystemDetected() == 'msdos'
   endif
 endif
 :BTW addlocal STLFilt
-" silent! unlet b:BTW_project_executable
-LetIfUndef b:BTW_project_executable.type 'ctest'
-" sets b:BTW_project_executable.rule
-call <+s:_prj_config+>_menu.def_ctest_targets.set_ctest_argument()
 
-let b:BTW_project_target = ''
-let b:BTW_project_config = {
-      \ 'type': 'ccmake',
-      \ 'arg': (s:project_sources_dir),
-      \ 'wd' : lh#function#bind('b:BTW_compilation_dir'),
-      \ '_'  : <+s:_prj_config+>
-      \ }
+LetIfUndef p:BTW.executable.type 'ctest'
+" sets p:BTW.executable.rule
+" TODO: convert -> call <+s:_prj_config+>_menu.def_ctest_targets.set_ctest_argument()
+
+LetIfUndef p:BTW.target = ''
+let s:project_config = {
+   \ 'type': 'ccmake',
+   \ 'arg': lh#ref#bind('p:paths.sources'),
+   \ 'wd' : lh#ref#bind('p:BTW.compilation_dir')
+   \ }
+call lh#let#if_undef('p:BTW.project_config', s:project_config)
 
 " ======================[ tags generation {{{2
 " Be sure tags are automatically updated on the current file
@@ -111,16 +113,28 @@ call lh#tags#add_indexed_ft('c', 'cpp')
 " Update Vim &tags option w/ the tag file produced for the current project
 call lh#tags#update_tagfiles() " uses s:project_sources_dir/BTW_project_config
 
-if SystemDetected() != 'msdos'
-  " You'll have to generate thoses files for your system...
-  call lh#path#munge(&l:tags, $HOME.'/dev/tags/stl.tags')
-  call lh#path#munge(&l:tags, $HOME.'/dev/tags/boost.tags')
-  " ITK and OTB
-  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/itk.tags')
-  " call lh#path#munge(&l:tags, $HOME.'/dev/tags/otb.tags')
-endif
+" Instruct to ignore spelling of code constructs
+call lh#tags#ignore_spelling()
+
+" TODO: projectify these pathnames
+" You'll have to generate thoses files for your system...
+let s:tags = s:project.get('&tags', '') " It may be absolute as well as starting with '+='
+let s:tags = substitute(s:tags, '^+=', '', '')
+let s:tags = lh#path#munge(s:tags, $HOME.'/dev/tags/stl.tags')
+let s:tags = lh#path#munge(s:tags, $HOME.'/dev/tags/boost.tags')
+
+" HERE: Import tags from 3rd party libraries
+
+" And commit back the option at project level
+call s:project.set('&tags', '+='.s:tags)
+
 
 " ======================[ Project's style {{{2
+" ---[ Templates
+" Where templates related to the project will be stored. You'll have to
+" adjust the number of ':h', -> :h expand()
+call lh#let#to('p:mt_templates_paths', s:config_dir.'/templates')
+" ---[ Style
 silent! source <sfile>:p:h/_vimrc_cpp_style.vim
 LetTo p:ProjectVersion        = '<+_version_+>'
 let s:ns = lh#let#to('p:cpp_project_namespace', '<+project_ns+>')

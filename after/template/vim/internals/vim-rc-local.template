@@ -3,6 +3,7 @@ MuT:  let s:location = fnamemodify(s:path, ':r')
 VimL: " Override s:fn computation for local-vimrc case
 MuT:  let s:fn = substitute(s:location,'\(\W\|_\)\+', '_', 'g')
 MuT:  let s:_prj_kind = s:Param('project_kind', {})
+MuT:  let s:_prj_name = s:Param('_prj_name', lh#marker#txt('MyProjectName'))
 " ######################################################################
 " Always loaded {{{1
 " Here goes settings from plugins that are not project aware :(
@@ -12,7 +13,7 @@ let s:script                = expand("<sfile>:p")
 let s:script_dir            = expand('<sfile>:p:h:h')
 let s:config_dir            = expand('<sfile>:p:h')
 let s:currently_edited_file = expand('%:p')
-let lh#project.auto_detect = 0 " in the case of multi component projects
+" let lh#project.auto_detect = 0 " in the case of multi component projects
 
 MuT:  if has_key(s:_prj_kind, 'c') || has_key(s:_prj_kind, 'cpp')
 VimL:     call s:Include('vim-rc-global-ccpp', 'vim/internals')
@@ -56,13 +57,14 @@ VimL: "   let b:component_varname = substitute(b:component_name, '[^a-zA-Z0-9_]'
 VimL: "   let s:sources_dir = s:script_dir.'/'.b:component_name
 
 " ======================[ Define the project {{{2
-if get(g:, 'force_reload_ITKnOTB_vimrc_local', 0)
+if get(g:, 'g:force_reload_¡s:fn¡', 0)
   " Permit to set new project options if reloading is required
   call lh#let#unlet('b:'.lh#project#_get_varname())
 elseif lh#project#is_in_a_project()
   " Abort if a project is already defined
   finish
 endif
+call lh#project#define(s:, {'name': '<+s:_prj_name+>'})
 
 MuT:  if has_key(s:_prj_kind, 'cmake')
 VimL:     call s:Include('vim-rc-local-cmake', 'vim/internals')
