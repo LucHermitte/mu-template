@@ -45,14 +45,19 @@ let s:cpp_included_paths = lh#let#to('p:cpp_included_paths', [s:project_sources_
 "   case, remove the "'**'".
 " - Use all directories under the compilation directory (for files like
 "   config.h.in)
-call lh#let#to('p:includes',
-      \ lh#cpp#tags#compiler_includes() +
+let s:includes = lh#let#to('p:includes',
+    \ [ lh#path#to_dirname(s:project_sources_dir) . '**'
+    \ , lh#path#to_dirname(lh#btw#compilation_dir()) . '**'])
+try
+  let s:includes +=
+    \ lh#cpp#tags#compiler_includes()
 MuT:  if has_key(s:_prj_kind, 'cmake')
-      \ lh#cmake#get_includes() +
+    \ + lh#cmake#get_includes()
 MuT:  endif
-      \ [ lh#path#to_dirname(s:project_sources_dir) . '**'
-      \ , lh#path#to_dirname(lh#btw#compilation_dir()) . '**'])
 MuT:  if ! has_key(s:_prj_kind, 'cmake')
+catch /.*/
+  call lh#common#warning_msg('Cannot update p:includes: '.v:exception)
+endtry
 
 " As we aren't using CMake, we'll have to register all 3rd party
 " libraries manually!
@@ -65,11 +70,11 @@ endif
 MuT:  endif
 
 " Setting &path
-call s:project.set('&path', '+='.lh#path#fix(lh#option#get('BTW.compilation_dir')).'/**')
+call s:project.set('&path', '+='.lh#path#fix(lh#btw#compilation_dir()).'/**')
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
 " sources dir is automatically added thanks to lh-tags v2
-for p in lh#option#get('includes')
+for p in lh#option#get('includes', [])
   if p !~ '^/usr'
     call s:project.set('&path', '+='.lh#path#fix(p))
   endif
@@ -130,7 +135,6 @@ let s:tags = lh#path#munge(s:tags, $HOME.'/dev/tags/boost.tags')
 " And commit back the option at project level
 call s:project.set('&tags', '+='.s:tags)
 
-
 " ======================[ Project's style {{{2
 " ---[ Templates
 " Where templates related to the project will be stored. You'll have to
@@ -140,14 +144,16 @@ call lh#let#to('p:mt_templates_paths', s:config_dir.'/templates')
 silent! source <sfile>:p:h/_vimrc_cpp_style.vim
 LetTo p:ProjectVersion        = '<+_version_+>'
 let s:ns = lh#let#to('p:cpp_project_namespace', '<+project_ns+>')
+call lh#let#to('b:cpp_project_namespace', [s:ns] + split(expand('%:h'), '/')[1:]) " [1:] -> ignore sources/ dir
 " Expecting your project has a <+project_ns+>::Exception type
-call lh#let#to('p:exception_type', s:ns.'::Exception')
+call lh#let#to('p:exception_type', s:ns.'::'.lh#dev#naming#type('Exception'))
 
 " Special management of tests and unit tests
 if expand('%:p') =~ s:project_sources_dir.'/Testing'
-  LetIfUndef p:<+project_ns+>_dox_group = 'gTests'
   LetIfUndef p:is_unit_test = 1
 endif
+" Auto define doxygen group name
+LetIfUndef p:dox.group.name = 'g'.lh#dev#naming#to_upper_camel_case(substitute(expand('%:r'), '/', '_', 'g'))
 
 " ======================[ Settings for searchfile and gf {{{2
 let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx,txx'

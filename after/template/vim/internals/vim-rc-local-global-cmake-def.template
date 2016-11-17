@@ -42,8 +42,10 @@ finally
 endtry
 
 " ======================[ Menus {{{2
-let s:menu_priority = '50.120.'
-let s:menu_name     = '&Project.&<+s:_prj_name+>.'
+" let s:menu_priority = '50.120.'
+" let s:menu_name     = '&Project.&<+s:_prj_name+>.'
+LetIfUndef p:menu.priority = '50.120.'
+call lh#let#if_undef('p:menu.name', '&Project.&<+s:_prj_name+>.')
 
 " Function: s:getSNR([func_name]) {{{3
 function! s:getSNR(...)
@@ -65,21 +67,24 @@ call lh#let#if_undef ('p:BTW.config.functions',
 
 "------------------------------------------------------------------------
 " ======================[ Compilation mode, & CTest options {{{2
+MuT:  if 0
+VimL: " This part doesn't seem required now. To be verified!
 let <+s:_prj_config+>_menu = {
-      \ '_project': '<+substitute(s:_prj_config, "^g:", "", "")+>',
-      \ 'menu': {'priority': s:menu_priority, 'name': s:menu_name}
-      \ }
-call lh#let#to('p:BTW.config.menu', <+s:_prj_config+>_menu)
+  \ '_project': '<+substitute(s:_prj_config, "^g:", "", "")+>',
+  \ 'menu': {'priority': s:menu_priority, 'name': s:menu_name}
+  \ }
+  call lh#let#to('p:BTW.config.menu', <+s:_prj_config+>_menu)
+MuT:  endif
 
 " <+TODO: comment what you won't use+>
 let s:cmake_integration = []
-let s:cmake_integration += [ 'def_toggable_compil_mode2' ]
+let s:cmake_integration += [ 'auto_detect_compil_modes2' ]
 let s:cmake_integration += [ 'def_toggable_ctest_verbosity2' ]
 let s:cmake_integration += [ 'def_toggable_ctest_checkmem2' ]
 let s:cmake_integration += [ 'def_ctest_targets2' ]
 " let s:cmake_integration += [ 'add_gen_clic_DB' ]
-let s:cmake_integration += [ 'update_list' ]
-call lh#btw#cmake#def_options(s:cmake_integration)
+" let s:cmake_integration += [ 'update_list' ] -- not ready yet for lh#project
+call lh#btw#cmake#define_options(s:cmake_integration)
 
 " ======================[ Misc functions {{{2
 
