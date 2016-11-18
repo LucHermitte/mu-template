@@ -1,6 +1,7 @@
 VimL:" CMake File Template, Luc Hermitte, 28th Sep 2013
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
+MuT:  let s:filename = s:path_from_root(expand("%:p"))
 VimL: let s:_here = expand('%:p:h')
 VimL: call s:Include("cmake-file-header", "cmake/internals")
 VimL: "

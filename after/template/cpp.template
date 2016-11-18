@@ -3,7 +3,7 @@ VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:filename = s:path_from_root(expand("%:p"))
+MuT:  let s:filename = s:path_from_root(expand("%:p"))
 VimL: " VariationPoint: for file header (copyright, ...)
 VimL: call s:Include("c-file-header", "c/internals")
 VimL: call s:StartIndentingHere()
