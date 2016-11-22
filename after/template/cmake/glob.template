@@ -1,0 +1,8 @@
+VimL:" glob File Template, Luc Hermitte, mar. 22 nov. 2016 14:43:42 CET
+VimL:" hint: FILE(GLOB...
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:varname = s:SurroundableParam('varname', 1)
+file(GLOB<+_RECURSE+> <+s:varname+> <+glob expr+>)<+s:TerminalPlaceHolder()+>

@@ -7,7 +7,7 @@
 " Version:	4.3.0
 let s:version = '4.3.0'
 " Created:	06th Nov 2007
-" Last Update:	21st Oct 2016
+" Last Update:	22nd Nov 2016
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -62,6 +62,7 @@ after/template/cmake/cpack.template
 after/template/cmake/cpp11.template
 after/template/cmake/doxygen.template
 after/template/cmake/find-boost.template
+after/template/cmake/glob.template
 after/template/cmake/if.template
 after/template/cmake/internals/root.template
 after/template/cmake/internals/subdirs.template
