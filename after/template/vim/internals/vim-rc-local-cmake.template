@@ -4,5 +4,6 @@ VimL:" vim-rc-local CMake File Template, Luc Hermitte <hermitte {at} free {dot} 
 if ! (exists("g:loaded_¡s:fn¡")
       \ && (g:loaded_¡s:fn¡ >= s:k_version)
       \ && !exists('g:force_reload_¡s:fn¡'))
+  " Needs to be done after setting BTW chain
   source <sfile>:p:h/_vimrc_local_global_defs.vim
 endif

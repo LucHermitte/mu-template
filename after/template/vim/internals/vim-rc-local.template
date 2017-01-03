@@ -66,11 +66,11 @@ elseif lh#project#is_in_a_project()
 endif
 call lh#project#define(s:, {'name': '<+s:_prj_name+>'})
 
-MuT:  if has_key(s:_prj_kind, 'cmake')
-VimL:     call s:Include('vim-rc-local-cmake', 'vim/internals')
-MuT:  endif
 MuT:  if has_key(s:_prj_kind, 'c') || has_key(s:_prj_kind, 'cpp')
 VimL:     call s:Include('vim-rc-local-ccpp', 'vim/internals')
+MuT:  endif
+MuT:  if has_key(s:_prj_kind, 'cmake')
+VimL:     call s:Include('vim-rc-local-cmake', 'vim/internals')
 MuT:  endif
 VimL: " Bug tracker
 VimL: let s:bug_tracker = WHICH('CONFIRM',"Which bug tracker will you use ?", ['None/Another', '&Jira'])

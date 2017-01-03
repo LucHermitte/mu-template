@@ -426,14 +426,6 @@ function! s:CheckDeps(Symbol, File, path) " {{{3
 endfunction
 " }}}1
 "========================================================================
-" Dependancies {{{1
-if
-      \ !s:CheckDeps('*GetCurrentWord', 'words_tools.vim',     'plugin/')
-  let &cpo=s:cpo_save
-  finish
-endif
-" }}}1
-"========================================================================
 " Default definitions and options {{{1
 function! s:Option(name, default)                        " {{{2
   if     exists('b:mt_'.a:name) | return b:mt_{a:name}
@@ -492,8 +484,8 @@ endfunction
 " i_CTRL-R stubbs                                              {{{2
 "Note: expand('<cword>') is not correct when there are characters after the
 "current curpor position
-inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(GetCurrentKeyword())<cr>
-inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(GetCurrentWord())<cr>
+inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(lh#ui#GetCurrentKeyword())<cr>
+inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(lh#ui#GetCurrentWord())<cr>
 " takes a count to specify where the selected texte goes (see while-snippets)
 vnoremap <silent> <Plug>MuT_Surround :<C-U>call lh#mut#surround()<cr>
 if !hasmapto('<Plug>MuT_ckword', 'i')
@@ -565,13 +557,13 @@ function! s:AddMenu(m_name, m_prio, nameslist)
       exe 'amenu '.s:menu_prio.a:m_prio.' '
             \ .escape(s:menu_name.m_name.name, '\ ')
             \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
-      if lh#mut#verbose() >= 2
+      if &verbose >= 2
         echomsg 'amenu '.s:menu_prio.a:m_prio.' '
               \ .escape(s:menu_name.m_name.name, '\ ')
               \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
       endif
     else
-      if lh#mut#verbose() >= 1
+      if &verbose >= 1
         echomsg "muTemplate#s:AddMenu(): discard ".name
       endif
     endif
@@ -656,7 +648,6 @@ function! s:BuildMenu(doRebuild)
     let ft_list = lh#mut#dirs#get_short_list_of_TF_matching('*', '*')
     call s:AddMenu('&', '300.10', ft_list)
 
-    let &wildignore = s:wildignore
   finally
     let &wildignore = s:wildignore
   endtry
