@@ -7,7 +7,7 @@
 " Version:      3.3.6
 let s:k_version = 336
 " Created:      05th Jan 2011
-" Last Update:  $Date$
+" Last Update:  03rd Jan 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -49,22 +49,25 @@ function! lh#mut#dirs#version()
 endfunction
 
 " # Debug   {{{2
-let s:verbose = 0
+let s:verbose = get(s:, 'verbose', 0)
 function! lh#mut#dirs#verbose(...)
   if a:0 > 0 | let s:verbose = a:1 | endif
   return s:verbose
 endfunction
 
-function! s:Verbose(expr)
+function! s:Log(expr, ...)
+  call call('lh#log#this',[a:expr]+a:000)
+endfunction
+
+function! s:Verbose(expr, ...)
   if s:verbose
-    echomsg a:expr
+    call call('s:Log',[a:expr]+a:000)
   endif
 endfunction
 
-function! lh#mut#dirs#debug(expr)
+function! lh#mut#dirs#debug(expr) abort
   return eval(a:expr)
 endfunction
-
 
 "------------------------------------------------------------------------
 " ## Exported functions {{{1
@@ -75,28 +78,30 @@ let lh#mut#dirs#cache = ''
 function! lh#mut#dirs#update()
   " NB: template_dirs is computed every time as it can be changed between two
   " uses of mu-template.
-  let template_dirs = substitute(&runtimepath, ',\|$', '/template\0', 'g')
+  let template_dirs = split(&runtimepath, ',')
+  call map(template_dirs, 'v:val."/template"')
+  let result = []
   if exists('$VIMTEMPLATES')
     " $VIMTEMPLATES is used if defined
     " This must be a list of directories separated by ';' or ','
     " Note: $VIMTEMPLATES has precedence over 'runtimepath'
-    let result = $VIMTEMPLATES . ',' . template_dirs
-  else
-    let result = template_dirs
+    let result = [$VIMTEMPLATES]
   endif
-  if exists('*lh#dev#option#get')
-    let specific_paths = lh#dev#option#get('mt_templates_paths', &ft, [])
-    let sp = type(specific_paths) == type([])
-          \ ? join(specific_paths, ',')
-          \ : specific_paths
-    let result = sp . ',' . result
-  endif
+  let result += template_dirs
+  let specific_paths = lh#ft#option#get('mt_templates_paths', &ft, [])
+  let sp = type(specific_paths) == type([])
+        \ ? specific_paths
+        \ : split(specific_paths, ',')
+  let result = sp + result
   " \\ -> \, // -> /
-  let result = substitute(result, '\([/\\]\)\1', '\1', 'g')
+  call map(result, 'substitute(v:val, "\\v([/\\\\])\\1", "\1", "g")')
   " path/ -> path
-  let result = substitute(result, '[/\\]\(,\|$\)', '\1', 'g')
+  cal map(result, 'substitute(v:val, "[/\\\\]$", "", "")')
 
-  let g:lh#mut#dirs#cache = result
+  " Keep only template directories that exist
+  call filter(result, 'isdirectory(v:val)')
+  let g:lh#mut#dirs#cache = join(result, ',')
+  return result
 endfunction
 
 " Function: lh#mut#dirs#get_templates_for([pattern]) {{{2
@@ -120,23 +125,29 @@ endfunction
 
 " Function: lh#mut#dirs#shorten_template_filenames(list)       {{{2
 function! lh#mut#dirs#shorten_template_filenames(list)
-  :let g:list =a:list
   " 1- Strip path part from lh#mut#dirs#cache
-  call map(a:list, 'lh#path#strip_start(v:val, g:lh#mut#dirs#cache)')
+  let list = lh#path#strip_start(a:list, g:lh#mut#dirs#cache)
   " 2- simplify filename to keep only the non "template" part
   "NAMES WERE: call map(a:list, 'substitute(v:val, "\\<template\.", "", "")')
-  call map(a:list, 'substitute(v:val, "\\.template\\>", "", "")')
-  return a:list
+  call map(list, 'substitute(v:val, "\\.template\\>$", "", "")')
+  return list
 endfunction
 
 " Function: lh#mut#dirs#get_short_list_of_TF_matching(word, filetype) {{{2
 function! lh#mut#dirs#get_short_list_of_TF_matching(word, filetype)
   " 1- Build the list of template files matching the current word {{{3
   let files = s:GetTemplateFilesMatching(a:word, a:filetype)
+  " let [files, sec] = lh#time#bench(function('s:GetTemplateFilesMatching'), a:word, a:filetype)
+  " call s:Verbose('s:GetTemplateFilesMatching(%1, %2) takes %3s to return %4 entries', a:word, a:filetype, sec, len(files))
 
   " 2- Shorten the template-file names                            {{{3
-  call s:UpdateHints(files)
+  if a:word != '*'
+    " Don't fetch hints when building menus
+    call s:UpdateHints(files)
+  endif
   let strings = lh#mut#dirs#shorten_template_filenames(files)
+  " let [strings, sec] = lh#time#bench('lh#mut#dirs#shorten_template_filenames', files)
+  " call s:Verbose('lh#mut#dirs#shorten_template_filenames() takes %1s to simplify %2 entries', sec, len(files))
   return strings
 endfunction "}}}3
 
@@ -222,7 +233,7 @@ function! s:UpdateHints(files)
   endfor
 endfunction
 
-
+" }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save
 "=============================================================================

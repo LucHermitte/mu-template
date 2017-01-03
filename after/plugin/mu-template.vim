@@ -645,6 +645,7 @@ function! s:BuildMenu(doRebuild)
     call s:AddMenu('&New.&', '100.10', new_list)
 
     " 5- constructs                   {{{3
+    " The following is very slow to build, updating hints doesn't help
     let ft_list = lh#mut#dirs#get_short_list_of_TF_matching('*', '*')
     call s:AddMenu('&', '300.10', ft_list)
 
