@@ -2,7 +2,7 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  21st Oct 2016
+" Last Update:  03rd Jan 2017
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.3.0
@@ -365,6 +365,7 @@ let s:k_version = 430
 "       v4.3.0
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
+"       (*) REFACT: Remove `DateStamp()`
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
@@ -455,18 +456,6 @@ function! Author(...)
   else                            | return ''
   endif
 endfunction
-
-" Default implementation  for DateStamp()                  {{{2
-" Deprecated: prefer lh#time#date()
-if !exists('*DateStamp')
-  function! DateStamp(...)
-    if a:0 > 0
-      return strftime(a:1)
-    else
-      return strftime('%c')
-    endif
-  endfunction
-endif
 
 " }}}1
 "========================================================================

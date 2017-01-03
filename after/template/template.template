@@ -4,7 +4,7 @@ VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: call s:Include('dollar_id', '_')
-¡s:Comment('<+'.expand('%:t:r').'+>'.' File Template, '.Author(1).', '.DateStamp())¡
+¡s:Comment('<+'.expand('%:t:r').'+>'.' File Template, '.Author(1).', '.lh#time#date())¡
 ¡s:Comment('hint: <+'.expand('%:t:r').'-hint+>')¡
 ¡'VimL:'¡ let s:value_start = '¡'
 ¡'VimL:'¡ let s:value_end   = s:value_start

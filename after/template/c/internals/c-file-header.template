@@ -3,6 +3,6 @@ VimL:" Default File header - C/C++ Definition File-Template, Luc Hermitte
  * @author	¡substitute(Author(0),'\r"','\r *','g')¡
  * @version	<+version+>
  * @date
- * 	Created:	¡DateStamp()¡ \n
- * 	Last Update:	¡DateStamp()¡
+ * 	Created:	¡lh#time#date()¡
+ * 	Last Update:	¡lh#time#date()¡
  */
