@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 20th Jul 2016
+*mu-template.vim*       For Vim version 7+      Last change: 24th Jan 2017
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 4.2.0
+                    Version 4.3.0
 
 
 ==============================================================================
@@ -584,8 +584,22 @@ A:  This can be achieved with the special function |s:Include()|.
     files, or C implementation files according to the current buffer's file
     extension (.h or .c) >
         VimL: call s:Include( (expand("%:e") =~ '^hh\=$') ?'c-header' : 'c-imp')
-<   Or {swith}-template that loads {case}-template with an argument: >
+<    Or {swith}-template that loads {case}-template with an argument: >
         VimL: call s:Include('case', 'c', arg)
+
+<    However, if several snippets need to be included, don't call
+    `s:Include()` from a |:for| loop -- µTemplate engine won't be able to
+    correctly stack contexts in that case. Instead use
+    *s:IncludeSeveralSnippets()* which takes:
+    - a snippet name, or a list of snippet names,
+    - the directory/filetype where the snippet file is stored,
+    - a |dict| parameter passed to all subsequent calls to |s:Include()|,
+    - a specific parameter merge to the previous one for current
+      |s:Include()| call. For instance, in `python/class.template`, it's used
+      this way: >
+        VimL: call s:IncludeSeveralSnippets('def', 'python',
+            \ {'indented': 1},
+            \ map(copy(s:function_list), '{"function": v:val}'))
 
 
 Q:  "How can I pass parameters to imported skeletons?" *s:Args()* *s:PushArgs()* *s:Params()*

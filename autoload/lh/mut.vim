@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  08th Nov 2016
+" Last Update:  24th Jan 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -23,6 +23,7 @@ let s:k_version = 430
 "       v4.3.0
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
+"       (*) ENH: Add `s:IncludeSeveralSnippets()`
 "       v4.2.0
 "       (*) ENH: Use the new lh-vim-lib logging framework
 "       (*) ENH: Store `v:count` into `s:content.count0`
@@ -212,7 +213,7 @@ endfunction
 
 " Function: lh#mut#expand(NeedToJoin, ...)                 {{{2
 function! lh#mut#expand(NeedToJoin, ...) abort
-  call s:Verbose('lh#mut#expand('.a:NeedToJoin.string(a:000).')')
+  call s:Verbose('lh#mut#expand(%1)', [a:NeedToJoin]+a:000)
   let s:content.lines = []
 
   " 1- Determine the name of the template file expected {{{3
@@ -228,15 +229,19 @@ function! lh#mut#expand(NeedToJoin, ...) abort
     " filetype
   endif
 
-  " 2- Load the associated template {{{3
-  call  s:LoadTemplate(0, dir.ft.'.template')
+  " 2- Prepare the new session {{{3
+  call s:ResetContext()
 
-  " 3- Expand the lines {{{3
+  " 3- Load the associated template {{{3
+  call s:LoadTemplate(0, dir.ft.'.template')
+
+  " 4- Expand the lines {{{3
   return s:DoExpand(a:NeedToJoin)
 endfunction "}}}3
 
 " Function: lh#mut#expand_text(NeedToJoin, text, ...)      {{{2
 function! lh#mut#expand_text(NeedToJoin, text, ...) abort
+  call s:Verbose('lh#mut#expand_text(%1)', [a:NeedToJoin, a:text] + a:000)
   let s:content.lines = type(a:text) == type([]) ? a:text : split(a:text, "\n")
   try
     let s:args = []
@@ -244,6 +249,7 @@ function! lh#mut#expand_text(NeedToJoin, text, ...) abort
       call s:PushArgs(a:000[1:])
       " echomsg 'all: ' . string(s:args)
     endif
+    call s:ResetContext()
     let res = s:DoExpand(a:NeedToJoin)
     if res && s:Option('jump_to_first_markers',1)
       call lh#mut#jump_to_start()
@@ -439,12 +445,12 @@ function! s:Comment(text)          " {{{3
 endfunction
 
 " Function: s:PushArgs()             {{{3
-function! s:PushArgs(args)
+function! s:PushArgs(args) abort
   call add(s:args, a:args)
 endfunction
 
 " Function: s:PopArgs()              {{{3
-function! s:PopArgs()
+function! s:PopArgs() abort
   if !empty(s:args)
     call remove(s:args, -1)
   endif
@@ -453,7 +459,7 @@ endfunction
 " Function: s:Args()                 {{{3
 " @returns a list. If the list is empty, this means no parameter was given.
 let s:args = []
-function! s:Args()
+function! s:Args() abort
   " echomsg string(s:args)
   return empty(s:args) ? [] : s:args[-1]
 endfunction
@@ -503,14 +509,14 @@ function! s:Param(name, default) abort
 endfunction
 
 " Function: s:ParamOrAsk(name, ...)  {{{3
-function! s:ParamOrAsk(name, ...)
+function! s:ParamOrAsk(name, ...) abort
   let res = s:Param(a:name, lh#option#unset())
   if lh#option#is_set(res) | return res | endif
   return call('INPUT',a:000)
 endfunction
 
 " Function: s:CmdLineParams(...)     {{{3
-function! s:CmdLineParams(...)
+function! s:CmdLineParams(...) abort
   let args = lh#list#flatten(copy(s:args))
   " call filter(args, 'has_key(v:val, "cmdline")')
   let cmdline = lh#list#transform_if(args, [], 'v:val.cmdline', 'type(v:val) == type({}) && has_key(v:val, "cmdline")')
@@ -519,6 +525,7 @@ endfunction
 
 " Function: s:Include()              {{{3
 function! s:Include(template, ...) abort
+  call s:Verbose('s:Include(%1)', [a:template] + a:000)
   let pos = s:content.crt
   " let correction = s:NeedToJoin > 0
   " if include is called from an expression, clean and prepare for line merging
@@ -550,13 +557,33 @@ function! s:Include(template, ...) abort
   return ""
 endfunction
 
+function! s:IncludeSeveralSnippets(snippet_list, scope, common_arg, specific_args)
+  " As we cannot hope to see the contexts correctly stacked when executing `for
+  " xxx in yyy | call s:Include(...)`, here is this helper function that
+  " injects as many `s:Include()` calls as necessary
+  call s:Verbose('s:IncludeSeveralSnippets(%{1.snippet_list}, %{1.scope}, %{1.common_arg}, %{1.specific_args}', a:)
+  if type(a:snippet_list) == type('')
+    " Only one snippet => only one list to iterate
+    let lines = map(a:specific_args, '"VimL: call s:Include(".string(a:snippet_list).", ".string(a:scope).", ".string(extend(copy(a:common_arg), v:val)).")"')
+
+    call s:Verbose('s:IncludeSeveralSnippets -> %1', lines)
+  else
+    " Several snippets => twos lists to iterate
+    call lh#assert#equal(type(a:snippet_list), type([]))
+    call lh#assert#equal(len(a:snippet_list), len(a:specific_args))
+  endif
+
+  call s:Inject(lines)
+
+endfunction
+
 " Function: lh#mut#_include(template, ...) {{{3
 function! lh#mut#_include(template, ...) abort
   return call('s:Include', [a:template]+a:000)
 endfunction
 
 " Function: s:Include_and_map()      {{{3
-function! s:Include_and_map(template, map_action, ...)
+function! s:Include_and_map(template, map_action, ...) abort
   let pos = s:content.crt
   " let correction = s:NeedToJoin > 0
   let correction = 0
@@ -575,7 +602,8 @@ function! s:Include_and_map(template, map_action, ...)
 endfunction
 
 " Function: s:GetTemplateLines()     {{{3
-function! s:GetTemplateLines(template, ...)
+function! s:GetTemplateLines(template, ...) abort
+  call s:Verbose('s:GetTemplateLines(%1)', [a:template] + a:000)
   let pos = s:content.crt
   " let correction = s:NeedToJoin > 0
   let correction = 0
@@ -596,23 +624,23 @@ function! s:GetTemplateLines(template, ...)
 endfunction
 
 " Function: s:AddPostExpandCallback(callback) {{{3
-function! s:AddPostExpandCallback(callback)
+function! s:AddPostExpandCallback(callback) abort
   let s:content.callbacks += [a:callback]
 endfunction
 
 " Function: lh#mut#_add_post_expand_callback(callback) {{{3
-function! lh#mut#_add_post_expand_callback(callback)
+function! lh#mut#_add_post_expand_callback(callback) abort
   call s:AddPostExpandCallback(a:callback)
 endfunction
 
 " Function: s:Inject(lines)          {{{3
-function! s:Inject(lines)
+function! s:Inject(lines) abort
   let pos = s:content.crt
   call extend(s:content.lines, a:lines, s:content.crt+0)
 endfunction
 
 " Function: s:InjectAndTransform(templatename) {{{3
-function! s:InjectAndTransform(templatename, Transformation, ...)
+function! s:InjectAndTransform(templatename, Transformation, ...) abort
   let dir = fnamemodify(a:templatename, ':h')
   if dir != "" | let dir .= '/' | endif
   if a:0>0 && !empty(a:1)
@@ -640,7 +668,7 @@ function! s:InjectAndTransform(templatename, Transformation, ...)
   endtry
 endfunction
 
-function! s:path_from_root(path)   " {{{3
+function! s:path_from_root(path) abort " {{{3
   let path = a:path
   let sources_root = lh#option#get('sources_root')
   if lh#option#is_unset(sources_root)
@@ -659,7 +687,7 @@ function! s:path_from_root(path)   " {{{3
 endfunction
 
 " Function: s:Surround(id, default)  {{{3
-function! s:Surround(id, default)
+function! s:Surround(id, default) abort
   let key = 'surround'.a:id
   if has_key(s:content, key)
     let s:content.can_apply_style = 0
@@ -676,24 +704,24 @@ function! s:SurroundableParam(name, surround_id, ...) abort
 endfunction
 
 " Function: s:IsSurrounding()        {{{3
-function! s:IsSurrounding()
+function! s:IsSurrounding() abort
   return has_key(s:content,"is_surrounding")
         \ && (s:content.is_surrounding)
 endfunction
 
 " Function: s:TerminalPlaceHolder()  {{{3
-function! s:TerminalPlaceHolder()
+function! s:TerminalPlaceHolder() abort
   return !s:IsSurrounding() ? lh#marker#txt() : ''
 endfunction
 
 " Function: s:Line()                 {{{3
 " Returns current line
-function! s:Line()
+function! s:Line() abort
   return s:content.crt + s:content.start
 endfunction
 
 " Function: s:StartIndentingHere()   {{{3
-function! s:StartIndentingHere()
+function! s:StartIndentingHere() abort
   let s:content.first_line_indented = s:Line()
   let s:reindent = 1
 endfunction
@@ -711,6 +739,23 @@ endfunction
 "------------------------------------------------------------------------
 " Core Functions {{{2
 let s:content = { 'lines' : [], 'crt' : 0, 'start' : 0, 'scope': [1], 'callbacks': [], 'variables': []}
+
+" s:PushNewContext(ctx)                                        {{{3
+function! s:PushNewContext(ctx)
+  call s:Verbose("s:PushNewContext(%1)", a:ctx)
+  let context = lh#on#exit()
+        \.register('call '.s:getSNR('PopArgs()'))
+  let context.__name__ = a:ctx
+  call s:content.contexts.push(context)
+  return context
+endfunction
+
+" s:PopContext()                                               {{{3
+function! s:PopContext()
+  let context = s:content.contexts.pop()
+  call s:Verbose("s:PopContext(%2, %1)", context, context.__name__)
+  call context.finalize()
+endfunction
 
 " s:LoadTemplateLines(pos, templatepath)                       {{{3
 function! s:LoadTemplateLines(pos, templatepath) abort
@@ -737,17 +782,28 @@ endfunction
 
 " s:LoadTemplate(pos, templatepath [, map_action])             {{{3
 function! s:LoadTemplate(pos, templatepath, ...) abort
+  call s:Verbose('s:LoadTemplate(%1)', [a:pos, a:templatepath]+a:000)
   let lines = s:LoadTemplateLines(a:pos, a:templatepath)
-  let lines += [s:Command( 'call s:PopArgs()')]
+  let context = s:PushNewContext(a:templatepath)
+  " Context is restored after lines have been processed. It shall not be
+  " restored before that. But then, we cannot have a "VimL:" line that calls
+  " `s:Include()`  in a `:for` loop. Hence: `s:IncludeSeveralSnippets()`
+  let lines += [s:Command( 'call s:PopContext()')]
   if a:0 > 0
     let map_action = a:1
     let pat_not_text = '\v\c(^'.s:Command('').'|'.s:Special('').')'
     call map(lines, "v:val =~ pat_not_text ? (v:val) : ".map_action)
   endif
   if get(s:, 'reindent') == 'python'
-    let s:content.crt_indent = a:pos > 0
-          \ ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
-          \ : indent('.')
+    call context.restore(s:content, 'crt_indent')
+    if !has_key(s:content, 'crt_indent')
+      let s:content.crt_indent = a:pos > 0
+            \ ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
+            \ : indent('.')
+      call s:Verbose("Loading(%1 at %2) no previous indent - using %3 <- %4", a:templatepath, a:pos, s:content.crt_indent, a:pos > 0 ? 'nb heading spaces of(previous line)' : 'indent(".")')
+    else
+      call s:Verbose("Loading(%1 at %2) from previous indent %3", a:templatepath, a:pos, s:content.crt_indent)
+    endif
     let s:content.crt_indent += &sw * s:Param('indented', 0)
     let indent = repeat(' ', s:content.crt_indent)
     call map(lines, 'indent . v:val')
@@ -756,18 +812,34 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
   return len(lines)
 endfunction
 
-" s:DoExpand(NeedToJoin)                                       {{{3
-" @pre s:content.lines array is filled with the lines to expand
-function! s:DoExpand(NeedToJoin) abort
-  if len(s:content.lines) == 0
-    return 0
-  endif
-
+" s:ResetContext()                                             {{{3
+" @post s:content.start = line('.')
+" @post s:content.scope = [1]
+" @post s:content.callbacks = []
+" @post s:content.crt_indent doesn't exists
+" @post no variables
+function! s:ResetContext() abort
+  call s:Verbose('s:ResetContext()')
   let pos = line('.')
   let s:content.start = pos
   let s:content.scope = [1]
   let s:content.callbacks = []
+  let s:content.contexts = lh#stack#new()
+  if has_key(s:content, 'crt_indent')
+    unlet s:content.crt_indent
+  endif
   call s:ClearVariables()
+endfunction
+
+" s:DoExpand(NeedToJoin)                                       {{{3
+" @pre s:content.lines array is filled with the lines to expand
+function! s:DoExpand(NeedToJoin) abort
+  call s:Verbose('s:DoExpand(%1)', a:NeedToJoin)
+  if empty(s:content.lines)
+    return 0
+  endif
+
+  let pos = line('.')
   let s:NeedToJoin = a:NeedToJoin
   let foldenable=&foldenable
   silent! set nofoldenable
@@ -1133,6 +1205,7 @@ endfunction
 
 " s:InterpretLines(first_line)                                 {{{3
 function! s:InterpretLines(first_line) abort
+  call s:Verbose('s:InterpretLines(firstline: %1)', a:first_line)
   " Constants
   let markerCharacters = lh#marker#txt('')
 
@@ -1143,6 +1216,7 @@ function! s:InterpretLines(first_line) abort
   while s:content.crt < len(s:content.lines)
     " echomsg s:content.crt . ' < ' . len(s:content.lines) . ' ----> ' . s:content.lines[s:content.crt]
     let the_line = s:content.lines[s:content.crt]
+    call s:Verbose('  Interpreting %1', the_line)
 
     " MuT: lines
     if the_line =~ pat_special
@@ -1256,6 +1330,11 @@ function! s:getSNR(...) abort
     let s:SNR=matchstr(expand('<sfile>'), '<SNR>\d\+_\zegetSNR$')
   endif
   return s:SNR . (a:0>0 ? (a:1) : '')
+endfunction
+
+" s:function([func_name])                                      {{{3
+function! s:function(...) abort
+  return function(call('s:getSNR', a:000))
 endfunction
 
 " s:ChooseTemplateFile(files)                                  {{{3
