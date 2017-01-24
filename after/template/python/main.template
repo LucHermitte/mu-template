@@ -1,0 +1,9 @@
+VimL:" main File Template, Luc Hermitte, 17th Jan 2017
+VimL:" hint: if __name__ == '__main__'
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+if __name__ == '__main__':
+    <+ s:SurroundableParam('main', 1) +>

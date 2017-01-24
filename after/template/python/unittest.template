@@ -1,0 +1,11 @@
+VimL:" unittest file File Template, Luc Hermitte, 17th Jan 2017
+VimL:" hint: unittest snippet
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+VimL: call s:AddPostExpandCallback('lh#dev#import#add("unittest")')
+VimL: call s:Include('class', 'python', {'indented': 0, 'cls-name': s:Param('cls-name', 'Test'.lh#marker#txt('TestName')), 'parents': 'unittest.TestCase'})
+
+VimL: call s:Include('main', 'python', {'main': 'unittest.main()'})

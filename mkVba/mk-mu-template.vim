@@ -7,7 +7,7 @@
 " Version:	4.3.0
 let s:version = '4.3.0'
 " Created:	06th Nov 2007
-" Last Update:	22nd Nov 2016
+" Last Update:	24th Jan 2017
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -43,8 +43,8 @@ after/template/c/internals/c-header-typical.template
 after/template/c/internals/c-header.template
 after/template/c/internals/c-imp.template
 after/template/c/internals/c-ut.template
-after/template/c/internals/register-file-kinds.template
 after/template/c/internals/register-file-kinds-spe.template
+after/template/c/internals/register-file-kinds.template
 after/template/c/internals/ut-boost.template
 after/template/c/main.template
 after/template/c/printf.template
@@ -123,7 +123,9 @@ after/template/python/from.template
 after/template/python/if.template
 after/template/python/ifelse.template
 after/template/python/init.template
+after/template/python/main.template
 after/template/python/path-exists.template
+after/template/python/unittest.template
 after/template/python/while.template
 after/template/python/with.template
 after/template/sh.template
@@ -173,6 +175,7 @@ after/template/tex/note.template
 after/template/tex/tt.template
 after/template/unknown.template
 after/template/vim.template
+after/template/vim/Verbose.template
 after/template/vim/augroup.template
 after/template/vim/autoload-debug.template
 after/template/vim/catch.template
@@ -201,7 +204,6 @@ after/template/vim/internals/vim-rc-local-global-cmake-def.template
 after/template/vim/internals/vim-rc-local-jira.template
 after/template/vim/internals/vim-rc-local-ycm.template
 after/template/vim/internals/vim-rc-local.template
-after/template/vim/Verbose.template
 after/template/vim/internals/vim-tests.template
 after/template/vim/lh#let#if_undef.template
 after/template/vim/lh#let#to.template
@@ -234,6 +236,7 @@ autoload/lh/cpp/file.vim
 autoload/lh/mut.vim
 autoload/lh/mut/cmake.vim
 autoload/lh/mut/dirs.vim
+autoload/lh/mut/snippets.vim
 autoload/lh/tex/mut.vim
 doc/mu-template.txt
 ftplugin/template.vim
