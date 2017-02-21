@@ -17,7 +17,6 @@ setlocal complete-=i
 " Local vimrc variable for source dir
 " Will be simplified eventually to use p:paths.sources everywhere
 let s:project_sources_dir = lh#option#get('paths.sources')
-call lh#let#to('p:project_sources_dir', s:project_sources_dir)
 
 " Option for Mu-Template-> |s:path_from_root()|
 " Now: p:paths.sources is enough!
@@ -89,28 +88,34 @@ endif
 LetIfUndef p:compil_hints_autostart = 1
 
 " ======================[ Settings for BTW {{{2
-if SystemDetected() == 'msdos'
+MuT:  if has_key(s:_prj_kind, 'cmake')
+" cmake filter plugin sets:
+" - cmake as the &makeprg on `:BTW set`
+" - p:BTW.target to ''
+" - p:BTW.project_config to {'type': 'ccmake', 'arg': lh#ref#bind('p:paths.sources'), 'wd' : lh#ref#bind('p:BTW.compilation_dir')}
+MuT:  endif
+if lh#os#OnDOSWindows()
+MuT:  if has_key(s:_prj_kind, 'cmake')
+  " Using cmake to compile from vim under window system.
   :BTW setlocal cmake
-  " echomsg SystemDetected()
-  if SystemDetected() == 'unix' " cygwin
+MuT:  endif
+  if lh#os#system_detected() == 'unix' " cygwin
     " then cygwin's cmake does not work -> use win32 cmake
     let $PATH=substitute($PATH, '\(.*\);\([^;]*CMake[^;]*\)', '\2;\1', '')
     BTW addlocal cygwin
   endif
+MuT:  if has_key(s:_prj_kind, 'cmake')
+else
+  :BTW addlocal cmake
+MuT:  endif
 endif
 :BTW addlocal STLFilt
 
+MuT:  if has_key(s:_prj_kind, 'cmake')
 LetIfUndef p:BTW.executable.type 'ctest'
 " sets p:BTW.executable.rule
 " TODO: convert -> call <+s:_prj_config+>_menu.def_ctest_targets.set_ctest_argument()
-
-LetIfUndef p:BTW.target = ''
-let s:project_config = {
-   \ 'type': 'ccmake',
-   \ 'arg': lh#ref#bind('p:paths.sources'),
-   \ 'wd' : lh#ref#bind('p:BTW.compilation_dir')
-   \ }
-call lh#let#if_undef('p:BTW.project_config', s:project_config)
+MuT:  endif
 
 " ======================[ tags generation {{{2
 " Be sure tags are automatically updated on the current file
@@ -158,14 +163,6 @@ LetIfUndef p:dox.group.name = 'g'.lh#dev#naming#to_upper_camel_case(substitute(e
 " ======================[ Settings for searchfile and gf {{{2
 let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx,txx'
 setlocal suffixesadd+=.h,.H,.C,.cpp,.cxx,.hxx,.txx'
-
-" ======================[ Menus {{{2
-MuT:  if has_key(s:_prj_kind, 'cmake')
-call lh#menu#make('nic', '50.11', '&Project.Edit local &CMake file', '<localleader><F7>', '<buffer>', ':call lh#project#crt().get("BTW.config.functions").EditLocalCMakeFile()<cr>')
-call lh#menu#make('nic', '50.12', '&Project.Edit local &CMake file (vertical)', '<localleader>v<F7>', '<buffer>', ':call lh#project#crt().get("BTW.config.functions").EditLocalCMakeFile("vert")<cr>')
-MuT:  endif
-" call lh#menu#make('nic', '50.11', '&Project.Edit local &Scons file', '', '<buffer>', ':call EditLocalSconsFile()<cr>')
-call lh#menu#make('nic', '50.76', '&Project.Edit local &vimrc', '<localleader>le', '<buffer>', ':call lh#buffer#jump('.string(s:script).', "sp")<cr>' )
 
 " ======================[ Local variables to automagically import in QuickFix buffer {{{2
 QFImport tags_select
