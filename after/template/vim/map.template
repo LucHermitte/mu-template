@@ -1,0 +1,7 @@
+VimL:" map File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 07th Mar 2017
+VimL:" hint: map(list, action)
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+map(<+s:SurroundableParam('list', 1)+>, <+s:SurroundableParam('act', 2)+>)<+s:TerminalPlaceHolder()+>

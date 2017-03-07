@@ -7,7 +7,7 @@
 " Version:	4.3.0
 let s:version = '4.3.0'
 " Created:	06th Nov 2007
-" Last Update:	24th Jan 2017
+" Last Update:	07th Mar 2017
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -179,6 +179,7 @@ after/template/vim/Verbose.template
 after/template/vim/augroup.template
 after/template/vim/autoload-debug.template
 after/template/vim/catch.template
+after/template/vim/filter.template
 after/template/vim/finally.template
 after/template/vim/fordict.template
 after/template/vim/foreach.template
@@ -209,6 +210,7 @@ after/template/vim/lh#let#if_undef.template
 after/template/vim/lh#let#to.template
 after/template/vim/lh#option#get.template
 after/template/vim/loop-arg.template
+after/template/vim/map.template
 after/template/vim/menu-make.template
 after/template/vim/option-protect.template
 after/template/vim/plugmap.template
