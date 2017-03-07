@@ -1,8 +1,8 @@
 *mu-template.txt*       Utility for loading and expanding template-files
 *mu-template.vim*       For Vim version 7+      Last change: 24th Jan 2017
-*µTemplate*
+*ÂµTemplate*
 
-                    µTemplate MANUAL    by Luc Hermitte (LH)
+                    ÂµTemplate MANUAL    by Luc Hermitte (LH)
                     Version 4.3.0
 
 
@@ -23,7 +23,7 @@ CONTENTS                                    *MuT-contents*     {{{1
 ==============================================================================
 PRESENTATION                                *MuT-presentation* {{{1
 
-µTemplate is a template-files loader for Vim. Once loaded, templates are
+ÂµTemplate is a template-files loader for Vim. Once loaded, templates are
 interpreted and expanded according to a flexible syntax (|MuT-syntax|).
 
 Disclaimer: Every time you read "I", "me" or "my", consider that I, Luc
@@ -176,7 +176,7 @@ There are several ways to load template-files:
         blah xsl:val foo
 <     with the cursor just after "val".
       Hitting `CTRL-R_TAB` expands the line into: >
-        blah <xsl:value-of select=«XPath»/> foo
+        blah <xsl:value-of select=Â«XPathÂ»/> foo
 
 <   In order to replace these mapping keybindings with some you found more
     ergonomic, see |<Plug>MuT_ckword|.
@@ -290,7 +290,7 @@ FEATURES                                    *MuT-features*     {{{1
       template-file,
     - or use the function |lh#marker#txt()| within your template-files -- or even
       |lh#marker#open()| or |lh#marker#close()|.
-    The text will be expanded into "«{parameter}»", "<+{parameter}+>" or
+    The text will be expanded into "Â«{parameter}Â»", "<+{parameter}+>" or
     whatever according to your configuration and your environment. See
     |marker|.
     Note that if the text within a marker can be is a valid VimL expression,
@@ -315,7 +315,7 @@ FEATURES                                    *MuT-features*     {{{1
     {{{3 Jumping to markers                          ~
                                                           |!jump!| *MuT-!jump!*
     |bracketing.base.vim| also proposes some default mappings that jump to the
-    next marker. These mappings are required by µTemplate.
+    next marker. These mappings are required by ÂµTemplate.
 
     Note: This means that by default, the jumping-forward function from my
     |markers| system will be used. The jumping functions defined are quite
@@ -336,10 +336,10 @@ FEATURES                                    *MuT-features*     {{{1
     In order to not mess things up this plugin defines the option
     |g:mt_jump_to_first_markers|, which must be set to 0.
 
-    So, when a new buffer is created, we can prevent µTemplate from jumping to
-    the first marker. For instance, |lh-cpp|-ftplugins detects µTemplate
+    So, when a new buffer is created, we can prevent ÂµTemplate from jumping to
+    the first marker. For instance, |lh-cpp|-ftplugins detects ÂµTemplate
     presence on the system, and sets off this options while generating code.
-    If you are using such a tool unable to work with µTemplate, patch it
+    If you are using such a tool unable to work with ÂµTemplate, patch it
     (contacting the author is even better) to integrate something like: >
       if exists('g:mu_template') &&
             \ (   !exists('g:mt_jump_to_first_markers')
@@ -366,7 +366,7 @@ FEATURES                                    *MuT-features*     {{{1
     |:command|s that you can use within your own template-files.
 
     Right now, you can use all the builtin-|functions| that Vim proposes plus
-    some wrappers I propose with µTemplate (see |MuT-lh#marker#txt()|,
+    some wrappers I propose with ÂµTemplate (see |MuT-lh#marker#txt()|,
     |s:Include()|) and |ui-functions.vim|.
 
     In |lh-cpp|, a few functions constitute an API (|lh-cpp-API|) that can be
@@ -392,7 +392,7 @@ FEATURES                                    *MuT-features*     {{{1
     {{{3 Menus                                       ~
                                             *MuT-menu*
 
-    µTemplate will propose a |menu| on systems that support them.
+    ÂµTemplate will propose a |menu| on systems that support them.
     The placement of the menu can be adjusted thanks to the two options:
     |g:mt_menu_priority| and |g:mt_menu_name|.
 
@@ -417,7 +417,7 @@ FEATURES                                    *MuT-features*     {{{1
 
     For instance, lh-cpp defines the following vector-snippet: >
         VimL: call s:AddPostExpandCallback('lh#cpp#include#add("<vector>")')
-        std::vector<¡s:Surround(1, '<+type+>')¡> <++>
+        std::vector<Â¡s:Surround(1, '<+type+>')Â¡> <++>
 <   Expanding vector, will of course insert std::vector<>, but also it will
    automatically include <vector> (if not already included).
    Note: this is achieved thanks to |lh#cpp#include#add|. Equivalent functions
@@ -431,7 +431,7 @@ FEATURES                                    *MuT-features*     {{{1
 TEMPLATE FILES SYNTAX                       *MuT-syntax*       {{{1
 
 {{{2 Syntax                            ~
-    ¡|expression|¡                                      *MuT-expression*
+    Â¡|expression|Â¡                                      *MuT-expression*
         is expanded into the result of the VimL {expression}.
         If the {expression} results into an empty line, this empty line is
         trimmed.
@@ -459,7 +459,7 @@ Q:  "How can I automate the insertion of |markers|/placeholders matching my
     Avadhanula's imaps.vim)?"
 A:  There are two ways to accomplish that.
     1- With |lh#marker#txt()| >
-        ¡lh#marker#txt('comment text')¡
+        Â¡lh#marker#txt('comment text')Â¡
 <                                                       *MuT-<++>*
     2- It is also possible to just type >
         <+comment text+>
@@ -474,14 +474,14 @@ A:  There are two ways to accomplish that.
 
 Q:  "How can I insert the current date?"                *MuT-date*
 A:  Use |MuT-expression| with a VimL function that returns the current date. >
-        ¡strftime({format})¡
+        Â¡strftime({format})Â¡
 <    check |strftime()|, and |DateStamp()|
 
 
 Q:  "How can I insert the name of the current file?"    *MuT-filename*
 A:  Use |MuT-expression| with a VimL function that returns the name of the
     current file. >
-        ¡expand('%:t')¡
+        Â¡expand('%:t')Â¡
 <    check |expand()|
 
 
@@ -491,10 +491,10 @@ A:  Have it stored in a VimL variable and use a |MuT-expression|.
     |g:author|. If you only need one version of your name in a given project
     (|MuT-multiprojects|), you'd rather set |g:author| yourself.
     Examples of use: >
-        Maintainer: ¡g:author¡
+        Maintainer: Â¡g:authorÂ¡
 <    Prefer |Author()|in case its value may change depending on the filetype,
     ... >
-        Maintainer: ¡Author()¡
+        Maintainer: Â¡Author()Â¡
 
 
 Q:  "How can I store the result of a expression into a variable?"  *MuT-:let*
@@ -528,10 +528,10 @@ Q:  "How can I interactively insert things?"            *MuT-UI*
 A:  Use interactive functions like |confirm()|, |input()|, ..., or their
     wrappers from |ui-functions.vim|. >
         VimL: let s:choice = CONFIRM('prompt', "&Yes\n&No", 2)
-        ¡IF(s:choice, 'I agree', 'I disagree')¡
+        Â¡IF(s:choice, 'I agree', 'I disagree')Â¡
 
         VimL: let s:name = INPUT('what name ?')
-        The name chosen is ¡s:name¡
+        The name chosen is Â¡s:nameÂ¡
 <   Examples: check cpp/class.template
 
 
@@ -588,7 +588,7 @@ A:  This can be achieved with the special function |s:Include()|.
         VimL: call s:Include('case', 'c', arg)
 
 <    However, if several snippets need to be included, don't call
-    `s:Include()` from a |:for| loop -- µTemplate engine won't be able to
+    `s:Include()` from a |:for| loop -- ÂµTemplate engine won't be able to
     correctly stack contexts in that case. Instead use
     *s:IncludeSeveralSnippets()* which takes:
     - a snippet name, or a list of snippet names,
@@ -640,7 +640,7 @@ A:  Three API functions are provided for this purpose:
 
 Q:  "How can I change the expression delimiters?"  *s:value_start* *s:value_end*
 A:  Just change the special variables |s:value_start| and |s:value_end|.
-    Doing so can help us release the default latin1 character used (¡ ==
+    Doing so can help us release the default latin1 character used (Â¡ ==
     Spanish inverted exclamation mark). I must admit I do not know how the
     character 0xa1 translates in other encodings.
     Any string is fine here. As long it is not expected to have it plainly
@@ -680,9 +680,9 @@ Q:  "I want to use expressions that expands on several  *MuT-multilines*
 A:  Be sure the expression to expand does not end with a "\n". You may want to
     append a neutral space. >
         VimL: let s:expr = "first line\nsecond line\n "
-        text ¡s:expr¡
+        text Â¡s:exprÂ¡
         text
-<   «todo: check if it concerns every ending \n, or only strings strictly equal to "\n"»
+<   Â«todo: check if it concerns every ending \n, or only strings strictly equal to "\n"Â»
 
                                         *MuT-loops* *MuT-instruction-injection*
                                         *s:Inject()*  *s:InjectAndTransform()*
@@ -696,7 +696,7 @@ A:  Be sure the expression to expand does not end with a "\n". You may want to
 Q:  "How can I make CVS/Subversion ignore special tags  *MuT-RC-tag$*
     in a template-file?"
 A:  There is a nasty trick accomplished with |MuT-expression|: >
-        ¡'$'¡Id$
+        Â¡'$'Â¡Id$
 
 
 Q:  "How can I use template-files from another filetype?"      *MuT-inherit-ft*
@@ -766,8 +766,8 @@ A: You can use the `s:Surround()` function that takes two parameters:
      INSERT-mode, or with an incompatible count).
 For instance, |C-if| snippet looks like:
   >
-    if (¡s:Surround(2,'<+cond+>')¡) {
-        ¡s:Surround(1,'<+code+>')¡
+    if (Â¡s:Surround(2,'<+cond+>')Â¡) {
+        Â¡s:Surround(1,'<+code+>')Â¡
     }<++>
 
 ------------------------------------------------------------------------------
@@ -788,8 +788,8 @@ latin2.
 - |MuT-expression|s were correctly expanded (with |s:value_start| and
   |s:value_end| both set to a non ASCII character)
 - Simplified textual placeholders (|MuT-<++>|) were correctly replaced with my
-  non ASCII marker characters («»).
-- However, non ASCII characters (even «») were not correctly translated in
+  non ASCII marker characters (Â«Â»).
+- However, non ASCII characters (even Â«Â») were not correctly translated in
   latin2. In latin1, I had no such problems.
   Please note that my version of vim is compiled with |+iconv/dyn|. However,
   neither `has('iconv')`, nor `has('iconv/dyn')` return 1.
@@ -844,20 +844,20 @@ CONFIGURATION                               *MuT-config*       {{{1
         Used only with |i_CTRL-R_TAB|.
         == 0 : "{pattern}^r\t foo" -> "{the template}\nfoo"
         == 1 : "{pattern}^r\t foo" -> "{the template} foo"
-        == 2 : "{pattern}^r\t foo" -> "{the template}«» foo"
+        == 2 : "{pattern}^r\t foo" -> "{the template}Â«Â» foo"
 
     |b:mt_jump_to_first_markers| |g:mt_jump_to_first_markers| (bool; default 1)
         Specifies whether we want to automatically jump to the first |marker|
         inserted. Mainly aimed at |ftplugin| writers who wish to be compatible
-        with µTemplate.
+        with ÂµTemplate.
 
     *g:mt_IDontWantTemplatesAutomaticallyInserted*  (boolean; default: 0)
-        Forbids µtemplate from automatically inserting template-files when
+        Forbids Âµtemplate from automatically inserting template-files when
         opening new files.
 
     *g:mt_menu_priority* (number/string; default: 59)
     *g:mt_menu_name* (string; default: "&Templates")
-        These two options enable µTemplate's menu to be placed wherever we wish
+        These two options enable ÂµTemplate's menu to be placed wherever we wish
         it to be. For instance: >
             let g:mt_menu_priority = '40.700'
             let g:mt_menu_name     = '&Tools.Templates'
@@ -879,7 +879,7 @@ it to:
 |<Plug>MuT_ckword|,|<Plug>MuT_cWORD|, or |<Plug>MuT_Surround| in your |.vimrc|.
  e.g. >
     imap `         <Plug>MuT_cWORD
-    imap ²         <Plug>MuT_ckword
+    imap Â²         <Plug>MuT_ckword
     vmap <c-space> <Plug>MuT_Surround
 
 
@@ -888,7 +888,7 @@ DESIGN CONSIDERATIONS                       *MuT-design*       {{{1
 
 Out there, there are several other template-expander plugins that use a
 predefined set of "expandable" tags.
-µTemplate, on the contrary, does not use any predefined set of tags. Instead,
+ÂµTemplate, on the contrary, does not use any predefined set of tags. Instead,
 it expands VimL |expression|s and interprets VimL commands. Thus, we can
 expand almost any kind of tags we wish to. Our possibilities are limited only
 by VimL.
@@ -903,11 +903,11 @@ placed into a {rtp}/after/ directory. Thus, it leaves us the possibility to
 override them. See |MuT-paths|.
 
 
-µTemplate uses some other plugins. I (LH)'d rather use one (even complex) plugin
+ÂµTemplate uses some other plugins. I (LH)'d rather use one (even complex) plugin
 that defines a feature I need in several places, instead of copying an
 over-simplified and limited version of the functions defined in that plugin in
 every other (ft)plugin that need this specific feature.
-In other words, I prefer modularity over redundancy. That's why µTemplate
+In other words, I prefer modularity over redundancy. That's why ÂµTemplate
 depends on other plugins.
 
 
@@ -979,7 +979,7 @@ PARTICULAR PURPOSE.
 ==============================================================================
 CREDITS                                     *MuT-credits*      {{{1
 
-Gergely Kontra:         Author of the first version of µTemplate
+Gergely Kontra:         Author of the first version of ÂµTemplate
 Luc Hermitte (LH):      Author of this enhanced version and this documentation
 Robert Kelly IV:        For his insight and the ideas he gave me (LH)
         * Robert Kelly IV's |fte.txt| proposes a nice way to post process the
@@ -990,7 +990,7 @@ Tom Link                For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2016 <http://github.com/LucHermitte/mu-template>, CC by SA 3.0 {{{1
+ Â© Luc Hermitte, 2001-2016 <http://github.com/LucHermitte/mu-template>, CC by SA 3.0 {{{1
  VIM: let b:VS_language = 'american'
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
  vim600:fdm=marker:
