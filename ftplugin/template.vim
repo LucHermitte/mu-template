@@ -2,9 +2,9 @@
 " File:		ftplugin/template.vim
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://hermitte.free.fr/vim>
-" Version:	4.0.0
+" Version:	4.3.0
 " Created:	13th nov 2002
-" Last Update:	21st Dec 2015
+" Last Update:	14th Mar 2017
 "------------------------------------------------------------------------
 " Description:	ftplugin for mu-template's template files
 "   It makes sure that the syntax coloration and ftplugins loaded match the
@@ -12,6 +12,7 @@
 "
 "------------------------------------------------------------------------
 " History:
+"    v4.3.0: Add CTRL-L_e to display snippet s: variables
 "    v4.0.0: Better n_CTRL-W on s:Include()
 "    v3.5.3. Syntax file for templates that embeds some of vim syntax
 "    v2.3.0.
@@ -46,6 +47,8 @@ endif
 runtime syntax/template.vim
 
 nnoremap <buffer> <silent> <c-w>f :call <sid>OpenFile()<cr>
+xnoremap <buffer>          <c-l>e <c-\><c-n>:echo lh#object#to_string(lh#mut#debug(lh#visual#selection()))<cr>gv
+nnoremap <buffer>          <c-l>e :echo lh#object#to_string(lh#mut#debug(expand('<cword>')))<cr>
 
 "=============================================================================
 " Global Definitions {{{1
@@ -71,6 +74,7 @@ function! s:OpenFile() abort
   endif
 endfunction
 
+" }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save
 "=============================================================================
