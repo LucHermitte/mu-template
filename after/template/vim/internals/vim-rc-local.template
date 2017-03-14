@@ -73,7 +73,7 @@ MuT:  if has_key(s:_prj_kind, 'cmake')
 VimL:     call s:Include('vim-rc-local-cmake', 'vim/internals')
 MuT:  endif
 VimL: " Bug tracker
-VimL: let s:bug_tracker = WHICH('CONFIRM',"Which bug tracker will you use ?", ['None/Another', '&Jira'])
+VimL: let s:bug_tracker = lh#ui#which('lh#ui#confirm',"Which bug tracker will you use ?", ['None/Another', '&Jira'])
 MuT:  if s:bug_tracker == 'Jira'
 VimL:     call s:Include('vim-rc-local-jira', 'vim/internals')
 MuT:  endif

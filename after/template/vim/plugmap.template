@@ -6,10 +6,10 @@ VimL: let s:marker_close = '+>'
 MuT:  let s:mapmode = s:SurroundableParam('mode', 1, lh#option#unset())
 MuT:  let s:plugname = s:SurroundableParam('plug', 2, lh#option#unset())
 MuT:  if lh#option#is_unset(s:mapmode)
-MuT:    let s:mapmode = INPUT('Mode (invox)?', lh#marker#txt('mode'))
+MuT:    let s:mapmode = lh#ui#input('Mode (invox)?', lh#marker#txt('mode'))
 MuT:  endif
 MuT:  if lh#option#is_unset(s:plugname)
-MuT:    let s:plugname =  INPUT('<Plug>?',       lh#marker#txt('name'))
+MuT:    let s:plugname =  lh#ui#input('<Plug>?',       lh#marker#txt('name'))
 MuT:  endif
 VimL: call s:Include('get-script-kind', 'vim/internals')
 VimL: let s:buffer = s:ftplug ? '<buffer> ' : ''

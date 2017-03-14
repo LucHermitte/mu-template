@@ -4,7 +4,7 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
-VimL: let s:doc_kind = WHICH('CONFIRM', 'Document kind:', ['article', 'book'])
+VimL: let s:doc_kind = lh#ui#which('lh#ui#confirm', 'Document kind:', ['article', 'book'])
 \documentclass[a4paper]{{+s:doc_kind+}}
 \usepackage{color}
 \usepackage{ifthen}

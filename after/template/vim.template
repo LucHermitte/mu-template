@@ -6,7 +6,7 @@ VimL: let s:marker_close = '+>'
 VimL: call s:Include('get-script-kind', 'vim/internals')
 VimL: call s:Include('vim-header', 'vim/internals')
 VimL: let s:fn = substitute(expand("%:t:r"),'\W', '_', 'g')
-VimL: " let s:ftplug = CONFIRM("Is this script an ftplugin ?", "&Yes\n&No", s:ftplug)==1
+VimL: " let s:ftplug = lh#ui#confirm("Is this script an ftplugin ?", "&Yes\n&No", s:ftplug)==1
 MuT:  if s:ftplug
 VimL:    call s:Include('vim-ftplugin', 'vim/internals')
 MuT:  elseif s:alplug

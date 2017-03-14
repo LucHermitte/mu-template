@@ -6,7 +6,7 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 
 \frame<+[options]+>
-{ \frametitle{¡INPUT('title ?')¡}
+{ \frametitle{¡lh#ui#input('title ?')¡}
 \framesubtitle{\helptitle{<+tags+>}{<+file+>}}
 \begin{itemize}
   \item <++>

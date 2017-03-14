@@ -5,8 +5,8 @@ VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: let s:name = INPUT('Name of the index: ', Marker_Txt('i'))
-VimL: if "" != s:name | let s:max = INPUT('Number of iterations: ') | endif
+VimL: let s:name = lh#ui#input('Name of the index: ', lh#marker#txt('i'))
+VimL: if "" != s:name | let s:max = lh#ui#input('Number of iterations: ') | endif
 let ¡s:name¡ = 0
 while ¡s:name¡ != ¡s:max¡
     ¡s:Surround(1, '<+code+>')¡

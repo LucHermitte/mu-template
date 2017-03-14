@@ -318,7 +318,7 @@ endfunction
 function! lh#mut#surround() abort
   try
     " 1- ask which template to execute {{{3
-    let which = INPUT("which snippet?")
+    let which = lh#ui#input("which snippet?")
     let files = lh#mut#dirs#get_short_list_of_TF_matching(which.'*', &ft)
 
     let nbChoices = len(files)
@@ -512,7 +512,7 @@ endfunction
 function! s:ParamOrAsk(name, ...) abort
   let res = s:Param(a:name, lh#option#unset())
   if lh#option#is_set(res) | return res | endif
-  return call('INPUT',a:000)
+  return call('lh#ui#input',a:000)
 endfunction
 
 " Function: s:CmdLineParams(...)     {{{3
