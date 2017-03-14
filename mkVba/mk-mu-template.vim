@@ -7,7 +7,7 @@
 " Version:	4.3.0
 let s:version = '4.3.0'
 " Created:	06th Nov 2007
-" Last Update:	07th Mar 2017
+" Last Update:	14th Mar 2017
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -114,6 +114,8 @@ after/template/markdown/pre.template
 after/template/perl.template
 after/template/perl/item.template
 after/template/perl/over.template
+after/template/python/__del__.template
+after/template/python/__init__.template
 after/template/python/class.template
 after/template/python/def.template
 after/template/python/docstring.template
@@ -122,7 +124,6 @@ after/template/python/else.template
 after/template/python/from.template
 after/template/python/if.template
 after/template/python/ifelse.template
-after/template/python/init.template
 after/template/python/main.template
 after/template/python/path-exists.template
 after/template/python/unittest.template

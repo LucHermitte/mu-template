@@ -1,0 +1,4 @@
+VimL:" __del__ File Template, Luc Hermitte, 14th Mar 2017
+VimL:" hint: def __del__(self, ...)
+VimL: let s:reindent     = 'python'
+VimL: call s:Include('def', 'python', {'indented': s:Param("indented", 0), 'name': '__del__', 'params': 'self', 'doc': s:SurroundableParam('doc', 4, 'destructor') })

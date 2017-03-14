@@ -81,7 +81,7 @@ RSpec.describe "Python snippets", :python do
   specify "class inserted class :MuTemplate", :class do
     vim.command('MuTemplate python/class')
     assert_buffer_contents <<-EOF
-    class «cls-name»:
+    class «Test»:
         """
         «class documentation»
         """

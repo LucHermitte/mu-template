@@ -3,23 +3,29 @@ VimL:" hint: class :
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 'python'
-MuT:  let s:clsname    = s:SurroundableParam('clsname', 2, lh#marker#txt(lh#dev#naming#type(expand('%:t:r'))))
-MuT:  let s:functions  = s:Param('functions', lh#mut#snippets#new_function_list())
+MuT:  let s:clsname          = s:SurroundableParam('clsname', 2, lh#marker#txt(lh#dev#naming#type(expand('%:t:r'))))
+MuT:  let s:functions        = s:Param('functions', lh#mut#snippets#new_function_list())
+MuT:  let s:need_destruction = s:Param('need_destruction', 0)
 VimL: " =====[ Attributes
 VimL: " =====[ Class characteristics
 VimL: " =====[ Parents
 MuT:  let s:parents = s:Param("parents", lh#option#unset())
 VimL: " =====[ Functions
 VimL: " --------[ Attribute functions (get/set)
-MuT:  let s:init_constructor = s:functions.get1({'kind': 'init'})
+MuT:  let s:init_constructor = s:functions.get1({'kind': '__init__'})
 VimL: " --------[ General case
 VimL: call s:functions.reverse()
 MuT:  let s:function_list = s:functions.list
 VimL: " --------[ Special Functions
 VimL: " In reverse order because of how Include() works
-MuT:  let s:special_function_names = ['destructor'] " init already extracted
+VimL: "   init already extracted
+MuT:  let s:special_function_names = []
+MuT:  if s:need_destruction
+MuT:     let s:special_function_names = ['__del__']
+MuT:  endif
 MuT:  let s:spe_func_data = map(copy(s:special_function_names), "extend(s:Param(v:val, {}), {'kind': v:val})")
-MuT:  let s:special_functions = copy(s:spe_func_data) " No need to filter in Python case
+VimL: " No need to filter in Python case
+MuT:  let s:special_functions = copy(s:spe_func_data)
 VimL: let s:special_functions = lh#mut#snippets#_filter_functions(s:special_functions, '')
 VimL: call extend(s:function_list, map(copy(s:special_functions), 'v:val'))
 VimL: " =====[ The Skeleton

@@ -5,12 +5,12 @@ VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 'python'
 MuT:  let s:function = s:Param('function', {})
 MuT:  let s:kind = get(s:function, 'kind', '')
-MuT:  if s:kind =~ '\vinit'
+MuT:  if s:kind =~ '\v__\S+__'
 VimL:   " avoid infinite loop thanks to :unlet
 VimL:   unlet s:function['kind']
-VimL: " TODO: add self!
 VimL:   call s:Include(s:kind, 'python', extend(s:function, {'indented': 0}))
 MuT:  else
+VimL: " TODO: add self, if not yet defined in method cases ; and auto-detect methods!
 def <+s:SurroundableParam('name', 2) +>(<+s:SurroundableParam('params', 3)+>):
 VimL: call s:Include('docstring', 'python', {'indented': 1})
     <+s:SurroundableParam('pass', 1)+>
