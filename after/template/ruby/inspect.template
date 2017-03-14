@@ -1,0 +1,9 @@
+VimL:" {rtp}/template/ruby/inspect.template
+VimL:" hint: puts "<+var+> = #{<+var+>.inspect}
+VimL: let s:value_start  = '¡'
+VimL: let s:value_end    = '¡'
+VimL: let s:reindent     = 1
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:varname = matchstr(getline(line('.')-1), '^\s*\zs\k\+\ze\s*=')
+puts "¡s:varname¡ = #{¡s:varname¡.inspect}"<+s:TerminalPlaceHolder()+>
