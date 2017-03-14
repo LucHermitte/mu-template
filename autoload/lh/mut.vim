@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  24th Jan 2017
+" Last Update:  14th Mar 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -161,7 +161,7 @@ function! s:Verbose(...)
   endif
 endfunction
 
-function! lh#on#debug(expr) abort
+function! lh#mut#debug(expr) abort
   return eval(a:expr)
 endfunction
 
