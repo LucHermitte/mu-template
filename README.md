@@ -98,7 +98,7 @@ NB: there are no µTemplate snippets for `:if`, _etc._ because they are maintain
      line matching the current `&fileencoding` are inserted.
   * Snippets for the main control statements are provided: `if`, `ifelse`,
     `elif`, `else`, `while`
-  * Snippets for `class`, `def`, `init` and _docstring_ are also provided
+  * Snippets for `class`, `def`, `init`, `del`, and _docstring_ are also provided
   * Plus a few other snippets: `from`-`import`, `with`, ...
 
 ### C & C++
@@ -329,34 +329,41 @@ VimL: silent! unlet s:times
 
 
 ## Installation
-  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib), [searchInRuntime](http://github.com/LucHermitte/searchInRuntime), and my [bracketing-system](http://github.com/LucHermitte/lh-brackets)
+  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib), [lh-dev](http://github.com/LucHermitte/lh-dev), and my [bracketing-system](http://github.com/LucHermitte/lh-brackets). Note that lh-dev requires lh-tags for tasks unrelated to mu-template ones.
   * With [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager), install mu-template@lh. This is the preferred method because of the various dependencies.
 ```vim
 ActivateAddons mu-template@lh
+" And don't forget
+ActivateAddons stakeholders
 ```
   * or you can use [vim-flavor](https://github.com/kana/vim-flavor) that also
     supports dependencies
 ```
 flavor 'LucHermitte/mu-template'
+" And don't forget
+flavor 'tomtom/stakeholders_vim'
 ```
   * N.B.: installing [lh-cpp](http://github.com/LucHermitte/lh-cpp) or [lh-refactor](http://github.com/LucHermitte/lh-refactor) with VAM or vim-flavor will also install µTemplate.
   * or you can clone the git repositories
 ```
 git clone git@github.com:LucHermitte/lh-vim-lib.git
-git clone git@github.com:LucHermitte/lh-tags.git
 git clone git@github.com:LucHermitte/lh-dev.git
 git clone git@github.com:LucHermitte/lh-brackets.git
-git clone git@github.com:LucHermitte/searchInRuntime.git
 git clone git@github.com:LucHermitte/mu-template.git
+# Not required by mu-template, but for other lh-dev features
+git clone git@github.com:LucHermitte/lh-tags.git
+# and don't forget:
+git clone git@github.com:tomtom/stakeholders_vim.git
 ```
   * or with Vundle/NeoBundle:
 ```vim
 Bundle 'LucHermitte/lh-vim-lib'
-Bundle 'LucHermitte/lh-tags'
 Bundle 'LucHermitte/lh-dev'
 Bundle 'LucHermitte/lh-brackets'
-Bundle 'LucHermitte/searchInRuntime'
 Bundle 'LucHermitte/mu-template'
+" Not required by mu-template, but for other lh-dev features
+Bundle 'LucHermitte/lh-tags'
+" and don't forget:
 Bundle 'tomtom/stakeholders_vim'
 ```
 

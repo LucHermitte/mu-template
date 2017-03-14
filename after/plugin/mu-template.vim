@@ -2,7 +2,7 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  03rd Jan 2017
+" Last Update:  14th Mar 2017
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.3.0
@@ -366,6 +366,7 @@ let s:k_version = 430
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
 "       (*) REFACT: Remove `DateStamp()`
+"       (*) REFACT: Remove SearchInRuntime dependency
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
@@ -661,18 +662,15 @@ endif
 " Menus }}}1
 " Help {{{1
 " Function: s:Help()                         {{{2
+let s:mut_rtp_root = expand('<sfile>:p:h:h:h')
 function! s:Help()
   let errmsg_save = v:errmsg
+  let v:errmsg = ''
   silent! help mu-template
   if v:errmsg != ""
-    if exists(':SearchInRuntime')
-      command! -nargs=1 HelpTags exe 'helptags '.fnamemodify('<args>', ':h')
-      SearchInRuntime HelpTags doc/mu-template.txt
-      delcommand HelpTags
-      silent help mu-template
-    else
-      call s:ErrorMsg("Please install the help for mu-template")
-    endif
+    echomsg 'helptags ' . s:mut_rtp_root.'/doc'
+    exe 'helptags ' . s:mut_rtp_root.'/doc'
+    silent help mu-template
   endif
   let v:errmsg = errmsg_save
 endfunction
