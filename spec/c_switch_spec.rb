@@ -6,7 +6,19 @@ require 'pp'
 RSpec.describe "C switch-case snippets", :c, :switch do
   let (:filename) { "test.c" }
 
-  # ==========[ before {{{2
+  # ====[ Executed once before all test {{{2
+  before :all do
+    if !defined? vim.runtime
+        vim.define_singleton_method(:runtime) do |path|
+            self.command("runtime #{path}")
+        end
+    end
+    vim.runtime('spec/support/input-mock.vim')
+    expect(vim.command('verbose function lh#ui#input')).to match(/input-mock.vim/)
+    expect(vim.echo('lh#mut#dirs#get_templates_for("c/switch")')).to match(/switch.template/)
+  end
+
+  # ====[ Always executed before each test {{{2
   before :each do
     vim.command('filetype plugin on')
     vim.command("file #{filename}")
@@ -15,24 +27,17 @@ RSpec.describe "C switch-case snippets", :c, :switch do
     vim.set('sw=4')
     vim.command('imap <tab> <Plug>MuT_ckword')
     clear_buffer
-    expect(vim.echo('lh#mut#dirs#get_templates_for("c/switch")')).to match(/switch.template/)
     expect(vim.echo('&ft')).to match(/c/)
     expect(vim.echo('mapcheck("<Plug>MuT_ckword", "i")')).to match(/lh#mut#search_templates/)
-    if !defined? vim.runtime
-        vim.define_singleton_method(:runtime) do |path|
-            self.command("runtime #{path}")
-        end
-    end
-    vim.runtime('spec/support/input-mock.vim')
 
     vim.command('let g:mocked_input = 42')
-    expect(vim.echo('INPUT("toto")')).to eq '42'
+    expect(vim.echo('lh#ui#input("toto")')).to eq '42'
   end
 
   # ==========[ :MuTemplate {{{2
   specify "inserted with ':MuTemplate', no brackets", :cmd_mut do
     vim.command('let g:mocked_input = 0')
-    expect(vim.echo('INPUT("toto")')).to eq '0'
+    expect(vim.echo('lh#ui#input("toto")')).to eq '0'
     # Set K&R/Stroustrup style
     vim.command('AddStyle { -ft=c -prio=10 \ {\n')
     vim.command('AddStyle } -ft=c -prio=10 \n}')
@@ -51,7 +56,7 @@ RSpec.describe "C switch-case snippets", :c, :switch do
 
   specify "inserted with ':MuTemplate un deux trois', no brackets", :cmd_mut, :params do
     vim.command('let g:mocked_input = 0')
-    expect(vim.echo('INPUT("toto")')).to eq '0'
+    expect(vim.echo('lh#ui#input("toto")')).to eq '0'
     # Set K&R/Stroustrup style
     vim.command('AddStyle { -ft=c -prio=10 \ {\n')
     vim.command('AddStyle } -ft=c -prio=10 \n}')
@@ -76,7 +81,7 @@ RSpec.describe "C switch-case snippets", :c, :switch do
 
   specify "inserted with ':MuTemplate un deux trois', w/ brackets", :cmd_mut, :param do
     vim.command('let g:mocked_input = 1')
-    expect(vim.echo('INPUT("toto")')).to eq '1'
+    expect(vim.echo('lh#ui#input("toto")')).to eq '1'
     # Set Allman style
     vim.command('AddStyle { -ft=c -prio=10 \n{\n')
     vim.command('AddStyle } -ft=c -prio=10 \n}\n')
@@ -112,7 +117,7 @@ RSpec.describe "C switch-case snippets", :c, :switch do
 
   specify "inserted with ':MuTemplate', w/ brackets", :cmd_mut do
     vim.command('let g:mocked_input = 1')
-    expect(vim.echo('INPUT("toto")')).to eq '1'
+    expect(vim.echo('lh#ui#input("toto")')).to eq '1'
     # Set Allman style
     vim.command('AddStyle { -ft=c -prio=10 \n{\n')
     vim.command('AddStyle } -ft=c -prio=10 \n}\n')
