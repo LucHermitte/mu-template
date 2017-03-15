@@ -1,0 +1,172 @@
+VimL:" out-of-source File Template, Luc Hermitte, 15th Mar 2017
+VimL:" hint: A Makefile for out-of-source builds
+VimL: " TODO: Add way to inject Release/Debug/Sanitization
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: " TODO: support abort
+MuT:  let s:prj_kind = lh#ui#which('lh#ui#confirm', 'What kind of project is it?', ['&C', 'C&++'], 2)
+MuT:  let s:library_kind = lh#ui#which('lh#ui#confirm', 'Would you like to generate?', ['a &static library', 'a &dynamic library', '&directly the executable'], 2)
+## FLAGS {{{1
+MuT:  if s:prj_kind == 'C'
+MuT:    let s:extension = 'c'
+MuT:    let s:var_prefix = 'C'
+MuT:  else
+MuT:    let s:extension = 'cpp'
+MuT:    let s:var_prefix = 'CXX'
+MuT:  endif
+MuT:  if     s:library_kind =~? 'static'
+ARFLAGS = cr
+MuT:    let s:comp_flag_complements = ''
+MuT:    let s:lib_extension = '.a'
+MuT:  elseif s:library_kind =~? 'dynamic'
+LDFLAGS = -shared
+MuT:    let s:comp_flag_complements = '-fPIC'
+MuT:    let s:lib_extension = '.so'
+MuT:  else
+MuT:    let s:comp_flag_complements = ''
+MuT:  endif
+<+s:var_prefix+>FLAGS = -Wall <+s:comp_flag_complements+>
+
+# DEPFLAGS for gcc, clang
+DEPFLAGS = -MM
+
+SED = sed
+
+## Config {{{1
+# COTS/3rd parties
+LIBRARIES=<+-lfoobar+>
+INCLUDES =<+-Ifoobardir/include+>
+
+SRCDIR = .
+OBJDIR = <+obj+>
+LIBDIR = <+lib+>
+BINDIR = <+bin+>
+DEPDIR = <+.depends+>
+PREFIX = <+install+>
+
+MuT:  let s:main_name = expand('%:p:h:t')
+EXECUTABLE = $(BINDIR)/<+lh#marker#txt(s:main_name)+>
+MuT:  if     s:library_kind =~? 'static\|dynamic'
+MuT:    let s:library       = '$(LIBRARY)'
+MuT:    let s:library_dir   = '-L$(LIBDIR) '
+MuT:    let s:library_short = '-l'.lh#marker#txt(s:main_name)
+MuT:    let s:prefix_lib    = '$(PREFIX)/lib '
+LIBRARY = $(LIBDIR)/<+'lib'.lh#marker#txt(s:main_name).s:lib_extension+>
+MuT:  else
+MuT:    let s:library       = '$(OBJS)'
+MuT:    let s:library_dir   = ''
+MuT:    let s:library_short = '$(OBJS)'
+MuT:    let s:prefix_lib    = ''
+MuT:  endif
+
+# you may prefer to list the files explicitly
+SRCS=$(wildcard *.<+s:extension+>)
+OBJS=$(patsubst %.<+s:extension+>,$(OBJDIR)/%.o,$(SRCS))
+DEPS=$(patsubst %.<+s:extension+>,$(DEPDIR)/%.d,$(SRCS))
+HEADERS=$(wildcard $(SRCDIR)/*.h $(SRCDIR)/*.hpp)
+
+# When dependencies aren't required to generate some phony targets.
+DEPEND=no
+
+ifeq ($(findstring all,$(MAKECMDGOALS)),all)
+    DEPEND = yes
+    -include $(ALLDEPS)
+endif
+ifeq ($(findstring exe,$(MAKECMDGOALS)),exe)
+    DEPEND = yes
+    -include $(DEPS)
+endif
+ifeq ($(findstring lib,$(MAKECMDGOALS)),lib)
+    DEPEND = yes
+    -include $(DEPS)
+endif
+
+## Rules {{{1
+.PHONY: clean depend default all install
+
+default:
+	@echo "Available Make commands are:"
+	@echo ""
+	@echo " - all:         Compiles and builds everything"
+	@echo " - install:     Installs lib and include into $(PREFIX)"
+	@echo " - clean:       Cleans products."
+	@echo ""
+	@echo "SRCDIR=$(SRCDIR)"
+	@echo "DEPS=$(DEPS)"
+
+all: $(LIBRARY) $(EXECUTABLE)
+
+# Link
+
+MuT:  if     s:library_kind =~? 'static'
+$(LIBRARY): $(DEPS) $(OBJS) $(LIBDIR)
+	@echo "Archiving $@ ..."
+	$(AR) $(ARFLAGS) $(LIBRARY) $(OBJS) $(LIBRARIES)
+	@echo "done"
+MuT:  elseif s:library_kind =~? 'dynamic'
+$(LIBRARY): $(DEPS) $(OBJS) $(LIBDIR)
+	@echo "Linking $@ ..."
+	$(<+s:var_prefix+>) $(LDFLAGS) -o $(LIBRARY) $(OBJS) $(LIBRARIES)
+	@echo "done"
+MuT:  else
+MuT:  endif
+
+$(EXECUTABLE): <+s:library+> $(BINDIR)
+	@echo "Building $@ ..."
+	$(<+s:var_prefix+>) $(<+s:var_prefix+>FLAGS) <+s:library_dir+> -o "$@" <+s:library_short+>$(LIBRARIES)
+
+# Dependencies
+$(DEPDIR)/%.d:$(SRCDIR)/%.<+s:extension+> $(DEPDIR)
+	$(<+s:var_prefix+>) $(DEPFLAGS) $(<+s:var_prefix+>FLAGS) $(CPPFLAGS) $(INCLUDES) $< \
+	| $(SED) 's,\($*\)\.o[ :]*,\1.o $@: ,' > $@
+
+depend: $(DEPDIR) $(DEPS)
+
+
+# Compile
+$(OBJDIR)/%.o:$(SRCDIR)/%.<+s:extension+> $(OBJDIR)
+	$(<+s:var_prefix+>) $(<+s:var_prefix+>FLAGS) $(INCLUDES) -c "$<" -o "$@"
+
+
+# Other phony stuff
+clean:
+	@rm -rf $(DEPDIR) $(OBJDIR) $(LIBDIR) $(BINDIR)
+
+# Directories
+$(BINDIR):
+	mkdir $(BINDIR)
+
+MuT:  if     s:library_kind =~? 'static\|dynamic'
+$(LIBDIR):
+	mkdir $(LIBDIR)
+
+MuT:  endif
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+$(DEPDIR):
+	mkdir $(DEPDIR)
+
+$(PREFIX)/include:
+	mkdir -p $(PREFIX)/include
+
+$(PREFIX)/bin:
+	mkdir -p $(PREFIX)/bin
+
+MuT:  if     s:library_kind =~? 'static\|dynamic'
+$(PREFIX)/lib:
+	mkdir -p $(PREFIX)/lib
+
+MuT:  endif
+# installation
+install: $(LIBRARY) $(PREFIX)/bin <+s:prefix_lib+>$(PREFIX)/include
+	install -m 0755 $(EXECUTABLE) $(PREFIX)/bin
+MuT:  if     s:library_kind =~? 'static\|dynamic'
+	install -m 0755 $(LIBRARY) $(PREFIX)/lib
+MuT:  endif
+	install -m 0644 $(HEADERS) $(PREFIX)/include
+
+# }}}1
+# vim: set fdm=marker:sw=8:
