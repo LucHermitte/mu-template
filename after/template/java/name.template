@@ -1,0 +1,16 @@
+VimL:" $Id$
+VimL:" «name» File Template, Luc Hermitte, 17th Oct 2011
+VimL:" hint: «name»
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:nb_args = lh#ui#input("Number of args: ")
+VimL: let s:args=map(copy(range(1,s:nb_args)), '"arg".v:val')
+VimL: let s:formal = join(map(copy(s:args), "'String '.v:val"), ', ')
+VimL: let s:real = join(s:args, ', ')
+VimL: let s:format = join(map(copy(s:args), "v:val.'={'.v:val.'}'"), '&')
+String name(<+s:formal+>) {
+    trampoline("name={name}&<+s:format+>",
+        name, <+s:real+>);
+}

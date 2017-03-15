@@ -1,0 +1,7 @@
+VimL:" url File Template, Luc Hermitte <hermitte {at} free {dot} fr>, jeu. 31 mars 2016 15:10:20 CEST
+VimL:" hint: \url{<++>}<++>
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+\url{¡s:Surround(1,'{+url+}')¡}{+s:TerminalPlaceHolder()+}
