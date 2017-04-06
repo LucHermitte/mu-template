@@ -5,7 +5,9 @@ VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
+# <+name+> {{{2
 function <+name+>()
 {
     ¡s:Surround(1, '<+code+>')¡
 }
+
