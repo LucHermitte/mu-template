@@ -11,7 +11,7 @@ VimL: let s:marker_close = '+>'
 # http://www.gnu.org/licenses/gpl-2.0.txt
 # http://creativecommons.org/licenses/by-sa/3.0/
 current_dir() {
-    pushd $(dirname $(readlink -f "$BASH_SOURCE")) > /dev/null
+    pushd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" > /dev/null
     local SCRIPT_DIR="$PWD"
     popd > /dev/null
     echo $SCRIPT_DIR
