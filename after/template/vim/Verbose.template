@@ -5,4 +5,4 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  let s:_fmt = s:SurroundableParam('format', 1)
-call s:Verbose(<+s:_fmt+>, <+vars+>)<+s:TerminalPlaceHolder()+>
+call s:Verbose(<+s:_fmt+>)<+s:TerminalPlaceHolder()+>
