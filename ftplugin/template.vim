@@ -4,7 +4,7 @@
 "		<URL:http://hermitte.free.fr/vim>
 " Version:	4.3.0
 " Created:	13th nov 2002
-" Last Update:	14th Mar 2017
+" Last Update:	12th Sep 2017
 "------------------------------------------------------------------------
 " Description:	ftplugin for mu-template's template files
 "   It makes sure that the syntax coloration and ftplugins loaded match the
@@ -67,10 +67,10 @@ function! s:OpenFile() abort
   if l !~ 's:Include('
     exe "normal! \<c-w>f"
   else
-    let [a, file, path ; tail] = matchlist( l, '\vs:Include\(\s*([^,]+),\s*([^,\)]+)(,\s*[^\)]+)=\)')
+    let [a, file, path ; tail] = matchlist( l, '\vs:Include\(\s*([^,]+)%(,\s*([^,\)]+)(,\s*[^\)]+)=)=\)')
     let file = eval(file)
-    let path = eval(path)
-    call lh#mut#edit(path.'/'.file)
+    let path = empty(path) ? '' : eval(path).'/'
+    call lh#mut#edit(path.file)
   endif
 endfunction
 
