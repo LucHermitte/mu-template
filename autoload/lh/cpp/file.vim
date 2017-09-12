@@ -7,9 +7,9 @@
 " Last Update:	$Date$
 "------------------------------------------------------------------------
 " Description:	«description»
-" 
+"
 "------------------------------------------------------------------------
-" Installation:	
+" Installation:
 " 	drop into {rtp}/autoload/lh/cpp
 " History:	«history»
 " TODO:		«missing features»
@@ -64,7 +64,7 @@ function! lh#cpp#file#HeaderName(file)
     let inc_paths = lh#cpp#file#IncludedPaths()
     call map(l_matches, 'lh#path#strip_start(v:val, inc_paths)')
     if len(l_matches) > 1
-      call map(l_matches, 'Marker_Txt(v:val)')
+      call map(l_matches, 'lh#marker#txt(v:val)')
     endif
     return join(l_matches,'')
   else " a.vim is not installed
@@ -72,6 +72,7 @@ function! lh#cpp#file#HeaderName(file)
     if      s:ValidFile(base.'.h')   | return base.'h'
     elseif  s:ValidFile(base.'.hh')  | return base.'hh'
     elseif  s:ValidFile(base.'.hpp') | return base.'hpp'
+    else                             | return ''
     endif
   endif
 endfunction
