@@ -2,9 +2,10 @@
 " File:		autoload/lh/cpp/file.vim                           {{{1
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:	2.1.0
+" Version:	4.3.0
+let s:k_version = '4.3.0'
 " Created:	12th Feb 2008
-" Last Update:	$Date$
+" Last Update:	12th Sep 2017
 "------------------------------------------------------------------------
 " Description:	«description»
 "
@@ -20,26 +21,39 @@ let s:cpo_save=&cpo
 set cpo&vim
 "------------------------------------------------------------------------
 " ## Functions {{{1
-" # Debug {{{2
-function! lh#cpp#file#verbose(level)
-  let s:verbose = a:level
+" ## Misc Functions     {{{1
+" # Version {{{2
+function! lh#cpp#file#version()
+  return s:k_version
 endfunction
 
-function! s:Verbose(expr)
-  if exists('s:verbose') && s:verbose
-    echomsg a:expr
+" # Debug   {{{2
+let s:verbose = get(s:, 'verbose', 0)
+function! lh#cpp#file#verbose(...)
+  if a:0 > 0 | let s:verbose = a:1 | endif
+  return s:verbose
+endfunction
+
+function! s:Log(expr, ...)
+  call call('lh#log#this',[a:expr]+a:000)
+endfunction
+
+function! s:Verbose(expr, ...)
+  if s:verbose
+    call call('s:Log',[a:expr]+a:000)
   endif
 endfunction
 
-function! lh#cpp#file#debug(expr)
+function! lh#cpp#file#debug(expr) abort
   return eval(a:expr)
 endfunction
 
 "------------------------------------------------------------------------
 " # Public {{{2
 function! lh#cpp#file#IncludedPaths()
-  let paths = copy(lh#option#get("cpp_included_paths", []))
-  call add(paths, '.')
+  " TODO: also add project path bu default?
+  let paths = copy(lh#option#get("cpp_included_paths", [expand('%:p:h')]))
+  " call add(paths, '.')
   return paths
 endfunction
 
@@ -48,7 +62,19 @@ function! s:ValidFile(filename)
 endfunction
 
 function! lh#cpp#file#HeaderName(file)
-  if exists("*EnumerateFilesByExtension") " From a.vim
+  if     exists('g:lh#alternate')             " From alternate-lite
+    let alternates = lh#alternate#_find_existing_alternates({'filename': a:file, 'ft': &ft})
+    call map(alternates, 'lh#path#simplify(v:val, 0)')
+    let alternates = lh#list#unique_sort(alternates)
+    let inc_paths = lh#cpp#file#IncludedPaths()
+    "" Replace '.' path with path of current file
+    " call map(inc_paths, 'substitute(v:val, "^\\.\\(/\\|$\\)", expand("%:p:h"), "g")')
+    call map(alternates, 'lh#path#strip_start(v:val, inc_paths)')
+    if len(alternates) > 1
+      call map(alternates, 'lh#marker#txt(v:val)')
+    endif
+    return join(alternates,'')
+  elseif exists("*EnumerateFilesByExtension") " From a.vim
     let extension   = DetermineExtension(fnamemodify(a:file, ":p"))
     let baseName    = substitute(fnamemodify(a:file, ":t"), "\." . extension . '$', "", "")
     let currentPath = fnamemodify(a:file, ":p:h")
