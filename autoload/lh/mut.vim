@@ -820,6 +820,7 @@ endfunction
 " @post s:content.scope = [1]
 " @post s:content.callbacks = []
 " @post s:content.crt_indent doesn't exists
+" @post s:content.styles = lh#dev#style#get(&ft)
 " @post no variables
 function! s:ResetContext() abort
   call s:Verbose('s:ResetContext()')
@@ -828,6 +829,7 @@ function! s:ResetContext() abort
   let s:content.scope = [1]
   let s:content.callbacks = []
   let s:content.contexts = lh#stack#new()
+  let s:content.styles = lh#dev#style#get(&ft)
   if has_key(s:content, 'crt_indent')
     unlet s:content.crt_indent
   endif
@@ -1124,10 +1126,8 @@ function! s:ApplyStyling(line) abort
     throw 'already within the definition of a function (no non-VimL code authorized)'
   endif
 
-  " TODO: get the styles once per template expansion
-  let styles = lh#dev#style#get(&ft)
-  if empty(styles) | return a:line | endif
-  return lh#dev#style#apply_these(styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
+  if empty(s:content.styles) | return a:line | endif
+  return lh#dev#style#apply_these(s:content.styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
 endfunction
 
 " s:NoRegex(text)                                              {{{3
