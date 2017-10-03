@@ -2,9 +2,7 @@ VimL:"{do-while} Template-File, Luc Hermitte
 VimL:" hint: do { action } while (cond);
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
-VimL: let s:reindent     = 1 
+VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-do{
-    ¡s:Surround(1, '<+code+>')¡
-}while(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡);<+s:TerminalPlaceHolder()+>
+do{¡s:Surround(1, '<+code+>')¡}while(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡);<+s:TerminalPlaceHolder()+>
