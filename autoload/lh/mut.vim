@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  14th Mar 2017
+" Last Update:  03rd Oct 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -24,6 +24,7 @@ let s:k_version = 430
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
 "       (*) ENH: Add `s:IncludeSeveralSnippets()`
+"       (*) ENH: Use new stylistic API from lh-dev
 "       v4.2.0
 "       (*) ENH: Use the new lh-vim-lib logging framework
 "       (*) ENH: Store `v:count` into `s:content.count0`
@@ -368,6 +369,7 @@ function! lh#mut#surround() abort
 
     " 3- insert the template {{{3
     let s:content.is_surrounding = 1
+    let s:content.surrounding_with = visualmode()
     if !lh#mut#expand_and_jump(1,file)
       call lh#common#error_msg("muTemplate: Problem to insert the template: <".a:file.'>')
     endif
@@ -375,6 +377,7 @@ function! lh#mut#surround() abort
   finally
     silent! unlet s:content[surround_id]
     silent! unlet s:content.is_surrounding
+    silent! unlet s:content.surrounding_with
   endtry
 endfunction
 "------------------------------------------------------------------------
@@ -1013,28 +1016,42 @@ function! s:InterpretValuesAndMarkers(line) abort
 
   " echo "line:" . a:line
   let res = ''
+  let value = '' " so it can be unlet without error
   let tail = a:line
   let re_marker = s:MarkerV('(.{-})')
   let re_value  = s:ValueV('(.{-})')
   let re =  s:k_first.'%('.re_value.'|'.re_marker.')'.s:k_last
-  let g:re = re
+  let k_empty_placeholder = lh#marker#txt()
+  let k_placeholder_submatch_1 = lh#marker#txt('\1')
+  " let g:re = re
   let may_merge = 0
+  " Because of the splitting, context is lost.
+  " -> we need to apply the setting on things generated
+  " -> as long as they aren't surrounded code.
+  " => surrounded stuff are memorized, the style is applied at the end.
+  let can_apply_style = get(s:content, 'can_apply_style', 1)
+  let s:content.cache_of_ignored_matches = []
   while strlen(tail)!=0
     let split = matchlist(tail, re)
     if len(split) <2 || strlen(split[0]) == 0
       " nothing found
-      " echo "res .= ".s:ApplyStyling(tail)
-      let res .= get(s:content, 'can_apply_style', 1) ? s:ApplyStyling(tail) : tail
+      let res .= tail
       let tail = ''
       " let may_merge = 0
     else
       " Style should be applied everywhere but on surrounded things
-      silent! unlet value
-      let s:content.can_apply_style = 1
+      let s:content.can_apply_style = 1 " s:Surround will reset it to 0
+      unlet value
       if !empty(split[2])     " Value to interpret
         let value = s:InterpretValue(split[2])
+        if  can_apply_style && ! get(s:content, 'can_apply_style', 1)
+          " can_apply_style remembers the global setting while
+          " s:content.can_apply_style returns whether s:Surround() has
+          " been called.
+          let value = lh#dev#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
+        endif
       elseif get(s:, 'dont_eval_markers', 0)
-        let value = substitute(value, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+        let value = substitute(value, s:Marker('\(.\{-}\)'), k_placeholder_submatch_1, 'g')
       else
         if !empty(split[3]) " Marker to interpret
           let part = split[3]
@@ -1048,23 +1065,20 @@ function! s:InterpretValuesAndMarkers(line) abort
             let value = lh#marker#txt(part)
           endtry
         else
-          let value = lh#marker#txt()
+          let value = k_empty_placeholder
         endif
       endif
       let sValue = (type(value)!=type("") ? string(value) : value)
-      if get(s:content, 'can_apply_style', 1)
-        " When not on the start of line, styling that expect /^/ don't know it
-        " => combine style application
-        let res .= s:ApplyStyling(split[1] . sValue)
-      else
-        let res .= s:ApplyStyling(split[1]) . sValue
-      endif
+      " call s:Verbose("sValue: `%1`", sValue)
+      let res .= split[1] . sValue
       let tail = split[4]
       let may_merge = 1
     endif
   endwhile
-  " echomsg "may_merge=".may_merge."  ---  ".res
-  " return res
+  if can_apply_style
+    let res = s:ApplyStyling(res)
+  endif
+  call s:Verbose("may_merge=%1; %2 --> %3", may_merge, a:line, res)
   return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
@@ -1110,9 +1124,10 @@ function! s:ApplyStyling(line) abort
     throw 'already within the definition of a function (no non-VimL code authorized)'
   endif
 
+  " TODO: get the styles once per template expansion
   let styles = lh#dev#style#get(&ft)
   if empty(styles) | return a:line | endif
-  return lh#dev#style#apply(a:line)
+  return lh#dev#style#apply_these(styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
 endfunction
 
 " s:NoRegex(text)                                              {{{3
