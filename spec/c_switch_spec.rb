@@ -42,6 +42,7 @@ RSpec.describe "C switch-case snippets", :c, :switch do
     # Set K&R/Stroustrup style
     vim.command('UseStyle breakbeforebraces=stroustrup -ft=c')
     vim.command('UseStyle spacesbeforeparens=control-statements -ft=c')
+    vim.command('UseStyle empty_braces=nl -ft=c')
     vim.command('MuTemplate c/switch')
     assert_buffer_contents <<-EOF
     switch («expr») {

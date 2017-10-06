@@ -689,12 +689,24 @@ function! s:path_from_root(path) abort " {{{3
   return path
 endfunction
 
+" Function: s:SurroundRaw(id, default)  {{{3
+" Return the visual selection, without trying to prevent style
+" application on it
+function! s:SurroundRaw(id, default) abort
+  let key = 'surround'.a:id
+  if has_key(s:content, key)
+    return s:content[key]
+  else
+    return a:default
+  endif
+endfunction
+
 " Function: s:Surround(id, default)  {{{3
 function! s:Surround(id, default) abort
   let key = 'surround'.a:id
   if has_key(s:content, key)
-    let s:content.can_apply_style = 0
-    return s:content[key]
+    let s:content.need_to_reinject_ignored = 1
+    return lh#dev#style#just_ignore_this(s:content[key], s:content.cache_of_ignored_matches)
   else
     return a:default
   endif
@@ -824,14 +836,19 @@ endfunction
 " @post no variables
 function! s:ResetContext() abort
   call s:Verbose('s:ResetContext()')
-  let pos = line('.')
-  let s:content.start = pos
-  let s:content.scope = [1]
-  let s:content.callbacks = []
-  let s:content.contexts = lh#stack#new()
-  let s:content.styles = lh#dev#style#get(&ft)
+  let pos                                = line('.')
+  let s:content.start                    = pos
+  let s:content.scope                    = [1]
+  let s:content.callbacks                = []
+  let s:content.contexts                 = lh#stack#new()
+  let s:content.styles                   = lh#dev#style#get(&ft)
+  let s:content.cache_of_ignored_matches = []
+  let s:content.need_to_reinject_ignored = 0
   if has_key(s:content, 'crt_indent')
     unlet s:content.crt_indent
+  endif
+  if has_key(s:content, 'can_apply_style')
+    unlet s:content.can_apply_style
   endif
   call s:ClearVariables()
 endfunction
@@ -973,7 +990,7 @@ function! s:InterpretCommand(what) abort
   endtry
 endfunction
 
-" s:InterpretValues(line) ~ eval expressions in {line}         {{{3
+" s:InterpretValues(line) ~ eval expressions in {line} (deprecated) {{{3
 " @deprecated
 function! s:InterpretValues(line) abort
   " @pre must not be defining VimL functions
@@ -1015,43 +1032,45 @@ function! s:InterpretValuesAndMarkers2(line) abort
   " replaces characters from a list (-> style policies for {, ( regarding
   " spaces, newlines, etc.
 
-  let s:content.cache_of_ignored_matches = []
   let s:content.__re_marker = s:MarkerV('(.{-})')
   let s:content.__re_value  = s:ValueV('(.{-})')
   let re =  '\v%('.s:content.__re_value.'|'.s:content.__re_marker.')'
   let s:content.__empty_placeholder = lh#marker#txt()
   let s:content.__placeholder_submatch_1 = lh#marker#txt('\1')
-  " Because of the splitting, context is lost.
-  " -> we need to apply the setting on things generated
+  " Problems
+  " -> we need to apply the style on things generated
   " -> as long as they aren't surrounded code.
   " => surrounded stuff are memorized, the style is applied at the end.
-  let can_apply_style = get(s:content, 'can_apply_style', 1)
 
-  let res = substitute(a:line, re, '\=s:InterpretAValueOrAMarker(submatch(1), submatch(2), can_apply_style)', 'g')
+  let res = substitute(a:line, re, '\=s:InterpretAValueOrAMarker(submatch(1), submatch(2))', 'g')
   let may_merge = res != a:line
-  if can_apply_style
+  if get(s:content, 'can_apply_style', 1)
+    " s:content.can_apply_style can change on MuT commands. It's not
+    " expected to change in MuT expression => we test it once and
+    " whenever we like in s:InterpretValuesAndMarkers2()
     let res = s:ApplyStyling(res)
+  elseif s:content.need_to_reinject_ignored
+    " Typical scenario: surrounded text shall not be restyled.
+    " => s:Surround() memorizes text to ignore. But in that case the
+    " test shall be reinjected.
+    " Note that s:ApplyStyling() already reinjects text automatically,
+    " but it doesn't handle the case of
+    " "MuT: let s:foo = s:Surround(1, 'default')"
+    let res = s:ReinjectUnstyledText(res)
   endif
   call s:Verbose("may_merge=%1; %2 --> %3", may_merge, a:line, res)
   return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
-" Function: s:InterpretAValueOrAMarker(value, marker, can_apply_style) {{{3
-function! s:InterpretAValueOrAMarker(value, marker, can_apply_style) abort
-  call s:Verbose('s:InterpretAValueOrAMarker(value=%1, marker=%2, can_apply_style=%3)', a:value, a:marker, a:can_apply_style)
+" Function: s:InterpretAValueOrAMarker(value, marker) {{{3
+function! s:InterpretAValueOrAMarker(value, marker) abort
+  call s:Verbose('s:InterpretAValueOrAMarker(value=%1, marker=%2)', a:value, a:marker)
   " Style should be applied everywhere but on surrounded things
-  let s:content.can_apply_style = 1 " s:Surround will reset it to 0
   if !empty(a:value)
     call lh#assert#value(a:marker).empty()
     let value = s:InterpretValue(a:value)
-    if  a:can_apply_style && ! get(s:content, 'can_apply_style', 1)
-      " can_apply_style remembers the global setting while
-      " s:content.can_apply_style returns whether s:Surround() has
-      " been called.
-      let value = lh#dev#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
-    endif
   elseif empty(a:marker)
-    let marker = s:content.__empty_placeholder
+    let value = s:content.__empty_placeholder
   elseif ! get(s:, 'dont_eval_markers', 0)
     " There may be an expression within the marker
     let marker = substitute(a:marker, '\v'.s:content.__re_value, '\=s:InterpretValue(submatch(1))', 'g')
@@ -1069,7 +1088,7 @@ function! s:InterpretAValueOrAMarker(value, marker, can_apply_style) abort
   return res
 endfunction
 
-" s:InterpretValuesAndMarkers(line) ~ eval markers as expr in {line} {{{3
+" s:InterpretValuesAndMarkers(line) ~ eval markers as expr in {line} (deprecated){{{3
 " todo merge with s:InterpretValues
 " @deprecated
 let s:k_first = '\v(.{-})'
@@ -1167,6 +1186,15 @@ function! s:ApplyStyling(line) abort
 
   if empty(s:content.styles) | return a:line | endif
   return lh#dev#style#apply_these(s:content.styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
+endfunction
+
+" s:ReinjectUnstyledText(line) -- reinject unstyled surrounded {{{3
+function! s:ReinjectUnstyledText(line) abort
+  " @pre must not be defining VimL functions
+  call lh#assert#value(s:__function).empty('already within the definition of a function (no non-VimL code authorized)')
+  call lh#assert#value(s:content).has_key('cache_of_ignored_matches')
+
+  return lh#dev#style#reinject_cached_ignored_matches(a:line, s:content.cache_of_ignored_matches)
 endfunction
 
 " s:NoRegex(text)                                              {{{3
