@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  03rd Oct 2017
+" Last Update:  06th Oct 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -864,6 +864,8 @@ function! s:DoExpand(NeedToJoin) abort
     " Note: last is the number of the last line inserted
     " 2- Interpret {{{4
     call s:InterpretLines(pos)
+    " let [dummy, dur] = lh#time#bench(s:function('InterpretLines'), pos)
+    " echo printf("Expansion in %fs",dur)
     " Reencode
     if s:fileencoding != &enc
       if has('multi_byte')
@@ -925,7 +927,7 @@ endfunction "}}}4
 " 'bool_expr ?  act1 : act2' VimL operator ; cf vim.template for examples of
 " use.
 function! s:InterpretValue(what) abort
-  let what = substitute(a:what, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+  let what = substitute(a:what, '\v'.s:content.__re_marker, s:content.__placeholder_submatch_1, 'g')
   " Special case: s:Include => need to split the line before and after
   let nl = what =~ 's:Include' ? '\r' : ''
   " echo "interpret value: " . what
@@ -972,6 +974,7 @@ function! s:InterpretCommand(what) abort
 endfunction
 
 " s:InterpretValues(line) ~ eval expressions in {line}         {{{3
+" @deprecated
 function! s:InterpretValues(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
@@ -1001,8 +1004,74 @@ function! s:InterpretValues(line) abort
   return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
+" s:InterpretValuesAndMarkersV2(line) ~ eval markers as expr in {line} {{{3
+function! s:InterpretValuesAndMarkers2(line) abort
+  " @pre must not be defining VimL functions
+  if !empty(s:__function)
+    throw 'already within the definition of a function (no non-VimL code authorized)'
+  endif
+
+  " NB: Styling is applyied on-the-fly, except on surrounded text, i.e.
+  " replaces characters from a list (-> style policies for {, ( regarding
+  " spaces, newlines, etc.
+
+  let s:content.cache_of_ignored_matches = []
+  let s:content.__re_marker = s:MarkerV('(.{-})')
+  let s:content.__re_value  = s:ValueV('(.{-})')
+  let re =  '\v%('.s:content.__re_value.'|'.s:content.__re_marker.')'
+  let s:content.__empty_placeholder = lh#marker#txt()
+  let s:content.__placeholder_submatch_1 = lh#marker#txt('\1')
+  " Because of the splitting, context is lost.
+  " -> we need to apply the setting on things generated
+  " -> as long as they aren't surrounded code.
+  " => surrounded stuff are memorized, the style is applied at the end.
+  let can_apply_style = get(s:content, 'can_apply_style', 1)
+
+  let res = substitute(a:line, re, '\=s:InterpretAValueOrAMarker(submatch(1), submatch(2), can_apply_style)', 'g')
+  let may_merge = res != a:line
+  if can_apply_style
+    let res = s:ApplyStyling(res)
+  endif
+  call s:Verbose("may_merge=%1; %2 --> %3", may_merge, a:line, res)
+  return { 'line' : res, 'may_merge' : may_merge }
+endfunction
+
+" Function: s:InterpretAValueOrAMarker(value, marker, can_apply_style) {{{3
+function! s:InterpretAValueOrAMarker(value, marker, can_apply_style) abort
+  call s:Verbose('s:InterpretAValueOrAMarker(value=%1, marker=%2, can_apply_style=%3)', a:value, a:marker, a:can_apply_style)
+  " Style should be applied everywhere but on surrounded things
+  let s:content.can_apply_style = 1 " s:Surround will reset it to 0
+  if !empty(a:value)
+    call lh#assert#value(a:marker).empty()
+    let value = s:InterpretValue(a:value)
+    if  a:can_apply_style && ! get(s:content, 'can_apply_style', 1)
+      " can_apply_style remembers the global setting while
+      " s:content.can_apply_style returns whether s:Surround() has
+      " been called.
+      let value = lh#dev#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
+    endif
+  elseif empty(a:marker)
+    let marker = s:content.__empty_placeholder
+  elseif ! get(s:, 'dont_eval_markers', 0)
+    " There may be an expression within the marker
+    let marker = substitute(a:marker, '\v'.s:content.__re_value, '\=s:InterpretValue(submatch(1))', 'g')
+    try
+      let nl = marker =~ 's:Include' ? "\n" : ''
+      "BUG in Vim7.3: eval() may not fail but return 0
+      let value = nl. eval(marker) .nl
+    catch /.*/
+      let value = lh#marker#txt(marker)
+    endtry
+  else
+    let value = lh#marker#txt(a:marker)
+  endif
+  let res = type(value)!=type("") ? string(value) : value
+  return res
+endfunction
+
 " s:InterpretValuesAndMarkers(line) ~ eval markers as expr in {line} {{{3
 " todo merge with s:InterpretValues
+" @deprecated
 let s:k_first = '\v(.{-})'
 let s:k_last  = '(.*)'
 
@@ -1020,11 +1089,16 @@ function! s:InterpretValuesAndMarkers(line) abort
   let res = ''
   let value = '' " so it can be unlet without error
   let tail = a:line
-  let re_marker = s:MarkerV('(.{-})')
-  let re_value  = s:ValueV('(.{-})')
-  let re =  s:k_first.'%('.re_value.'|'.re_marker.')'.s:k_last
-  let k_empty_placeholder = lh#marker#txt()
-  let k_placeholder_submatch_1 = lh#marker#txt('\1')
+  " let re_marker = s:MarkerV('(.{-})')
+  " let re_value  = s:ValueV('(.{-})')
+  " let re =  s:k_first.'%('.re_value.'|'.re_marker.')'.s:k_last
+  " let k_empty_placeholder = lh#marker#txt()
+  " let k_placeholder_submatch_1 = lh#marker#txt('\1')
+  let s:content.__re_marker = s:MarkerV('(.{-})')
+  let s:content.__re_value  = s:ValueV('(.{-})')
+  let re =  s:k_first.'\v%('.s:content.__re_value.'|'.s:content.__re_marker.')'.s:k_last
+  let s:content.__empty_placeholder = lh#marker#txt()
+  let s:content.__placeholder_submatch_1 = lh#marker#txt('\1')
   " let g:re = re
   let may_merge = 0
   " Because of the splitting, context is lost.
@@ -1053,7 +1127,7 @@ function! s:InterpretValuesAndMarkers(line) abort
           let value = lh#dev#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
         endif
       elseif get(s:, 'dont_eval_markers', 0)
-        let value = substitute(value, s:Marker('\(.\{-}\)'), k_placeholder_submatch_1, 'g')
+        let value = substitute(value, s:Marker('\(.\{-}\)'), s:content.__placeholder_submatch_1, 'g')
       else
         if !empty(split[3]) " Marker to interpret
           let part = split[3]
@@ -1067,7 +1141,7 @@ function! s:InterpretValuesAndMarkers(line) abort
             let value = lh#marker#txt(part)
           endtry
         else
-          let value = k_empty_placeholder
+          let value = s:content.__empty_placeholder
         endif
       endif
       let sValue = (type(value)!=type("") ? string(value) : value)
@@ -1082,41 +1156,6 @@ function! s:InterpretValuesAndMarkers(line) abort
   endif
   call s:Verbose("may_merge=%1; %2 --> %3", may_merge, a:line, res)
   return { 'line' : res, 'may_merge' : may_merge }
-endfunction
-
-" s:InterpretMarkers(line) ~ eval markers as expr in {line}    {{{3
-" deprecated
-function! s:InterpretMarkers(line) abort
-  " @pre must not be defining VimL functions
-  if !empty(s:__function)
-    throw 'already within the definition of a function (no non-VimL code authorized)'
-  endif
-
-  let res = ''
-  let tail = a:line
-  let re =  '\(.\{-}\)'.s:Marker('\(.\{-}\)').'\(.*\)'
-  let may_merge = 0
-  while strlen(tail)!=0
-    let split = matchlist(tail, re)
-    if len(split) <2 || strlen(split[0]) == 0
-      " nothing found
-      let res .= tail
-      let tail = ''
-      " let may_merge = 0
-    else
-      try
-        let value = eval(split[2])
-      catch /.*/
-        let value = lh#marker#txt(split[2])
-      endtry
-      let res .= split[1] . (type(value)!=type("") ? string(value) : value)
-      let tail = split[3]
-      let may_merge = 1
-    endif
-  endwhile
-  " echomsg "may_merge=".may_merge."  ---  ".res
-  return res
-  " return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
 " s:ApplyStyling(line) ~ add spaces or NL before/after brackets{{{3
@@ -1253,7 +1292,9 @@ function! s:InterpretLines(first_line) abort
       "    => We do not interpret empty lines
       "    => s:value_start and s:value_end must always be specified!
 
-      let line = s:InterpretValuesAndMarkers(the_line)
+      " let line = s:InterpretValuesAndMarkers(the_line)
+      let line = s:InterpretValuesAndMarkers2(the_line)
+      " call lh#assert#value(line).eq(linev2)
       let the_line = line.line
 
       if the_line =~ '^\s*$' && line.may_merge
