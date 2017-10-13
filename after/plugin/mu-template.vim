@@ -2,7 +2,7 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  14th Mar 2017
+" Last Update:  14th Oct 2017
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
 " Version:      4.3.0
@@ -419,7 +419,7 @@ command! -nargs=1 MUEcho :echo s:<args>
 
 "========================================================================
 " Low level functions {{{1
-function! s:ErrorMsg(text)                  " {{{3
+function! s:ErrorMsg(text) abort            " {{{3
   call lh#common#error_msg(a:text)
 endfunction
 function! s:CheckDeps(Symbol, File, path) " {{{3
@@ -428,7 +428,7 @@ endfunction
 " }}}1
 "========================================================================
 " Default definitions and options {{{1
-function! s:Option(name, default)                        " {{{2
+function! s:Option(name, default) abort                  " {{{2
   if     exists('b:mt_'.a:name) | return b:mt_{a:name}
   elseif exists('g:mt_'.a:name) | return g:mt_{a:name}
   else                          | return a:default
@@ -436,7 +436,7 @@ function! s:Option(name, default)                        " {{{2
 endfunction
 
 " g:author : recurrent special variable                    {{{2
-function! Author(...)
+function! Author(...) abort
   let short
         \ = a:0 == 0                    ? ''
         \ : type(a:1) == type('string') ? '_'.a:1
@@ -455,7 +455,7 @@ endfunction
 " Core Functions {{{1
 
 " s:SourceLocalVimrc()                                         {{{2
-function! s:SourceLocalVimrc()
+function! s:SourceLocalVimrc() abort
   if exists(':SourceLocalVimrc')
     try
       :SourceLocalVimrc
@@ -466,7 +466,7 @@ function! s:SourceLocalVimrc()
 endfunction
 
 " s:TemplateOnBufNewFile() triggered by BufNewFile event       {{{2
-function! s:TemplateOnBufNewFile()
+function! s:TemplateOnBufNewFile() abort
   call s:SourceLocalVimrc()
 
   call lh#mut#dirs#update()
@@ -501,7 +501,7 @@ endif
 
 " auto completion                                              {{{2
 let s:commands = 'MuT\%[emplate]\|MUEd\%[it]'
-function! s:Complete(ArgLead, CmdLine, CursorPos)
+function! s:Complete(ArgLead, CmdLine, CursorPos) abort
   let cmd = matchstr(a:CmdLine, s:commands)
   let cmdpat = '^'.cmd
 
@@ -549,20 +549,20 @@ let s:menu_name = exists('g:mt_menu_name')
 if s:menu_name !~ '\.$' | let s:menu_name = s:menu_name . '.' | endif
 
 " Fonction: s:AddMenu(m_prio,m_name,name)    {{{2
-function! s:AddMenu(m_name, m_prio, nameslist)
+function! s:AddMenu(m_name, m_prio, nameslist) abort
   let m_name = a:m_name
   let m_name = substitute(m_name, '^\s*\(\S.\{-}\S\)\s*$', '\1', '')
   for name in a:nameslist
     let name = substitute(name, '/', '.\&', 'g')
     if ! ((name =~ '-') && (name !~ '\.&'))
-      exe 'amenu '.s:menu_prio.a:m_prio.' '
-            \ .escape(s:menu_name.m_name.name, '\ ')
-            \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
-      if &verbose >= 2
+      if lh#mut#verbose() > 0
         echomsg 'amenu '.s:menu_prio.a:m_prio.' '
               \ .escape(s:menu_name.m_name.name, '\ ')
               \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
       endif
+      exe 'amenu '.s:menu_prio.a:m_prio.' '
+            \ .escape(s:menu_name.m_name.name, '\ ')
+            \ .' :MuTemplate '.substitute(name,'\.&', '/', '').'<cr>'
     else
       if &verbose >= 1
         echomsg "muTemplate#s:AddMenu(): discard ".name
@@ -572,7 +572,9 @@ function! s:AddMenu(m_name, m_prio, nameslist)
 endfunction
 
 " Fonction: s:BuildMenu(doRebuild: boolean)  {{{2
-function! s:BuildMenu(doRebuild)
+function! s:BuildMenu(doRebuild) abort
+  " I expect the menu to have already been loaded.
+  menutrans clear
   " 1- Clear previously existing menu {{{3
   if a:doRebuild
     silent! exe ":unmenu ".escape(s:menu_name, '\ ')
@@ -663,7 +665,7 @@ endif
 " Help {{{1
 " Function: s:Help()                         {{{2
 let s:mut_rtp_root = expand('<sfile>:p:h:h:h')
-function! s:Help()
+function! s:Help() abort
   let errmsg_save = v:errmsg
   let v:errmsg = ''
   silent! help mu-template
@@ -677,7 +679,7 @@ endfunction
 " Help }}}1
 "========================================================================
 " API for Wizards {{{1
-function! MuTemplate(template, data)
+function! MuTemplate(template, data) abort
   silent! unlet s:data " required as its type may change
   let s:data = a:data
   return lh#mut#expand_and_jump(0, a:template, a:data)
@@ -687,7 +689,7 @@ endfunction
 command! -nargs=* -complete=custom,<sid>Complete MuTemplate :call lh#mut#expand_and_jump(0, <f-args>)
 command! -nargs=? -complete=custom,<sid>Complete MUEdit     :call lh#mut#edit(<f-args>)
 
-function! s:AutomaticInsertion()
+function! s:AutomaticInsertion() abort
   if !exists('g:mt_IDontWantTemplatesAutomaticallyInserted') ||
         \ !g:mt_IDontWantTemplatesAutomaticallyInserted
     return 1
@@ -700,7 +702,7 @@ function! s:AutomaticInsertion()
   endif
 endfunction
 
-function! s:FTDetection4Templates(filename, event)
+function! s:FTDetection4Templates(filename, event) abort
   call s:SourceLocalVimrc() " update project local paths
   call lh#mut#dirs#update()
   let dir = fnamemodify(a:filename, ':h')
