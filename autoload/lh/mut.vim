@@ -1184,7 +1184,9 @@ function! s:ApplyStyling(line) abort
     throw 'already within the definition of a function (no non-VimL code authorized)'
   endif
 
-  if empty(s:content.styles) | return a:line | endif
+  if empty(s:content.styles) && ! s:content.need_to_reinject_ignored
+    return a:line
+  endif
   return lh#dev#style#apply_these(s:content.styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
 endfunction
 
