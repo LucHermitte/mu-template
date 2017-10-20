@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  06th Oct 2017
+" Last Update:  17th Oct 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -706,7 +706,7 @@ function! s:Surround(id, default) abort
   let key = 'surround'.a:id
   if has_key(s:content, key)
     let s:content.need_to_reinject_ignored = 1
-    return lh#dev#style#just_ignore_this(s:content[key], s:content.cache_of_ignored_matches)
+    return lh#style#just_ignore_this(s:content[key], s:content.cache_of_ignored_matches)
   else
     return a:default
   endif
@@ -832,7 +832,7 @@ endfunction
 " @post s:content.scope = [1]
 " @post s:content.callbacks = []
 " @post s:content.crt_indent doesn't exists
-" @post s:content.styles = lh#dev#style#get(&ft)
+" @post s:content.styles = lh#style#get(&ft)
 " @post no variables
 function! s:ResetContext() abort
   call s:Verbose('s:ResetContext()')
@@ -841,7 +841,7 @@ function! s:ResetContext() abort
   let s:content.scope                    = [1]
   let s:content.callbacks                = []
   let s:content.contexts                 = lh#stack#new()
-  let s:content.styles                   = lh#dev#style#get(&ft)
+  let s:content.styles                   = lh#style#get(&ft)
   let s:content.cache_of_ignored_matches = []
   let s:content.need_to_reinject_ignored = 0
   if has_key(s:content, 'crt_indent')
@@ -1095,6 +1095,7 @@ let s:k_first = '\v(.{-})'
 let s:k_last  = '(.*)'
 
 function! s:InterpretValuesAndMarkers(line) abort
+  call lh#assert#unexpected('This function has been deprecated!')
   " @pre must not be defining VimL functions
   if !empty(s:__function)
     throw 'already within the definition of a function (no non-VimL code authorized)'
@@ -1143,7 +1144,7 @@ function! s:InterpretValuesAndMarkers(line) abort
           " can_apply_style remembers the global setting while
           " s:content.can_apply_style returns whether s:Surround() has
           " been called.
-          let value = lh#dev#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
+          let value = lh#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
         endif
       elseif get(s:, 'dont_eval_markers', 0)
         let value = substitute(value, s:Marker('\(.\{-}\)'), s:content.__placeholder_submatch_1, 'g')
@@ -1187,7 +1188,7 @@ function! s:ApplyStyling(line) abort
   if empty(s:content.styles) && ! s:content.need_to_reinject_ignored
     return a:line
   endif
-  return lh#dev#style#apply_these(s:content.styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
+  return lh#style#apply_these(s:content.styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
 endfunction
 
 " s:ReinjectUnstyledText(line) -- reinject unstyled surrounded {{{3
@@ -1196,7 +1197,7 @@ function! s:ReinjectUnstyledText(line) abort
   call lh#assert#value(s:__function).empty('already within the definition of a function (no non-VimL code authorized)')
   call lh#assert#value(s:content).has_key('cache_of_ignored_matches')
 
-  return lh#dev#style#reinject_cached_ignored_matches(a:line, s:content.cache_of_ignored_matches)
+  return lh#style#reinject_cached_ignored_matches(a:line, s:content.cache_of_ignored_matches)
 endfunction
 
 " s:NoRegex(text)                                              {{{3

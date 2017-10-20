@@ -156,7 +156,7 @@ A few examples are better than a long speech, check the [documentation](doc/mu-t
 Note: all the default template-files shipped with mu-template can be browsed from the [repository](after/template/)
 
 ### C-`if` snippet
-Snippet that uses `¡`, `s:Surround()`, [lh-dev's styling feature](http://github.com/LucHermitte/lh-dev#formatting.of.brackets.characters)
+Snippet that uses `¡`, `s:Surround()`, [lh-style's styling feature](http://github.com/LucHermitte/lh-style#formatting.of.brackets.characters)
 ```
 VimL:"{if} Template-File, Luc Hermitte
 VimL:" hint: if (cond) { action }
@@ -171,7 +171,7 @@ if(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡){
 ```
 
 ### C-`case` snippet
-Snippet that uses `¡`, `s:TerminalPlaceHolder()`, [lh-dev's styling feature](http://github.com/LucHermitte/lh-dev#formatting.of.brackets.characters), and that takes options.
+Snippet that uses `¡`, `s:TerminalPlaceHolder()`, [lh-style's styling feature](http://github.com/LucHermitte/lh-style#formatting.of.brackets.characters), and that takes options.
 ```
 VimL:" {case:} File Template, Luc Hermitte, 05th Jan 2011
 VimL:" hint: case {tag: ...; break;}
@@ -329,7 +329,7 @@ VimL: silent! unlet s:times
 
 
 ## Installation
-  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib), [lh-dev](http://github.com/LucHermitte/lh-dev), and my [bracketing-system](http://github.com/LucHermitte/lh-brackets). Note that lh-dev requires lh-tags for tasks unrelated to mu-template ones.
+  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib), [lh-style](http://github.com/LucHermitte/lh-style), and my [bracketing-system](http://github.com/LucHermitte/lh-brackets).
   * With [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager), install mu-template@lh. This is the preferred method because of the various dependencies.
 ```vim
 ActivateAddons mu-template@lh
@@ -347,22 +347,18 @@ flavor 'tomtom/stakeholders_vim'
   * or you can clone the git repositories
 ```
 git clone git@github.com:LucHermitte/lh-vim-lib.git
-git clone git@github.com:LucHermitte/lh-dev.git
+git clone git@github.com:LucHermitte/lh-style.git
 git clone git@github.com:LucHermitte/lh-brackets.git
 git clone git@github.com:LucHermitte/mu-template.git
-# Not required by mu-template, but for other lh-dev features
-git clone git@github.com:LucHermitte/lh-tags.git
 # and don't forget:
 git clone git@github.com:tomtom/stakeholders_vim.git
 ```
   * or with Vundle/NeoBundle:
 ```vim
 Bundle 'LucHermitte/lh-vim-lib'
-Bundle 'LucHermitte/lh-dev'
+Bundle 'LucHermitte/lh-style'
 Bundle 'LucHermitte/lh-brackets'
 Bundle 'LucHermitte/mu-template'
-" Not required by mu-template, but for other lh-dev features
-Bundle 'LucHermitte/lh-tags'
 " and don't forget:
 Bundle 'tomtom/stakeholders_vim'
 ```
