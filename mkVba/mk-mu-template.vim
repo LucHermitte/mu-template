@@ -7,7 +7,7 @@
 " Version:	4.3.0
 let s:version = '4.3.0'
 " Created:	06th Nov 2007
-" Last Update:	28th Sep 2017
+" Last Update:	02nd Nov 2017
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -134,10 +134,11 @@ after/template/python/while.template
 after/template/python/with.template
 after/template/sh.template
 after/template/sh/case.template
-after/template/sh/environmentvariable.template
 after/template/sh/current-dir.template
 after/template/sh/default_value.template
 after/template/sh/does_match.template
+after/template/sh/echo-variable.template
+after/template/sh/environmentvariable.template
 after/template/sh/field.template
 after/template/sh/for.template
 after/template/sh/function.template
