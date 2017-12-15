@@ -1,0 +1,9 @@
+VimL:" echo-debug File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 15th Dec 2017
+VimL:" hint: echo "var: ${var}"
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 1
+MuT:  let s:varname = s:SurroundableParam('variable', 1)
+echo "<+s:varname+>: ${<+s:varname+>}"<+s:TerminalPlaceHolder()+>
