@@ -5,7 +5,7 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1
-VimL: let s:ut_framework = lh#dev#option#get('ut_framework', &ft, 'boost')
+VimL: let s:ut_framework = lh#ft#option#get('ut_framework', &ft, 'boost')
 VimL: " TODO: define as many file as frameworks
 MuT:  if     s:ut_framework == 'boost'
     BOOST_AUTO_TEST_CASE(<+test-case-name+>)

@@ -14,7 +14,7 @@ LetTo p:&matchpairs+=<:>
 
 " ## ======================[ Naming conventions {{{1
 " This is used by lh-refactor, and all lh-cpp snippets for mu-template
-" :h lh#dev#naming
+" :h lh#naming
 
 " # core variables names {{{2
 " (extract any getter, global, ... decoration)

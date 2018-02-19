@@ -7,7 +7,7 @@ VimL: "----------------------------------------------------------------------
 VimL: " Options:
 VimL: " * Passed through s:Include()/s:Param() interface:
 VimL: "   - a dictionary with the following keys set: name, brief, version, in_dir, out_dir
-VimL: " * Passed through global/local variables: :h lh#dev#option#get()
+VimL: " * Passed through global/local variables: :h lh#ft#option#get()
 VimL: "   - dox_file_pattern ; default: h, c, hpp, cpp, dox
 VimL: "   - dox_project_logo: default: nothing
 VimL: " * Encodings is detected from the &fenc of this file, or the global &enc
@@ -15,7 +15,7 @@ VimL: " * You are expected to edit manually the file to tweak other settings.
 VimL: "   Let me know if you want other options available through lh#de interface.
 VimL: "
 VimL: " Todo:
-VimL: " * Have all doxygen options tunable from lh#dev interface
+VimL: " * Have all doxygen options tunable from lh#ft interface
 VimL: "
 VimL: "----------------------------------------------------------------------
 VimL: let g:__mut_args = s:Param("doxyfile", lh#option#unset())
@@ -84,7 +84,7 @@ PROJECT_BRIEF          = "<+g:__mut_args.brief+>"
 # exceed 55 pixels and the maximum width should not exceed 200 pixels.
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = <+lh#dev#option#get('dox_project_logo', &ft, '')+>
+PROJECT_LOGO           = <+lh#ft#option#get('dox_project_logo', &ft, '')+>
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.
@@ -658,7 +658,7 @@ INPUT_ENCODING         = <+g:__mut_args.encoding+>
 # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
 # *.f90 *.f *.for *.vhd *.vhdl
 
-FILE_PATTERNS          = <+lh#dev#option#get('dox_file_pattern', &ft, '*.h *.c *.hpp *.cpp *.dox')+>
+FILE_PATTERNS          = <+lh#ft#option#get('dox_file_pattern', &ft, '*.h *.c *.hpp *.cpp *.dox')+>
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
 # should be searched for input files as well. Possible values are YES and NO.

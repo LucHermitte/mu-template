@@ -3,7 +3,7 @@ VimL:" hint: class :
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 'python'
-MuT:  let s:clsname          = s:SurroundableParam('clsname', 2, lh#marker#txt(lh#dev#naming#type(expand('%:t:r'))))
+MuT:  let s:clsname          = s:SurroundableParam('clsname', 2, lh#marker#txt(lh#naming#type(expand('%:t:r'))))
 MuT:  let s:functions        = s:Param('functions', lh#mut#snippets#new_function_list())
 MuT:  let s:need_destruction = s:Param('need_destruction', 0)
 VimL: " =====[ Attributes

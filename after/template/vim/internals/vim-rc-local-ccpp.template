@@ -151,14 +151,14 @@ LetTo p:ProjectVersion        = '<+_version_+>'
 let s:ns = lh#let#to('p:cpp_project_namespace', '<+project_ns+>')
 call lh#let#to('b:cpp_project_namespace', [s:ns] + split(expand('%:h'), '/')[1:]) " [1:] -> ignore sources/ dir
 " Expecting your project has a <+project_ns+>::Exception type
-call lh#let#to('p:exception_type', s:ns.'::'.lh#dev#naming#type('Exception'))
+call lh#let#to('p:exception_type', s:ns.'::'.lh#naming#type('Exception'))
 
 " Special management of tests and unit tests
 if expand('%:p') =~ s:project_sources_dir.'/Testing'
   LetIfUndef p:is_unit_test = 1
 endif
 " Auto define doxygen group name
-LetIfUndef p:dox.group.name = 'g'.lh#dev#naming#to_upper_camel_case(substitute(expand('%:r'), '/', '_', 'g'))
+LetIfUndef p:dox.group.name = 'g'.lh#naming#to_upper_camel_case(substitute(expand('%:r'), '/', '_', 'g'))
 
 " ======================[ Settings for searchfile and gf {{{2
 let b:searchfile_ext = 'h,H,C,cpp,cxx,hxx,txx'

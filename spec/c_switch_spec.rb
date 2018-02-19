@@ -32,7 +32,7 @@ RSpec.describe "C switch-case snippets", :c, :switch do
 
     vim.command('let g:mocked_input = 42')
     expect(vim.echo('lh#ui#input("toto")')).to eq '42'
-    expect(vim.echo('lh#dev#style#clear()')).to eq '0'
+    expect(vim.echo('lh#style#clear()')).to eq '0'
   end
 
   # ==========[ :MuTemplate {{{2
