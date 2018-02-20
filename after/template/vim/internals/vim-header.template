@@ -1,13 +1,24 @@
 VimL: "«Vim» scripts header Template File, Luc Hermitte
 "=============================================================================
 VimL: call s:Include('dollar_id', '_')
-VimL: let s:root = lh#ui#if(s:localvimrc, (exists('g:root')?resolve(g:root).','.g:root.',' : '').$HOME , &rtp)
-VimL: let s:path  = lh#path#strip_start(expand('%:p'), s:root)
-VimL: "let s:path  = lh#path#strip_start(expand('%:p'), &rtp)
-VimL: let s:align = repeat(' ', 49-strlen(s:path))
+MuT:  let s:root = s:localvimrc ? (exists('g:root')?resolve(g:root).','.g:root.',' : '').$HOME : &rtp
+MuT:  let s:path  = lh#path#strip_start(expand('%:p'), s:root)
+MuT:  "let s:path  = lh#path#strip_start(expand('%:p'), &rtp)
+MuT:  let s:align = repeat(' ', 49-strlen(s:path))
 " File:         ¡s:path.s:align¡ {{{1
 " Author:       ¡Author()¡
-VimL: let s:mkvba = expand('%:p')[0:-1+stridx(expand('%:p'), s:path)] . 'mkVba/mk-*.vim'
+VimL: " <----- License
+MuT:  let s:root2 = expand('%:p')[0:-1+stridx(expand('%:p'), s:path)]
+MuT:  let s:license = glob(s:root2 . 'License*')
+MuT:  if !empty(s:license)
+MuT:    let s:license_type = lh#ft#option#get('license_type', lh#marker#txt('GPLv3 with exceptions'))
+" License:      <+s:license_type+>
+VimL: " TODO store the kind of license somewhere
+VimL: " TODO support storages other than github one
+"               <URL:<+lh#vcs#as_http(fnamemodify(s:license, ':h'))+>/blob/master/License.md>
+MuT:  endif
+VimL: " <----- Version
+MuT:  let s:mkvba = s:root2 . 'mkVba/mk-*.vim'
 VimL: let s:mkvba = glob(s:mkvba)
 MuT:  if !empty(s:mkvba) && -1 == stridx(s:mkvba, "\n")
 VImL:   let s:version_lines = filter(readfile(s:mkvba), 'v:val =~ "\\vlet\\s+s:(k_)=version\\s*\\="')

@@ -7,7 +7,7 @@
   "dependencies" : {
       "lh-vim-lib" : {"type" : "git", "url" : "git@github.com:LucHermitte/lh-vim-lib.git"},
       "lh-brackets" : {"type": "git", "url": "git@github.com:LucHermitte/lh-brackets.git"},
-      "lh-dev" : {"type": "git", "url": "git@github.com:LucHermitte/lh-dev.git"}
+      "lh-style" : {"type": "git", "url": "git@github.com:LucHermitte/lh-style.git"}
   },
   "description" : "Template-files expander",
   "homepage" : "http://github.com/LucHermitte/mu-template"

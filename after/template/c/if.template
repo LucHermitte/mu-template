@@ -5,6 +5,4 @@ VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-if(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡){
-    ¡s:Surround(1, '<+code+>')¡
-}<+s:TerminalPlaceHolder()+>
+if(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡){¡s:Surround(1, '<+code+>')¡}<+s:TerminalPlaceHolder()+>

@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  14th Mar 2017
+" Last Update:  17th Oct 2017
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -24,6 +24,7 @@ let s:k_version = 430
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
 "       (*) ENH: Add `s:IncludeSeveralSnippets()`
+"       (*) ENH: Use new stylistic API from lh-dev
 "       v4.2.0
 "       (*) ENH: Use the new lh-vim-lib logging framework
 "       (*) ENH: Store `v:count` into `s:content.count0`
@@ -368,6 +369,7 @@ function! lh#mut#surround() abort
 
     " 3- insert the template {{{3
     let s:content.is_surrounding = 1
+    let s:content.surrounding_with = visualmode()
     if !lh#mut#expand_and_jump(1,file)
       call lh#common#error_msg("muTemplate: Problem to insert the template: <".a:file.'>')
     endif
@@ -375,6 +377,7 @@ function! lh#mut#surround() abort
   finally
     silent! unlet s:content[surround_id]
     silent! unlet s:content.is_surrounding
+    silent! unlet s:content.surrounding_with
   endtry
 endfunction
 "------------------------------------------------------------------------
@@ -686,12 +689,24 @@ function! s:path_from_root(path) abort " {{{3
   return path
 endfunction
 
+" Function: s:SurroundRaw(id, default)  {{{3
+" Return the visual selection, without trying to prevent style
+" application on it
+function! s:SurroundRaw(id, default) abort
+  let key = 'surround'.a:id
+  if has_key(s:content, key)
+    return s:content[key]
+  else
+    return a:default
+  endif
+endfunction
+
 " Function: s:Surround(id, default)  {{{3
 function! s:Surround(id, default) abort
   let key = 'surround'.a:id
   if has_key(s:content, key)
-    let s:content.can_apply_style = 0
-    return s:content[key]
+    let s:content.need_to_reinject_ignored = 1
+    return lh#style#just_ignore_this(s:content[key], s:content.cache_of_ignored_matches)
   else
     return a:default
   endif
@@ -817,16 +832,23 @@ endfunction
 " @post s:content.scope = [1]
 " @post s:content.callbacks = []
 " @post s:content.crt_indent doesn't exists
+" @post s:content.styles = lh#style#get(&ft)
 " @post no variables
 function! s:ResetContext() abort
   call s:Verbose('s:ResetContext()')
-  let pos = line('.')
-  let s:content.start = pos
-  let s:content.scope = [1]
-  let s:content.callbacks = []
-  let s:content.contexts = lh#stack#new()
+  let pos                                = line('.')
+  let s:content.start                    = pos
+  let s:content.scope                    = [1]
+  let s:content.callbacks                = []
+  let s:content.contexts                 = lh#stack#new()
+  let s:content.styles                   = lh#style#get(&ft)
+  let s:content.cache_of_ignored_matches = []
+  let s:content.need_to_reinject_ignored = 0
   if has_key(s:content, 'crt_indent')
     unlet s:content.crt_indent
+  endif
+  if has_key(s:content, 'can_apply_style')
+    unlet s:content.can_apply_style
   endif
   call s:ClearVariables()
 endfunction
@@ -859,6 +881,8 @@ function! s:DoExpand(NeedToJoin) abort
     " Note: last is the number of the last line inserted
     " 2- Interpret {{{4
     call s:InterpretLines(pos)
+    " let [dummy, dur] = lh#time#bench(s:function('InterpretLines'), pos)
+    " echo printf("Expansion in %fs",dur)
     " Reencode
     if s:fileencoding != &enc
       if has('multi_byte')
@@ -920,7 +944,7 @@ endfunction "}}}4
 " 'bool_expr ?  act1 : act2' VimL operator ; cf vim.template for examples of
 " use.
 function! s:InterpretValue(what) abort
-  let what = substitute(a:what, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+  let what = substitute(a:what, '\v'.s:content.__re_marker, s:content.__placeholder_submatch_1, 'g')
   " Special case: s:Include => need to split the line before and after
   let nl = what =~ 's:Include' ? '\r' : ''
   " echo "interpret value: " . what
@@ -966,7 +990,8 @@ function! s:InterpretCommand(what) abort
   endtry
 endfunction
 
-" s:InterpretValues(line) ~ eval expressions in {line}         {{{3
+" s:InterpretValues(line) ~ eval expressions in {line} (deprecated) {{{3
+" @deprecated
 function! s:InterpretValues(line) abort
   " @pre must not be defining VimL functions
   if !empty(s:__function)
@@ -996,12 +1021,81 @@ function! s:InterpretValues(line) abort
   return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
-" s:InterpretValuesAndMarkers(line) ~ eval markers as expr in {line} {{{3
+" s:InterpretValuesAndMarkersV2(line) ~ eval markers as expr in {line} {{{3
+function! s:InterpretValuesAndMarkers2(line) abort
+  " @pre must not be defining VimL functions
+  if !empty(s:__function)
+    throw 'already within the definition of a function (no non-VimL code authorized)'
+  endif
+
+  " NB: Styling is applyied on-the-fly, except on surrounded text, i.e.
+  " replaces characters from a list (-> style policies for {, ( regarding
+  " spaces, newlines, etc.
+
+  let s:content.__re_marker = s:MarkerV('(.{-})')
+  let s:content.__re_value  = s:ValueV('(.{-})')
+  let re =  '\v%('.s:content.__re_value.'|'.s:content.__re_marker.')'
+  let s:content.__empty_placeholder = lh#marker#txt()
+  let s:content.__placeholder_submatch_1 = lh#marker#txt('\1')
+  " Problems
+  " -> we need to apply the style on things generated
+  " -> as long as they aren't surrounded code.
+  " => surrounded stuff are memorized, the style is applied at the end.
+
+  let res = substitute(a:line, re, '\=s:InterpretAValueOrAMarker(submatch(1), submatch(2))', 'g')
+  let may_merge = res != a:line
+  if get(s:content, 'can_apply_style', 1)
+    " s:content.can_apply_style can change on MuT commands. It's not
+    " expected to change in MuT expression => we test it once and
+    " whenever we like in s:InterpretValuesAndMarkers2()
+    let res = s:ApplyStyling(res)
+  elseif s:content.need_to_reinject_ignored
+    " Typical scenario: surrounded text shall not be restyled.
+    " => s:Surround() memorizes text to ignore. But in that case the
+    " test shall be reinjected.
+    " Note that s:ApplyStyling() already reinjects text automatically,
+    " but it doesn't handle the case of
+    " "MuT: let s:foo = s:Surround(1, 'default')"
+    let res = s:ReinjectUnstyledText(res)
+  endif
+  call s:Verbose("may_merge=%1; %2 --> %3", may_merge, a:line, res)
+  return { 'line' : res, 'may_merge' : may_merge }
+endfunction
+
+" Function: s:InterpretAValueOrAMarker(value, marker) {{{3
+function! s:InterpretAValueOrAMarker(value, marker) abort
+  call s:Verbose('s:InterpretAValueOrAMarker(value=%1, marker=%2)', a:value, a:marker)
+  " Style should be applied everywhere but on surrounded things
+  if !empty(a:value)
+    call lh#assert#value(a:marker).empty()
+    let value = s:InterpretValue(a:value)
+  elseif empty(a:marker)
+    let value = s:content.__empty_placeholder
+  elseif ! get(s:, 'dont_eval_markers', 0)
+    " There may be an expression within the marker
+    let marker = substitute(a:marker, '\v'.s:content.__re_value, '\=s:InterpretValue(submatch(1))', 'g')
+    try
+      let nl = marker =~ 's:Include' ? "\n" : ''
+      "BUG in Vim7.3: eval() may not fail but return 0
+      let value = nl. eval(marker) .nl
+    catch /.*/
+      let value = lh#marker#txt(marker)
+    endtry
+  else
+    let value = lh#marker#txt(a:marker)
+  endif
+  let res = type(value)!=type("") ? string(value) : value
+  return res
+endfunction
+
+" s:InterpretValuesAndMarkers(line) ~ eval markers as expr in {line} (deprecated){{{3
 " todo merge with s:InterpretValues
+" @deprecated
 let s:k_first = '\v(.{-})'
 let s:k_last  = '(.*)'
 
 function! s:InterpretValuesAndMarkers(line) abort
+  call lh#assert#unexpected('This function has been deprecated!')
   " @pre must not be defining VimL functions
   if !empty(s:__function)
     throw 'already within the definition of a function (no non-VimL code authorized)'
@@ -1013,28 +1107,47 @@ function! s:InterpretValuesAndMarkers(line) abort
 
   " echo "line:" . a:line
   let res = ''
+  let value = '' " so it can be unlet without error
   let tail = a:line
-  let re_marker = s:MarkerV('(.{-})')
-  let re_value  = s:ValueV('(.{-})')
-  let re =  s:k_first.'%('.re_value.'|'.re_marker.')'.s:k_last
-  let g:re = re
+  " let re_marker = s:MarkerV('(.{-})')
+  " let re_value  = s:ValueV('(.{-})')
+  " let re =  s:k_first.'%('.re_value.'|'.re_marker.')'.s:k_last
+  " let k_empty_placeholder = lh#marker#txt()
+  " let k_placeholder_submatch_1 = lh#marker#txt('\1')
+  let s:content.__re_marker = s:MarkerV('(.{-})')
+  let s:content.__re_value  = s:ValueV('(.{-})')
+  let re =  s:k_first.'\v%('.s:content.__re_value.'|'.s:content.__re_marker.')'.s:k_last
+  let s:content.__empty_placeholder = lh#marker#txt()
+  let s:content.__placeholder_submatch_1 = lh#marker#txt('\1')
+  " let g:re = re
   let may_merge = 0
+  " Because of the splitting, context is lost.
+  " -> we need to apply the setting on things generated
+  " -> as long as they aren't surrounded code.
+  " => surrounded stuff are memorized, the style is applied at the end.
+  let can_apply_style = get(s:content, 'can_apply_style', 1)
+  let s:content.cache_of_ignored_matches = []
   while strlen(tail)!=0
     let split = matchlist(tail, re)
     if len(split) <2 || strlen(split[0]) == 0
       " nothing found
-      " echo "res .= ".s:ApplyStyling(tail)
-      let res .= get(s:content, 'can_apply_style', 1) ? s:ApplyStyling(tail) : tail
+      let res .= tail
       let tail = ''
       " let may_merge = 0
     else
       " Style should be applied everywhere but on surrounded things
-      silent! unlet value
-      let s:content.can_apply_style = 1
+      let s:content.can_apply_style = 1 " s:Surround will reset it to 0
+      unlet value
       if !empty(split[2])     " Value to interpret
         let value = s:InterpretValue(split[2])
+        if  can_apply_style && ! get(s:content, 'can_apply_style', 1)
+          " can_apply_style remembers the global setting while
+          " s:content.can_apply_style returns whether s:Surround() has
+          " been called.
+          let value = lh#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
+        endif
       elseif get(s:, 'dont_eval_markers', 0)
-        let value = substitute(value, s:Marker('\(.\{-}\)'), lh#marker#txt('\1'), 'g')
+        let value = substitute(value, s:Marker('\(.\{-}\)'), s:content.__placeholder_submatch_1, 'g')
       else
         if !empty(split[3]) " Marker to interpret
           let part = split[3]
@@ -1048,59 +1161,21 @@ function! s:InterpretValuesAndMarkers(line) abort
             let value = lh#marker#txt(part)
           endtry
         else
-          let value = lh#marker#txt()
+          let value = s:content.__empty_placeholder
         endif
       endif
       let sValue = (type(value)!=type("") ? string(value) : value)
-      if get(s:content, 'can_apply_style', 1)
-        " When not on the start of line, styling that expect /^/ don't know it
-        " => combine style application
-        let res .= s:ApplyStyling(split[1] . sValue)
-      else
-        let res .= s:ApplyStyling(split[1]) . sValue
-      endif
+      " call s:Verbose("sValue: `%1`", sValue)
+      let res .= split[1] . sValue
       let tail = split[4]
       let may_merge = 1
     endif
   endwhile
-  " echomsg "may_merge=".may_merge."  ---  ".res
-  " return res
-  return { 'line' : res, 'may_merge' : may_merge }
-endfunction
-
-" s:InterpretMarkers(line) ~ eval markers as expr in {line}    {{{3
-" deprecated
-function! s:InterpretMarkers(line) abort
-  " @pre must not be defining VimL functions
-  if !empty(s:__function)
-    throw 'already within the definition of a function (no non-VimL code authorized)'
+  if can_apply_style
+    let res = s:ApplyStyling(res)
   endif
-
-  let res = ''
-  let tail = a:line
-  let re =  '\(.\{-}\)'.s:Marker('\(.\{-}\)').'\(.*\)'
-  let may_merge = 0
-  while strlen(tail)!=0
-    let split = matchlist(tail, re)
-    if len(split) <2 || strlen(split[0]) == 0
-      " nothing found
-      let res .= tail
-      let tail = ''
-      " let may_merge = 0
-    else
-      try
-        let value = eval(split[2])
-      catch /.*/
-        let value = lh#marker#txt(split[2])
-      endtry
-      let res .= split[1] . (type(value)!=type("") ? string(value) : value)
-      let tail = split[3]
-      let may_merge = 1
-    endif
-  endwhile
-  " echomsg "may_merge=".may_merge."  ---  ".res
-  return res
-  " return { 'line' : res, 'may_merge' : may_merge }
+  call s:Verbose("may_merge=%1; %2 --> %3", may_merge, a:line, res)
+  return { 'line' : res, 'may_merge' : may_merge }
 endfunction
 
 " s:ApplyStyling(line) ~ add spaces or NL before/after brackets{{{3
@@ -1110,9 +1185,19 @@ function! s:ApplyStyling(line) abort
     throw 'already within the definition of a function (no non-VimL code authorized)'
   endif
 
-  let styles = lh#dev#style#get(&ft)
-  if empty(styles) | return a:line | endif
-  return lh#dev#style#apply(a:line)
+  if empty(s:content.styles) && ! s:content.need_to_reinject_ignored
+    return a:line
+  endif
+  return lh#style#apply_these(s:content.styles, a:line, get(s:content, 'cache_of_ignored_matches', []))
+endfunction
+
+" s:ReinjectUnstyledText(line) -- reinject unstyled surrounded {{{3
+function! s:ReinjectUnstyledText(line) abort
+  " @pre must not be defining VimL functions
+  call lh#assert#value(s:__function).empty('already within the definition of a function (no non-VimL code authorized)')
+  call lh#assert#value(s:content).has_key('cache_of_ignored_matches')
+
+  return lh#style#reinject_cached_ignored_matches(a:line, s:content.cache_of_ignored_matches)
 endfunction
 
 " s:NoRegex(text)                                              {{{3
@@ -1238,7 +1323,9 @@ function! s:InterpretLines(first_line) abort
       "    => We do not interpret empty lines
       "    => s:value_start and s:value_end must always be specified!
 
-      let line = s:InterpretValuesAndMarkers(the_line)
+      " let line = s:InterpretValuesAndMarkers(the_line)
+      let line = s:InterpretValuesAndMarkers2(the_line)
+      " call lh#assert#value(line).eq(linev2)
       let the_line = line.line
 
       if the_line =~ '^\s*$' && line.may_merge

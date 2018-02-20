@@ -100,6 +100,7 @@ NB: there are no µTemplate snippets for `:if`, _etc._ because they are maintain
     `elif`, `else`, `while`
   * Snippets for `class`, `def`, `init`, `del`, and _docstring_ are also provided
   * Plus a few other snippets: `from`-`import`, `with`, ...
+  * Note: a few snippets (`path-exists` and `unittest`) require [lh-dev](http://github.com/LucHermitte/lh-dev) is be installed.
 
 ### C & C++
 Most of my C and C++ template-files are shipped with [lh-cpp](http://github.com/LucHermitte/lh-cpp). However a few ones are still shipped with µTemplate:
@@ -108,6 +109,8 @@ Most of my C and C++ template-files are shipped with [lh-cpp](http://github.com/
     * _source files_ first compute the relative current filename from the root of the current project, and contains a (-n overridable) file header, and includes any matching _header file_ found (in the current directory, or any compatible directory when a.vim is installed)
 
   * snippets for `main`, `for`, `for (int i`, `while`, `do...while`, `switch` and `case`, `if` ; NB: [lh-cpp](http://github.com/LucHermitte/lh-cpp) defines alternative [smart-snippets for these control-statements](http://github.com/LucHermitte/lh-cpp#code-snippets), and several C++-only snippets in its [repository](http://github.com/LucHermitte/lh-cpp/blob/master/after/template/cpp)
+
+  * Note: a few snippets (`stderr` and `printf`) require [lh-dev](http://github.com/LucHermitte/lh-dev) is be installed.
 
 ### LaTeX
 
@@ -141,8 +144,9 @@ VimL: call s:Include('commented', 'license', 'boost-short')
 
 Moreover, when a new `COPYING` file is created with vim, the user will be asked which license he wants.
 
-N.B.: Not all existing licenses are available, don't hesitate to add your own text into `after/template/license/text/` or to send it to me.
-
+Notes:
+ * Not all existing licenses are available, don't hesitate to add your own text into `after/template/license/text/` or to send it to me.
+ * Unfortunatelly at this time, licenses snippets require [lh-dev](http://github.com/LucHermitte/lh-dev) is be installed.
 
 ### Other filetypes
 
@@ -156,7 +160,7 @@ A few examples are better than a long speech, check the [documentation](doc/mu-t
 Note: all the default template-files shipped with mu-template can be browsed from the [repository](after/template/)
 
 ### C-`if` snippet
-Snippet that uses `¡`, `s:Surround()`, [lh-dev's styling feature](http://github.com/LucHermitte/lh-dev#formatting.of.brackets.characters)
+Snippet that uses `¡`, `s:Surround()`, [lh-style's styling feature](http://github.com/LucHermitte/lh-style#formatting.of.brackets.characters)
 ```
 VimL:"{if} Template-File, Luc Hermitte
 VimL:" hint: if (cond) { action }
@@ -171,7 +175,7 @@ if(¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡){
 ```
 
 ### C-`case` snippet
-Snippet that uses `¡`, `s:TerminalPlaceHolder()`, [lh-dev's styling feature](http://github.com/LucHermitte/lh-dev#formatting.of.brackets.characters), and that takes options.
+Snippet that uses `¡`, `s:TerminalPlaceHolder()`, [lh-style's styling feature](http://github.com/LucHermitte/lh-style#formatting.of.brackets.characters), and that takes options.
 ```
 VimL:" {case:} File Template, Luc Hermitte, 05th Jan 2011
 VimL:" hint: case {tag: ...; break;}
@@ -329,43 +333,52 @@ VimL: silent! unlet s:times
 
 
 ## Installation
-  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib), [lh-dev](http://github.com/LucHermitte/lh-dev), and my [bracketing-system](http://github.com/LucHermitte/lh-brackets). Note that lh-dev requires lh-tags for tasks unrelated to mu-template ones.
-  * With [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager), install mu-template@lh. This is the preferred method because of the various dependencies.
-```vim
-ActivateAddons mu-template@lh
-" And don't forget
-ActivateAddons stakeholders
-```
+  * Requirements: Vim 7.+, [lh-vim-lib](http://github.com/LucHermitte/lh-vim-lib), [lh-style](http://github.com/LucHermitte/lh-style), and my [bracketing-system](http://github.com/LucHermitte/lh-brackets), and optionally [lh-dev](http://github.com/LucHermitte/lh-dev).
+  * With [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager), install `mu-template@lh`. This is the preferred method because of the various dependencies.
+
+    ```vim
+    ActivateAddons mu-template@lh
+    " And don't forget
+    ActivateAddons stakeholders
+    " don't forget also to support a few default snippets
+    ActivateAddons lh-dev
+    ```
+
   * or you can use [vim-flavor](https://github.com/kana/vim-flavor) that also
     supports dependencies
-```
-flavor 'LucHermitte/mu-template'
-" And don't forget
-flavor 'tomtom/stakeholders_vim'
-```
+
+    ```
+    flavor 'LucHermitte/mu-template'
+    " And don't forget
+    flavor 'tomtom/stakeholders_vim'
+    " don't forget also to support a few default snippets
+    flavor 'LucHermitte/lh-dev'
+    ```
+
   * N.B.: installing [lh-cpp](http://github.com/LucHermitte/lh-cpp) or [lh-refactor](http://github.com/LucHermitte/lh-refactor) with VAM or vim-flavor will also install µTemplate.
   * or you can clone the git repositories
-```
-git clone git@github.com:LucHermitte/lh-vim-lib.git
-git clone git@github.com:LucHermitte/lh-dev.git
-git clone git@github.com:LucHermitte/lh-brackets.git
-git clone git@github.com:LucHermitte/mu-template.git
-# Not required by mu-template, but for other lh-dev features
-git clone git@github.com:LucHermitte/lh-tags.git
-# and don't forget:
-git clone git@github.com:tomtom/stakeholders_vim.git
-```
+    ```bash
+    git clone git@github.com:LucHermitte/lh-vim-lib.git
+    git clone git@github.com:LucHermitte/lh-style.git
+    git clone git@github.com:LucHermitte/lh-brackets.git
+    git clone git@github.com:LucHermitte/mu-template.git
+    # and don't forget:
+    git clone git@github.com:tomtom/stakeholders_vim.git
+    # don't forget also to support a few default snippets
+    git clone git@github.com:LucHermitte/lh-dev.git
+    ```
+
   * or with Vundle/NeoBundle:
-```vim
-Bundle 'LucHermitte/lh-vim-lib'
-Bundle 'LucHermitte/lh-dev'
-Bundle 'LucHermitte/lh-brackets'
-Bundle 'LucHermitte/mu-template'
-" Not required by mu-template, but for other lh-dev features
-Bundle 'LucHermitte/lh-tags'
-" and don't forget:
-Bundle 'tomtom/stakeholders_vim'
-```
+    ```vim
+    Bundle 'LucHermitte/lh-vim-lib'
+    Bundle 'LucHermitte/lh-style'
+    Bundle 'LucHermitte/lh-brackets'
+    Bundle 'LucHermitte/mu-template'
+    " and don't forget:
+    Bundle 'tomtom/stakeholders_vim'
+    " don't forget also to support a few default snippets
+    Bundle 'LucHermitte/lh-dev'
+    ```
 
 ## Credits
   * Gergely Kontra is the author of the first version of µTemplate.

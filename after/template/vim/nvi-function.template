@@ -16,7 +16,7 @@ VimL:    let s:project_prefix = matchstr(s:function_prefix, '.*\ze'.s:fname)
 " Entry point for <+funcname+>()
 function! ¡s:function_prefix¡<+funcname+>(<+params+>) abort
   ¡s:Surround(1, '<+code+>')¡
-  <+let res = +>lh#dev#option#<+fast_+>call('<+s:fname+>_do_<+funcname+>', &ft, <+params+>)
+  <+let res = +>lh#ft#option#<+fast_+>call('<+s:fname+>_do_<+funcname+>', &ft, <+params+>)
   ¡s:Surround(2, '<+code+>')¡
 endfunction
 
