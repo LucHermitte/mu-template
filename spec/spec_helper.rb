@@ -27,16 +27,16 @@ Vimrunner::RSpec.configure do |config|
     vim.command('runtime plugin/UT.vim')
 
     # pp vim_flavor_path
-    # l-vim-lib
+    # lh-vim-lib
     vim_lib_path      = File.expand_path('../lh-vim-lib', __FILE__)
     vim.prepend_runtimepath(vim_lib_path)
     vim.command('runtime plugin/let.vim') # LetIfUndef
-    vim.command('runtime plugin/ui-functions.vim') # CONFIRM
+    # vim.command('runtime plugin/ui-functions.vim') # CONFIRM
 
-    # lh-dev
-    vim_dev_path = File.expand_path('../../../lh-dev', __FILE__)
-    vim.prepend_runtimepath(vim_dev_path)
-    vim.command('runtime plugin/dev.vim') # AddStyle
+    # lh-style
+    vim_style_path = File.expand_path('../../../lh-style', __FILE__)
+    vim.prepend_runtimepath(vim_style_path)
+    vim.runtime('plugin/lh-style.vim') # AddStyle
 
     # lh-brackets
     vim_brackets_path = File.expand_path('../../../lh-brackets', __FILE__)
@@ -49,7 +49,7 @@ Vimrunner::RSpec.configure do |config|
     mu_template_path = File.expand_path('../../../mu-template@lh', __FILE__)
     vim.prepend_runtimepath(mu_template_path+'/after')
     vim.prepend_runtimepath(mu_template_path)
-    vim.command('runtime plugin/mu-template.vim') # !mark!
+    vim.command('runtime plugin/mu-template.vim')
 
     # pp vim.echo('&rtp')
 
