@@ -7,7 +7,7 @@
 " Version:      4.3.0
 let s:k_version = 430
 " Created:      05th Jan 2011
-" Last Update:  17th Oct 2017
+" Last Update:  07th Mar 2018
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -25,6 +25,7 @@ let s:k_version = 430
 "       (*) ENH: Support fuzzier snippet expansion
 "       (*) ENH: Add `s:IncludeSeveralSnippets()`
 "       (*) ENH: Use new stylistic API from lh-dev
+"       (*) BUG: Fix surrounding with Python control-statements
 "       v4.2.0
 "       (*) ENH: Use the new lh-vim-lib logging framework
 "       (*) ENH: Store `v:count` into `s:content.count0`
@@ -235,6 +236,7 @@ function! lh#mut#expand(NeedToJoin, ...) abort
 
   " 3- Load the associated template {{{3
   call s:LoadTemplate(0, dir.ft.'.template')
+  " call s:Verbose("Template loaded: %1", s:content.lines)
 
   " 4- Expand the lines {{{3
   return s:DoExpand(a:NeedToJoin)
@@ -351,7 +353,7 @@ function! lh#mut#surround() abort
     if s:content[surround_id] =~ "\n$" " line-wise surrounding
       silent put!=''
     endif
-    if stridx(s:content[surround_id], '\n') < 0 " suppose this is on a single-line
+    if stridx(s:content[surround_id], "\n") < 0 " suppose this is on a single-line
       let l = strlen(s:content[surround_id])
       let line = getline('.')
       let pos = getpos('.')
@@ -370,7 +372,8 @@ function! lh#mut#surround() abort
     " 3- insert the template {{{3
     let s:content.is_surrounding = 1
     let s:content.surrounding_with = visualmode()
-    if !lh#mut#expand_and_jump(1,file)
+    let NeedToJoin = s:content.surrounding_with != 'V'
+    if !lh#mut#expand_and_jump(NeedToJoin,file)
       call lh#common#error_msg("muTemplate: Problem to insert the template: <".a:file.'>')
     endif
     return ''
@@ -705,8 +708,28 @@ endfunction
 function! s:Surround(id, default) abort
   let key = 'surround'.a:id
   if has_key(s:content, key)
+    let content = s:content[key]
+
+    " In the case of surrounding multiple lines with python, we need to fix the
+    " indentation here
+    if get(s:content, 'reindent') == 'python' && stridx(content, "\n") >= 0
+      let ref_line = s:content.lines[s:content.crt]
+      let ref_indent = matchstr(ref_line, '^\s*')
+      let lRes = split(content, "\n")
+      let min_res_indent = min(map(copy(lRes), "matchend(v:val, '^\\s*')"))
+      " The calling engine will already restore the expected indent through
+      " leading spaces on the first line.
+      " What we need: make sure subsequent lines are correctly indented
+      " TODO: simplify
+
+      call map(lRes, 'v:val[min_res_indent:]')
+      let lRes1 = map(lRes[1:], 'ref_indent . v:val')
+      let content = join([lRes[0]]+lRes1, "\n")
+      call s:Verbose('Content for s:Surround(%1): %2', a:id, "\n"+content)
+    endif
+
     let s:content.need_to_reinject_ignored = 1
-    return lh#style#just_ignore_this(s:content[key], s:content.cache_of_ignored_matches)
+    return lh#style#just_ignore_this(content, s:content.cache_of_ignored_matches)
   else
     return a:default
   endif
@@ -795,6 +818,26 @@ function! s:LoadTemplateLines(pos, templatepath) abort
   endtry
 endfunction
 
+" s:NonNullIndent(line) abort                                  {{{3
+function! s:NonNullIndent(line) abort
+  let id = indent(a:line)
+  if id == 0 && has_key(s:content, 'indentexpr')
+
+    let cleanup = lh#on#exit()
+          \.restore_cursor()
+    try
+      let v:lnum = a:line " There is a bug in standard indent/python.vim
+      " It explictly uses v:lnum instead of its parameter, and it moves the
+      " cursor...
+      silent! let id = call(s:content.indentexpr, [a:line])
+    finally
+      call cleanup.finalize()
+    endtry
+
+  endif
+  return id
+endfunction
+
 " s:LoadTemplate(pos, templatepath [, map_action])             {{{3
 function! s:LoadTemplate(pos, templatepath, ...) abort
   call s:Verbose('s:LoadTemplate(%1)', [a:pos, a:templatepath]+a:000)
@@ -814,14 +857,14 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
     if !has_key(s:content, 'crt_indent')
       let s:content.crt_indent = a:pos > 0
             \ ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
-            \ : indent('.')
+            \ : s:NonNullIndent(line('.'))
       call s:Verbose("Loading(%1 at %2) no previous indent - using %3 <- %4", a:templatepath, a:pos, s:content.crt_indent, a:pos > 0 ? 'nb heading spaces of(previous line)' : 'indent(".")')
     else
       call s:Verbose("Loading(%1 at %2) from previous indent %3", a:templatepath, a:pos, s:content.crt_indent)
     endif
     let s:content.crt_indent += &sw * s:Param('indented', 0)
     let indent = repeat(' ', s:content.crt_indent)
-    call map(lines, 'indent . v:val')
+    call map(lines, 'v:val !~? "\\v^VimL:|^MuT:|^\\s*$" ? indent . v:val : v:val')
   endif
   call extend(s:content.lines, lines, a:pos)
   return len(lines)
@@ -849,6 +892,9 @@ function! s:ResetContext() abort
   endif
   if has_key(s:content, 'can_apply_style')
     unlet s:content.can_apply_style
+  endif
+  if !empty(&indentexpr)
+    let s:content.indentexpr             = substitute(&indentexpr, '(.*)', '', '')
   endif
   call s:ClearVariables()
 endfunction
@@ -901,10 +947,11 @@ function! s:DoExpand(NeedToJoin) abort
     let last=pos + len(s:content.lines)
     " echomsg 'last='.last
 
-    " Goto the first line and delete it (because :r inserts one useless line) {{{4
-    if "" == getline(pos)
+    " Goto the first line and delete it or join it (unless in visual surround mode) {{{4
+    if empty(getline(pos))
+      " TODO: as I no longer use :read, get rid of this forced empty-line stuff...
       silent exe pos."normal! dd0"
-    else
+    elseif get(s:content, 'surrounding_with', '') != 'V'
       silent exe pos."normal! J!0"
     endif
     let last -= 1
@@ -920,7 +967,7 @@ function! s:DoExpand(NeedToJoin) abort
     silent! unlet s:content.first_line_indented
 
     " Join with the line after the template that have been inserted {{{4
-    call s:JoinWithNext(a:NeedToJoin,pos,last)
+    call s:JoinWithNext(s:NeedToJoin,pos,last)
 
     " Execute the post-expand callbacks (like add_include_dirs)
     let nb_lines_added =  s:ExecutePostExpandCallbacks()
