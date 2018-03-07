@@ -1,0 +1,10 @@
+VimL:" for File Template, Luc Hermitte, 07th Mar 2018
+VimL:" hint: for e in range:
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+for <+ s:SurroundableParam("element", 2) +> in <+ s:SurroundableParam("range", 3) +>:
+    <+ s:SurroundableParam("code", 1) +>
+<+s:TerminalPlaceHolder()+>
