@@ -22,6 +22,7 @@ let s:k_version = 431
 " History:
 "       v4.3.1
 "       (*) PORT: Fix unletting in `MuT: let`
+"       (*) ENH: Add way to inject parameters in parent ctx
 "       v4.3.0
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
@@ -461,6 +462,25 @@ endfunction
 function! s:PopArgs() abort
   if !empty(s:args)
     call remove(s:args, -1)
+  endif
+endfunction
+
+" Function: s:InjectInParentArgs()   {{{3
+function! s:InjectInParentArgs(args) abort
+  call lh#assert#value(len(s:args)).is_gt(1)
+  let parent_args = s:args[-2]
+  while !empty(parent_args) && type(parent_args) != type({})
+    call lh#assert#type(parent_args).is([])
+    let parent_args2 = parent_args[-1]
+    unlet parent_args
+    let parent_args = parent_args2
+    unlet parent_args2
+  endwhile
+  if type(parent_args)==type([]) && empty(parent_args)
+    call add(parent_args, a:args)
+  else
+    call lh#assert#type(parent_args).is({})
+    call extend(parent_args, a:args)
   endif
 endfunction
 

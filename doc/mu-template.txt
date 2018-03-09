@@ -638,6 +638,13 @@ A:  Three API functions are provided for this purpose:
     endtry
 
 
+Q:  "How can I return parameters and cache them from sub-skeleton?" *s:InjectInParentArgs()*
+A:  When a sub-skeleton is imported with |s:Include()|, we cannot store
+    information in |s:Args()| and expect it to remain once we return to the
+    _callee_.
+    `s:InjectInParentArgs()` is provided for this exact purpose.
+
+
 Q:  "How can I change the expression delimiters?"  *s:value_start* *s:value_end*
 A:  Just change the special variables |s:value_start| and |s:value_end|.
     Doing so can help us release the default latin1 character used (¡ ==
