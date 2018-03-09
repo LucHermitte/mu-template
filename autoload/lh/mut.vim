@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.3.0
-let s:k_version = 430
+" Version:      4.3.1
+let s:k_version = 431
 " Created:      05th Jan 2011
-" Last Update:  07th Mar 2018
+" Last Update:  09th Mar 2018
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 430
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.3.1
+"       (*) PORT: Fix unletting in `MuT: let`
 "       v4.3.0
 "       (*) ENH: Use new LucHermitte/vim-build-tools-wrapper variables
 "       (*) ENH: Support fuzzier snippet expansion
@@ -1318,7 +1320,7 @@ function! s:InterpretMuTCommand(the_line) abort
       " Note: doesn't support dict, nor lists
       let [all, debug, script, varname, op, expr; tail] = matchlist(a:the_line, '\v'.s:Special('\s*(debug\s+)=\zslet\s*(s:)=(\w+)\s*([.+*/-]=\=)\s*(.*)'))
       let s:content.variables += [varname]
-      if stridx(expr, varname) == -1 && op == '='
+      if stridx(expr, script.varname) == -1 && op == '=' && exists('s:'.varname)
         silent! unlet s:{varname}
       endif
       if empty(script)
