@@ -7,7 +7,7 @@
 " Version:	4.3.1
 let s:version = '4.3.1'
 " Created:	06th Nov 2007
-" Last Update:	09th Mar 2018
+" Last Update:	29th Jun 2018
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -91,6 +91,7 @@ after/template/docbk/type.template
 after/template/docbk/varname.template
 after/template/docbk/xref.template
 after/template/doxygen/Doxyfile.template
+after/template/gitcommit/tag.template
 after/template/help.template
 after/template/help/chapter.template
 after/template/help/section.template
