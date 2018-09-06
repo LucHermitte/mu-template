@@ -4,7 +4,8 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
-VimL: let s:doc_kind = lh#ui#which('lh#ui#confirm', 'Document kind:', ['article', 'book'])
+VimL: let s:doc_kind = lh#ui#which('lh#ui#confirm', 'Document kind:', ['part', 'article', 'book'])
+MuT:  if s:doc_kind != 'part'
 \documentclass[a4paper]{{+s:doc_kind+}}
 \usepackage{color}
 \usepackage{ifthen}
@@ -26,12 +27,12 @@ VimL: let s:doc_kind = lh#ui#which('lh#ui#confirm', 'Document kind:', ['article'
 \usepackage{datetime} % \pdfdate
 \makeatletter
 \pdfinfo{
-   /Author (\@author, {+g:company+})
-   /Title  (\@title)
-   /CreationDate (D:{+strftime('%Y%m%d%H%M%S')+})
-   /ModDate (D:\pdfdate)
-   /Subject ({+subject+})
-   /Keywords ({+keywords+})
+  /Author (\@author, {+g:company+})
+  /Title  (\@title)
+  /CreationDate (D:{+strftime('%Y%m%d%H%M%S')+})
+  /ModDate (D:\pdfdate)
+  /Subject ({+subject+})
+  /Keywords ({+keywords+})
 }
 \makeatother
 \fi
@@ -46,3 +47,4 @@ VimL: let s:doc_kind = lh#ui#which('lh#ui#confirm', 'Document kind:', ['article'
 \begin{document}
 {++}
 \end{document}
+MuT:  endif
