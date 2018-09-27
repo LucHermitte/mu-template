@@ -100,7 +100,7 @@ NB: there are no µTemplate snippets for `:if`, _etc._ because they are maintain
     `elif`, `else`, `while`
   * Snippets for `class`, `def`, `init`, `del`, and _docstring_ are also provided
   * Plus a few other snippets: `from`-`import`, `with`, ...
-  * Note: a few snippets (`path-exists` and `unittest`) require [lh-dev](http://github.com/LucHermitte/lh-dev) is be installed.
+  * Note: a few snippets (`path-exists` and `unittest`) require [lh-dev](http://github.com/LucHermitte/lh-dev) to be installed.
 
 ### C & C++
 Most of my C and C++ template-files are shipped with [lh-cpp](http://github.com/LucHermitte/lh-cpp). However a few ones are still shipped with µTemplate:
@@ -110,7 +110,7 @@ Most of my C and C++ template-files are shipped with [lh-cpp](http://github.com/
 
   * snippets for `main`, `for`, `for (int i`, `while`, `do...while`, `switch` and `case`, `if` ; NB: [lh-cpp](http://github.com/LucHermitte/lh-cpp) defines alternative [smart-snippets for these control-statements](http://github.com/LucHermitte/lh-cpp#code-snippets), and several C++-only snippets in its [repository](http://github.com/LucHermitte/lh-cpp/blob/master/after/template/cpp)
 
-  * Note: a few snippets (`stderr` and `printf`) require [lh-dev](http://github.com/LucHermitte/lh-dev) is be installed.
+  * Note: a few snippets (`stderr` and `printf`) require [lh-dev](http://github.com/LucHermitte/lh-dev) to be installed.
 
 ### LaTeX
 
@@ -146,7 +146,7 @@ Moreover, when a new `COPYING` file is created with vim, the user will be asked 
 
 Notes:
  * Not all existing licenses are available, don't hesitate to add your own text into `after/template/license/text/` or to send it to me.
- * Unfortunatelly at this time, licenses snippets require [lh-dev](http://github.com/LucHermitte/lh-dev) is be installed.
+ * Unfortunatelly at this time, licenses snippets require [lh-dev](http://github.com/LucHermitte/lh-dev) to be installed.
 
 ### Other filetypes
 
