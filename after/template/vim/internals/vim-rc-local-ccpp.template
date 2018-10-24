@@ -21,12 +21,15 @@ let s:project_sources_dir = lh#option#get('paths.sources')
 " Option for Mu-Template-> |s:path_from_root()|
 " Now: p:paths.sources is enough!
 
+MuT:  if &rtp !~ 'lh-cpp'
+VimL: " lh-cpp will provide p:includes instead
 " Used by mu-template to generate file headers and header-gates.
 let s:cpp_included_paths = lh#let#to('p:cpp_included_paths', [s:project_sources_dir])
 
 " If the project has .h.in files that are generated in the build
 " directory, uncomment the next line
 " let s:cpp_included_paths += [lh#option#get('BTW.compilation_dir')]
+MuT:  endif
 
 " Configures lh-cpp complete includes sub-plugin -> ftplugin/c/c_complete_include.vim
 " -> :h i_CTRL-X_i
@@ -45,19 +48,13 @@ let s:cpp_included_paths = lh#let#to('p:cpp_included_paths', [s:project_sources_
 " - Use all directories under the compilation directory (for files like
 "   config.h.in)
 let s:includes = lh#let#to('p:includes',
-    \ [ lh#path#to_dirname(s:project_sources_dir) . '**'
-    \ , lh#path#to_dirname(lh#btw#compilation_dir()) . '**'])
-try
-  let s:includes +=
-    \ lh#cpp#tags#compiler_includes()
-MuT:  if has_key(s:_prj_kind, 'cmake')
-    \ + lh#cmake#get_includes()
-MuT:  endif
+    \ [function('lh#cpp#tags#compiler_includes')]
+    \+[function('lh#btw#compilation_dir')]
+MuT: if has_key(s:_prj_kind, 'cmake')
+    \+ [function('lh#cmake#get_includes')]
+MuT: endif
+    \)
 MuT:  if ! has_key(s:_prj_kind, 'cmake')
-catch /.*/
-  call lh#common#warning_msg('Cannot update p:includes: '.v:exception)
-endtry
-
 " As we aren't using CMake, we'll have to register all 3rd party
 " libraries manually!
 if SystemDetected() == 'unix'
@@ -69,11 +66,7 @@ endif
 MuT:  endif
 
 " Setting &path
-call s:project.set('&path', '+='.lh#path#fix(lh#btw#compilation_dir()).'/**')
-" If the project has .h.in files that are generated in the build
-" directory, uncomment the next line
-" sources dir is automatically added thanks to lh-tags v2
-for p in lh#option#get('includes', [])
+for p in lh#cpp#tags#get_included_paths()
   if p !~ '^/usr'
     call s:project.set('&path', '+='.lh#path#fix(p))
   endif
