@@ -2,10 +2,10 @@
 " File:		autoload/lh/cpp/file.vim                           {{{1
 " Author:	Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
 "		<URL:http://code.google.com/p/lh-vim/>
-" Version:	4.3.0
-let s:k_version = '4.3.0'
+" Version:	4.3.2
+let s:k_version = '4.3.2'
 " Created:	12th Feb 2008
-" Last Update:	12th Sep 2017
+" Last Update:	24th Oct 2018
 "------------------------------------------------------------------------
 " Description:	«description»
 "
@@ -50,18 +50,33 @@ endfunction
 
 "------------------------------------------------------------------------
 " # Public {{{2
-function! lh#cpp#file#IncludedPaths()
-  " TODO: also add project path bu default?
-  let paths = copy(lh#option#get("cpp_included_paths", [expand('%:p:h')]))
+function! lh#cpp#file#IncludedPaths() abort
+  " 1- Use (bpg):cpp_included_paths by default
+  " 2- If not defined, fall back to lh#cpp#tags#get_included_paths()
+  " 3- If lh-cpp is not installed, fall back to the path of the current file,
+  "    relative to the current working directory
+  let paths = copy(lh#option#get("cpp_included_paths"))
+  if lh#option#is_unset(paths)
+    unlet paths
+    " Search to use lh-cpp function
+    runtime autoload/lh/cpp/tags.vim
+    if exists('*lh#cpp#tags#get_included_paths')
+      let paths = lh#cpp#tags#get_included_paths()
+    else
+      " TODO: also add project path by default?
+      let paths = [expand('%:p:h')]
+    endif
+  endif
+
   " call add(paths, '.')
   return paths
 endfunction
 
-function! s:ValidFile(filename)
+function! s:ValidFile(filename) abort
   return filereadable(a:filename) || bufexists(a:filename)
 endfunction
 
-function! lh#cpp#file#HeaderName(file)
+function! lh#cpp#file#HeaderName(file) abort
   if     exists('g:lh#alternate')             " From alternate-lite
     let alternates = lh#alternate#_find_existing_alternates({'filename': a:file, 'ft': &ft})
     call map(alternates, 'lh#path#simplify(v:val, 0)')
@@ -103,6 +118,7 @@ function! lh#cpp#file#HeaderName(file)
   endif
 endfunction
 
+" }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save
 "=============================================================================
