@@ -7,7 +7,7 @@
 " Version:	4.3.1
 let s:version = '4.3.1'
 " Created:	06th Nov 2007
-" Last Update:	29th Jun 2018
+" Last Update:	07th Nov 2018
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -109,6 +109,7 @@ after/template/license/text/gplv2-short.template
 after/template/license/text/gplv3-full.template
 after/template/license/text/gplv3-short-multifiles.template
 after/template/license/text/gplv3-short.template
+after/template/lua/if.template
 after/template/make/out-of-source.template
 after/template/markdown/bold.template
 after/template/markdown/emph.template
