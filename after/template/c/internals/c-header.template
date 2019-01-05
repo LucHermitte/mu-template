@@ -1,8 +1,20 @@
 VimL: "C/C++ Header File-Template, Luc Hermitte
+VimL: " Option: (bpg):[{ft}_]guard_headers_with
+MuT:  let s:guards_used = lh#ft#option#get('guard_headers_with', &ft, 'ifndef')
+MuT:  let s:use_ifndef = s:guards_used =~ 'ifndef'
+MuT:  let s:use_pragma = s:guards_used =~ 'pragma'
+
+MuT:  if s:use_ifndef
 VimL: call s:Include('c-header-guard', 'c/internals')
 #ifndef <+¡s:guard¡+>
 #define <+¡s:guard¡+>
+MuT:  endif
+MuT:  if s:use_pragma
+#pragma once
+MuT:  endif
 
 VimL: call s:Include('c-header-content', 'c/internals', lh#marker#txt("Definitions here"))
+MuT:  if s:use_ifndef
 
 #endif // <+¡s:guard¡+>
+MuT:  endif
