@@ -7,7 +7,7 @@
 " Version:	4.3.1
 let s:version = '4.3.1'
 " Created:	06th Nov 2007
-" Last Update:	07th Nov 2018
+" Last Update:	10th Apr 2019
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -126,6 +126,7 @@ after/template/python/def.template
 after/template/python/docstring.template
 after/template/python/elif.template
 after/template/python/else.template
+after/template/python/finally.template
 after/template/python/for.template
 after/template/python/from.template
 after/template/python/if.template

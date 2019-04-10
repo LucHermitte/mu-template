@@ -1,0 +1,12 @@
+VimL:" finally File Template, Luc Hermitte, 01st Mar 2019
+VimL:" hint: try: ... finallly:
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+try:
+    <+ s:SurroundableParam("code", 1) +>
+finally:
+    <+ s:SurroundableParam("finally", 2) +>
+<+s:TerminalPlaceHolder()+>
