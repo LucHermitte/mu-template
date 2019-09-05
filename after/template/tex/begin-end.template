@@ -3,8 +3,8 @@ VimL:" hint: \begin{env}-\end{env}
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
-VimL: let s:env = s:Surround(2, s:Param('environment', lh#marker#txt('environment')))
-\begin{{+s:env+}}
+MuT:  let s:env = s:Surround(2, s:Param('environment', lh#marker#txt('environment')))
+MuT:  let s:arg = s:Param('arg', '')
+\begin{{+s:env+}}{+s:arg+}
   {+s:Surround(1,'<++>')+}
 \end{{+s:env+}}{+s:TerminalPlaceHolder()+}
-VimL: unlet s:env
