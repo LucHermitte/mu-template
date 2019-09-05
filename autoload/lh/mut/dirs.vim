@@ -4,10 +4,10 @@
 "		<URL:http://code.google.com/p/lh-vim/>
 " License:      GPLv3 with exceptions
 "               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      3.3.6
-let s:k_version = 336
+" Version:      4.3.2
+let s:k_version = 43
 " Created:      05th Jan 2011
-" Last Update:  03rd Jan 2017
+" Last Update:  05th Sep 2019
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -21,6 +21,9 @@ let s:k_version = 336
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+" 	v4.3.2
+" 	(*) Search priority for snippets in {rtp} is inversed: the later, the
+" 	better
 " 	v3.3.6
 " 	(*) Some snippets can be common to all filetypes, they are expected to
 " 	be in {template_root_dir}/_/
@@ -78,7 +81,8 @@ let lh#mut#dirs#cache = ''
 function! lh#mut#dirs#update()
   " NB: template_dirs is computed every time as it can be changed between two
   " uses of mu-template.
-  let template_dirs = split(&runtimepath, ',')
+  let template_dirs = reverse(split(&runtimepath, ','))
+  " reverse as the later have more priority
   call map(template_dirs, 'v:val."/template"')
   let result = []
   if exists('$VIMTEMPLATES')
