@@ -5,7 +5,7 @@
 µTemplate is a template-files loader for Vim. Once loaded, templates are interpreted and expanded according to a flexible syntax.
 
   * [Features](#features)
-  * Typical workflows
+  * [Typical workflows](doc/workflows.md)
     * [Plugin Configuration](doc/workflows.md#plugin-configuration)
     * [Snippet Expansion](doc/workflows.md#snippet-expansion)
     * [Surrounding with a snippet](doc/workflows.md#surrounding-with-a-snippet)

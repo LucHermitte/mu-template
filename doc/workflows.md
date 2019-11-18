@@ -1,3 +1,4 @@
+# Typical workflows
 * [Plugin Configuration](#plugin-configuration)
     * [For expanding a snippet](#for-expanding-a-snippet)
 * [Snippet Expansion](#snippet-expansion)
@@ -141,4 +142,4 @@ are likelly to be overridden the next time you update your installed version.
 
 Instead, you'll often observe _variation-points_ meants to be overriden. The
 variation-points are just other template files that are included and that can
-be overridden. 
+be overridden.
