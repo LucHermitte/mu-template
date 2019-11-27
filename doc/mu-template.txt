@@ -997,7 +997,7 @@ Tom Link                For his life changing |stakeholders| library.
 
                                                                            }}}1
 ==============================================================================
- © Luc Hermitte, 2001-2016 <http://github.com/LucHermitte/mu-template>, CC by SA 3.0 {{{1
+ © Luc Hermitte, 2001-209 <http://github.com/LucHermitte/mu-template>, CC by SA 3.0 {{{1
  VIM: let b:VS_language = 'american'
  vim:ts=8:sw=4:tw=80:fo=tcq2:isk=!-~,^*,^\|,^\":ft=help:
  vim600:fdm=marker:

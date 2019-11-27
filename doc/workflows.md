@@ -18,6 +18,10 @@ imap <c-space>  <Plug>MuT_ckword
 xmap <c-space>  <Plug>MuT_Surround
 ```
 
+### For overriding snippets
+
+See [below](#to-define-your-own-templates-or-even-override-the-default-templates).
+
 ----
 
 ## Snippet Expansion
@@ -25,7 +29,7 @@ xmap <c-space>  <Plug>MuT_Surround
 
 Let's say, you want to expand the `c/while` snippet in C or C++.
 
-Type, in insert mode, any sequence of **consecutive** characters appearing (anywhere) in the name of the snippet you want to expand (or an empty space if you want to chose from every known snippet -- for the current filetype), and trigger snippet expansion.
+Type, in insert mode, any sequence of **consecutive** characters appearing (anywhere) in the name of the snippet you want to expand (or an empty space if you want to chose from every known snippets -- for the current filetype), and trigger snippet expansion.
 
 IOW, you can have a white space before hitting `<c-r><tab>` (or whatever you chose), or `w`, or `wh`,... or `while` -- let's call it the _lead string_.
 
@@ -110,7 +114,7 @@ command line:
 :MuTemplate
 ```
 
-Note that you'll probably purge the buffer content with `:%d`.
+Note that you'll probably want to purge the buffer content with `:%d`.
 
 Note that `:MuTemplate c/while` will expand the `c/while` snippet at cursor
 position.
@@ -123,7 +127,14 @@ New templates for the filetype `{ft}` are meant to be dropped in:
   for this filetype.
 - `{prj}/template/{ft}.template` to define or override the template for this
   filetype in the restricted context of a current project.
-  `"{prj}"` shall be the value given to the variable `(bpg):mt_templates_paths`. See [lh-vim-lib documentation on project variables](https://github.com/LucHermitte/lh-vim-lib/blob/master/doc/Options.md#project-options).
+  In that case, we need to assign the value `"{prj}"` to the variable `(bpg):mt_templates_paths`. See [lh-vim-lib documentation on project variables](https://github.com/LucHermitte/lh-vim-lib/blob/master/doc/Options.md#project-options).
+
+    ```vim
+    " From a local vimrc
+    let b:mt_templates_paths = "{prj}"
+    " Or if we use lh-vim-lib Project feature, still from a local vimrc
+    LetTo p:mt_templates_paths = "{prj}"
+    ```
 
 See `:h MuT-paths` for more details.
 
@@ -143,3 +154,9 @@ are likelly to be overridden the next time you update your installed version.
 Instead, you'll often observe _variation-points_ meants to be overriden. The
 variation-points are just other template files that are included and that can
 be overridden.
+
+Regarding µTemplate syntax for the template-files, see
+[its documentation](mu-template.txt), or the various
+[shipped template files](../after/template/).
+You'll find ever more advanced and complex examples in
+[lh-cpp](https://github.com/LucHermitte/lh-cpp).
