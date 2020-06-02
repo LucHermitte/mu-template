@@ -143,9 +143,9 @@ If a template file already exists you can edit it with `:MUEdit` command that
 supports command-line completion.
 
 ```vim
-:MuEdit {ft}
+:MUEdit {ft}
 " or for snippets
-:MuEdit {ft}/{snippet}
+:MUEdit {ft}/{snippet}
 ```
 
 In all cases, avoid to change the template files I ship with µTemplate as they
