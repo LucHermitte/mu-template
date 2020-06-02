@@ -1,13 +1,13 @@
 "=============================================================================
 " File:         autoload/lh/mut/dirs.vim                          {{{1
 " Author:       Luc Hermitte <EMAIL:hermitte {at} free {dot} fr>
-"		<URL:http://code.google.com/p/lh-vim/>
+"		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
-"               <URL:http://code.google.com/p/lh-vim/wiki/License>
-" Version:      4.3.2
-let s:k_version = 43
+"               <URL:http://github.com/LucHermitte/mu-template/tree/master/License.md>
+" Version:      4.3.3
+let s:k_version = 433
 " Created:      05th Jan 2011
-" Last Update:  05th Sep 2019
+" Last Update:  02nd Jun 2020
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -81,22 +81,27 @@ let lh#mut#dirs#cache = ''
 function! lh#mut#dirs#update()
   " NB: template_dirs is computed every time as it can be changed between two
   " uses of mu-template.
-  let template_dirs = reverse(split(&runtimepath, ','))
-  " reverse as the later have more priority
-  call map(template_dirs, 'v:val."/template"')
-  let result = []
+
+  " 1- specific spaths
+  let specific_paths = lh#ft#option#get('mt_templates_paths', &ft, [])
+  let result = type(specific_paths) == type([])
+        \ ? specific_paths
+        \ : split(specific_paths, ',')
+
+  " 2- the global $VIMTEMPLATES
   if exists('$VIMTEMPLATES')
     " $VIMTEMPLATES is used if defined
     " This must be a list of directories separated by ';' or ','
     " Note: $VIMTEMPLATES has precedence over 'runtimepath'
-    let result = [$VIMTEMPLATES]
+    let result += [$VIMTEMPLATES]
   endif
+
+  " 3- rtp
+  let template_dirs = split(&runtimepath, ',')
+  " reverse as the later have more priority
+  call map(template_dirs, 'v:val."/template"')
   let result += template_dirs
-  let specific_paths = lh#ft#option#get('mt_templates_paths', &ft, [])
-  let sp = type(specific_paths) == type([])
-        \ ? specific_paths
-        \ : split(specific_paths, ',')
-  let result = sp + result
+
   " \\ -> \, // -> /
   call map(result, 'substitute(v:val, "\\v([/\\\\])\\1", "\1", "g")')
   " path/ -> path

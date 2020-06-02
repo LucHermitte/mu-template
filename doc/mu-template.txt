@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 24th Jan 2017
+*mu-template.vim*       For Vim version 7+      Last change: 02nd Jun 2020
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 4.3.0
+                    Version 4.3.3
 
 
 ==============================================================================
@@ -34,16 +34,16 @@ Hermitte, have written this documentation.
                                             *MuT-paths*
 
 The template-files are searched within a list of directories specified by
-|{runtimepath}/template/|, |(bg):[{ft}_]mt_templates_paths| and by
+|{runtimepath}/template/|, |(bpg):[{ft}_]mt_templates_paths| and by
 |$VIMTEMPLATES|.
 
-*{runtimepath}/template/* refers to 'template/' subdirectories, built from the
-list of directories specified in the 'runtimepath' vim-option.
+*{runtimepath}/template/* refers to `'template/'` subdirectories, built from
+the list of directories specified in the 'runtimepath' vim-option.
 
 *$VIMTEMPLATES* is a comma (or semicolon) separated list of directories. When
 set, it has precedence over paths of the form |{runtimepath}/template/|.
 
-*(bg):[{ft}_]mt_templates_paths* can be either a |List| or a comma (or
+*(bpg):[{ft}_]mt_templates_paths* can be either a |List| or a comma (or
 semicolon) separated list of directories. When set, it has precedence over
 paths of the form |{runtimepath}/template/|, or even from |$VIMTEMPLATES|.
 N.B.: this feature requires |lh-dev|
@@ -52,26 +52,26 @@ N.B.: this feature requires |lh-dev|
                                             *MuT-paths-override*
 Precedence~
 By default, the template-files should be installed into your
-$HOME/.vim/after/template/ directory. ($HOME/vimfiles under windows systems
-...  cf. 'runtimepath' for other acceptable directories ; prefer the after/
-sub-hierarchy).
+`$HOME/.vim/template/` directory. (`$HOME/vimfiles/template` under windows
+systems ...  cf. 'runtimepath' for other acceptable directories).
 
 Hence, you can easily override a default template-file by yours. Put your file
-into your $HOME/.vim/template/ directory.
+into your `$HOME/.vim/template/` directory.
 
-By setting |$VIMTEMPLATES,|with plugins like |project| or  |local_vimrc|, you
-can also override your default template-files on a per project basis.
+By setting |$VIMTEMPLATES,| with plugins like |project| or |local_vimrc|, you
+can also override your default template-files on a per project basis -- see
+|lhvl#project|.
 
 
 Sharing template-files~
 As template-files are searched within a list of directories, sharing them
 between several people or teams becomes really easy. There are several ways to
 proceed:
-- put all the template-files into $VIM/vimfiles/after/template/
+- put all the template-files into `$VIM/vimfiles/after/template/`
   At this point, VIM administrators (often known as system administrators) on
   your environment should not let anybody add new template-files to the common
   repository. Cf. |MuT-trojan-horse|.
-- Import the configuration from another VIM user by adding '~hislogin/.vim' to
+- Import the configuration from another VIM user by adding '`~hislogin/.vim'` to
   your 'runtimepath'. By doing so, you will use the plugin and ftplugins he is
   using, but also the template-file he uses.
 - More interresting, on a project you work on with other VIM users, you can
@@ -79,10 +79,9 @@ proceed:
   set |$VIMTEMPLATES| point to this directory.
 
                                         *MuT-multiprojects*
-  If you are working on several projects, you can use for instance Aric Blumer's
-  |project| plugin and set |$VIMRUNTIME| to a specific value with every
-  different project. We can also rely on plugins like |MuT-local_vimrc|.
-  It is not very handy yet, I'm opened to any suggestion.
+  If you are working on several projects, I recommend the use of a
+  |MuT-local_vimrc| plugin. There set `b:mut_templates_paths` or
+  `p:mut_templates_paths`.
 
 Note: Every time you share template-files with other people, be sure that these
 template-files are not |MuT-trojan-horse|s. Actually, it is exactly the same
@@ -94,7 +93,7 @@ oneliner that may help you convert filenames (the *nix tools find, xargs, and
 perl are required) >
  find /some/pathname/ -name "template.*" | perl -pe 's/(.*)(template)\.(.*)/$1$2.$3 $1$3.$2/ ' | xargs -l1 mv
 I'm quite sure there are simplier solutions when we are true Perl mongers.
-(NB: be sure to exclude {rtp}/ftplugin/template.vim which is a |ftplugin|,
+(NB: be sure to exclude `{rtp}/ftplugin/template.vim` which is a |ftplugin|,
 its name must not be changed)
 
 
@@ -307,8 +306,8 @@ FEATURES                                    *MuT-features*     {{{1
 
     If you want to develop or support another n-th markers system, then you will
     have to define these three functions in a plugin that MUST be placed into
-    one of your {runtimepath}/after/plugin/ directories (not just
-    {rtp}/plugin/), and to define as well the mappings to |!jump!| -- see
+    one of your `{runtimepath}/after/plugin/` directories (not just
+    `{rtp}/plugin/`), and to define as well the mappings to |!jump!| -- see
     |MuT-!jump!|.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -575,7 +574,7 @@ A:  Call s:StartIndentingHere: >
     - This feature will make sense after file headers that shall not be
       indented.
     - |s:reindent| will be automatically set when calling this function.
-    Examples: check template/c/internals/c-header.template
+    Examples: check `template/c/internals/c-header.template`
 
 
 Q:  "How can I load another skeleton?"                  *s:Include()*
@@ -901,12 +900,8 @@ expand almost any kind of tags we wish to. Our possibilities are limited only
 by VimL.
 
 
-mu-Template.vim is best placed in a {rtp}/after/ directory. This way, several
-things (like the bracketing and marker systems) can be overridden before this
-plugin is initialized.
-
 The default template-files, shipped with the vimball archive, are also best
-placed into a {rtp}/after/ directory. Thus, it leaves us the possibility to
+placed into a `{rtp}/after/` directory. Thus, it leaves us the possibility to
 override them. See |MuT-paths|.
 
 
