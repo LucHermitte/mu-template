@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.3.1
-let s:k_version = 431
+" Version:      4.3.3
+let s:k_version = 433
 " Created:      05th Jan 2011
-" Last Update:  09th Mar 2018
+" Last Update:  18th Jul 2020
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 431
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.3.3
+"       (*) BUG: Fix indenting for python
 "       v4.3.1
 "       (*) PORT: Fix unletting in `MuT: let`
 "       (*) ENH: Add way to inject parameters in parent ctx
@@ -851,7 +853,9 @@ function! s:NonNullIndent(line) abort
       let v:lnum = a:line " There is a bug in standard indent/python.vim
       " It explictly uses v:lnum instead of its parameter, and it moves the
       " cursor...
-      silent! let id = call(s:content.indentexpr, [a:line])
+      " NB: &indentexpr may return -1 to signify: keep the previous indent.
+      " Should we recurse on the previous non blanck line?
+      silent! let id = min(0, call(s:content.indentexpr, [a:line]))
     finally
       call cleanup.finalize()
     endtry
