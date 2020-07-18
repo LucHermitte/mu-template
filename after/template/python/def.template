@@ -12,7 +12,9 @@ VimL:   call s:Include(s:kind, 'python', extend(s:function, {'indented': 0}))
 MuT:  else
 VimL: " TODO: add self, if not yet defined in method cases ; and auto-detect methods!
 def <+s:SurroundableParam('name', 2) +>(<+s:SurroundableParam('params', 3)+>):
-VimL: call s:Include('docstring', 'python', {'indented': 1})
-    <+s:SurroundableParam('pass', 1)+>
+MuT:  if lh#ft#option#get('template_expand_doc', &ft, 1)
+    VimL: call s:Include('docstring', 'python', {'indented': 1})
+MuT:  endif
+    <+s:SurroundableParam('code', 1, 'pass')+>
 <+s:TerminalPlaceHolder()+>
 MuT:  endif

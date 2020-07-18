@@ -1,0 +1,6 @@
+VimL:" property File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 16th Jul 2020
+VimL:" hint: @property def <+ppt+>(self):
+VimL: let s:reindent     = 'python'
+@property
+MuT:  let s:ppt = s:SurroundableParam("ppt", 1)
+VimL: call s:Include('def', 'python', {'indented': s:Param("indented", 0), 'name': s:ppt, 'params': 'self', 'doc': s:SurroundableParam('doc', 1, 'Property '.s:ppt), 'code': 'return self.__'.s:ppt})

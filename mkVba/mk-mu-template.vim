@@ -7,7 +7,7 @@
 " Version:	4.3.3
 let s:version = '4.3.3'
 " Created:	06th Nov 2007
-" Last Update:	02nd Jun 2020
+" Last Update:	18th Jul 2020
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -133,6 +133,7 @@ after/template/python/if.template
 after/template/python/ifelse.template
 after/template/python/main.template
 after/template/python/path-exists.template
+after/template/python/property.template
 after/template/python/unittest.template
 after/template/python/while.template
 after/template/python/with.template
