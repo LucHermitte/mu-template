@@ -7,7 +7,7 @@
 " Version:      4.3.3
 let s:k_version = 433
 " Created:      05th Jan 2011
-" Last Update:  18th Jul 2020
+" Last Update:  21st Jul 2020
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -1475,7 +1475,7 @@ function! s:FinishCompletion(choice) abort
   let l =getline('.')
   let choice = a:choice
   " let choice = l[(s:__complete.c-1) : (col('.')-1)]
-  " echomsg "finishing! ->" . choice
+  call s:Verbose("Finish µT expansion of %1", choice)
   let post_action = s:InsertTemplateFile(choice, choice)
   if !empty(post_action)
     exe "normal ".post_action
