@@ -1,0 +1,15 @@
+VimL:" init attribute File Template, Luc Hermitte, 20th Jul 2020
+VimL:" hint: self.__{attr} = {attr}
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:expr = s:SurroundableParam('rhs', 1, 'µ')
+MuT:  if s:expr == 'µ'
+MuT:    let s:def_attr = lh#marker#txt('__attr')
+MuT:    let s:expr     = lh#marker#txt('attr')
+MuT:  elseif s:expr =~ '^\k\+$'
+MuT:    let s:def_attr = '__'.s:expr
+MuT:  else
+MuT:    let s:def_attr = s:expr
+MuT:  endif
+MuT:  let s:attr = s:Param('attr', s:def_attr)
+self.<+s:attr+> = <+s:expr+>

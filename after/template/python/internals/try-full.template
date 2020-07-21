@@ -1,0 +1,19 @@
+VimL:" try absract snippet File Template, Luc Hermitte, 20th Jul 2020
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+VimL: let s:reindent     = 'python'
+try:
+    <+s:SurroundableParam('code', 1)+>
+MuT:  if s:Param('tryexcept', 0)
+except <+s:Param('except_type', lh#marker#txt('BaseException'))+> as <+s:Param('except_name', lh#marker#txt('e'))+>:
+    <+s:SurroundableParam('exceptcode', 2)+>
+MuT:  endif
+MuT:  if s:Param('tryelse', 0)
+else:
+    <+s:SurroundableParam('exceptelsecode', 3)+>
+MuT:  endif
+MuT:  if s:Param('tryfinally', 0)
+finally:
+    <+s:SurroundableParam('finallycode', 4)+>
+MuT:  endif
+<+s:TerminalPlaceHolder()+>

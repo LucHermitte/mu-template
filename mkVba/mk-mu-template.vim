@@ -7,7 +7,7 @@
 " Version:	4.3.3
 let s:version = '4.3.3'
 " Created:	06th Nov 2007
-" Last Update:	18th Jul 2020
+" Last Update:	21st Jul 2020
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -121,6 +121,7 @@ after/template/perl/item.template
 after/template/perl/over.template
 after/template/python/__del__.template
 after/template/python/__init__.template
+after/template/python/attribute.template
 after/template/python/class.template
 after/template/python/def.template
 after/template/python/docstring.template
@@ -131,9 +132,15 @@ after/template/python/for.template
 after/template/python/from.template
 after/template/python/if.template
 after/template/python/ifelse.template
+after/template/python/internals/try-full.template
+after/template/python/lambda.template
 after/template/python/main.template
 after/template/python/path-exists.template
 after/template/python/property.template
+after/template/python/try_else_finally.template
+after/template/python/try_else.template
+after/template/python/try_finally.template
+after/template/python/try.template
 after/template/python/unittest.template
 after/template/python/while.template
 after/template/python/with.template

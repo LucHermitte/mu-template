@@ -1,0 +1,5 @@
+VimL:" lambda File Template, Luc Hermitte, 20th Jul 2020
+VimL:" hint: lambda var: expr
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+lambda <+ s:SurroundableParam('var', 2) +> : <+ s:SurroundableParam('expression', 1) +>
