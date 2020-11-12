@@ -7,7 +7,7 @@
 " Version:	4.3.3
 let s:version = '4.3.3'
 " Created:	06th Nov 2007
-" Last Update:	21st Jul 2020
+" Last Update:	12th Nov 2020
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -144,6 +144,7 @@ after/template/python/try.template
 after/template/python/unittest.template
 after/template/python/while.template
 after/template/python/with.template
+after/template/rst/link.template
 after/template/sh.template
 after/template/sh/case.template
 after/template/sh/current-dir.template
@@ -187,8 +188,10 @@ after/template/tex/figure.template
 after/template/tex/frac.template
 after/template/tex/frame-beamer.template
 after/template/tex/frame-vhelp-beamer.template
+after/template/tex/hyperlink.template
 after/template/tex/italic.template
 after/template/tex/itemize.template
+after/template/tex/multicols.template
 after/template/tex/note.template
 after/template/tex/tt.template
 after/template/unknown.template

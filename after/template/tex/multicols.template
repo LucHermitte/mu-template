@@ -1,0 +1,11 @@
+VimL:" multicols-environment File Template, Luc Hermitte, 03rd Nov 2020
+VimL:" hint: \begin{multicols}-\end{multicols}
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+\setlength{\columnseprule}{0.4pt}
+\begin{multicols}{2}
+  {+s:Surround(1,'<++>')+}
+  \vfill\columnbreak
+  {+s:Surround(2,'<++>')+}
+\end{multicols}{+s:TerminalPlaceHolder()+}

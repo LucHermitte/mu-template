@@ -1,0 +1,6 @@
+VimL:" hyperlink File Template, Luc Hermitte, 03rd Nov 2020
+VimL:" hint: \hyperlink{<++>}{\beamerbutton{(p.\pageref{<++>})}}
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+MuT:  let s:_label = s:SurroundableParam('label', 1)
+\hyperlink{{+s:_label+}}{\beamerbutton{(p.\pageref{{+s:_label+}})}}{+s:TerminalPlaceHolder()+}
