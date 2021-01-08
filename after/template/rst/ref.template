@@ -1,0 +1,18 @@
+VimL:" ref File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 02nd Dec 2020
+VimL:" hint: :ref`text <link>`
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:_surrounded1_ = s:SurroundRaw(1, '')
+MuT:  let s:_link_        = s:SurroundRaw(2, '')
+MuT: if !empty(s:_surrounded1_)
+MuT:     let s:_text_ = s:_surrounded1_
+MuT: elseif !empty(s:_link_)
+MuT:     let s:_text_ = lh#marker#txt(s:_link_)
+MuT: else
+MuT:     let s:_text_ = lh#marker#txt('text')
+MuT: endif
+VimL: " 2- Set s:_link_
+MuT:  if empty(s:_link_)
+VimL:    let s:_link_ = lh#marker#txt('link')
+MuT:  endif
+:ref:`<+s:_text_+> <<+s:_link_+>>`<+s:TerminalPlaceHolder()+>
