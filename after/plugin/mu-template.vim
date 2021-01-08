@@ -2,11 +2,11 @@
 " File:         after/plugin/mu-template.vim            {{{1
 " Maintainer:   Luc Hermitte <MAIL:hermitte {at} free {dot} fr>
 "		<URL:http://github.com/LucHermitte/mu-template>
-" Last Update:  14th Oct 2017
+" Last Update:  08th Jan 2021
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.3.0
-let s:k_version = 430
+" Version:      4.4.0
+let s:k_version = 440
 "
 " Initial Author:       Gergely Kontra <kgergely@mcl.hu>
 " Forked at version:    0.11
@@ -30,16 +30,16 @@ let s:k_version = 430
 "       cpp-class.template.
 "
 "       Template file has some magic characters:
-"       - Strings surrounded by ¡ are expanded by vim
-"         Eg: ¡strftime('%c')¡ will be expanded to the current time (the time,
+"       - Strings surrounded by Â¡ are expanded by vim
+"         Eg: Â¡strftime('%c')Â¡ will be expanded to the current time (the time,
 "         when the template is read), so 2002.02.20. 14:49:23 on my system
 "         NOW.
-"         Eg: ¡expr==1?"text1":text2¡ will be expanded as "text1" or "text2"
+"         Eg: Â¡expr==1?"text1":text2Â¡ will be expanded as "text1" or "text2"
 "         regarding 'expr' values 1 or not.
 "       - Lines starting with "VimL:" are interpreted by vim
 "         Eg: VimL: let s:fn=expand("%") will affect s:fn with the name of the
 "         file currently created.
-"       - Strings between «» signs are fill-out places, or marks, if you are
+"       - Strings between Â«Â» signs are fill-out places, or marks, if you are
 "         familiar with some bracketing or jumping macros
 "
 "       See the documentation for more explanations.
@@ -51,14 +51,14 @@ let s:k_version = 430
 "               - plugin => non reinclusion
 "               - A little installation comment
 "               - change 'exe "norm \<c-j>"' to 'norm !jump!' + startinsert
-"               - add '¿vimExpr¿' to define areas of VimL, ideal to compute
+"               - add 'Â¿vimExprÂ¿' to define areas of VimL, ideal to compute
 "                 variables
 "
 "       v0.1bis&ter not included in 0.11,
 "       (*) default value for g:author as it is used in some templates
 "           -> $USERNAME (windows specific ?)
-"       (*) extend '¡.\{-}¡' and s:Exec() in order to clear empty lines after
-"           the interpretation of '¡.\{-}¡'
+"       (*) extend 'Â¡.\{-}Â¡' and s:Exec() in order to clear empty lines after
+"           the interpretation of 'Â¡.\{-}Â¡'
 "           cf. template.vim and say 'No' to see the difference.  0.20
 "       (*) Command (:MuTemplate) in order to insert templates on request, and
 "           at the current cursor position.
@@ -93,7 +93,7 @@ let s:k_version = 430
 "       (*) Cursor correctly positioned if there is no marker to jump to.
 "       (*) MuTemplate accepts paths. e.g.: :MuTemplate xslt/xsl-if
 "       (*) Reindentation of the text inserted permitted when the template
-"           file contains ¿ let s:reindent = 1 ¿
+"           file contains Â¿ let s:reindent = 1 Â¿
 "       (*) New mappings: i_CTRL-R_TAB and i_CTRL-R_SPACE. They insert the
 "           template file matching {ft}/template.{cWORD}.
 "           In case there are several matches, the choice is given to the user
@@ -119,9 +119,9 @@ let s:k_version = 430
 "       v0.27
 "       (*) Handling of $VIMTEMPLATES improved!
 "       (*) The parsing of the templates is more accurate
-"       (*) New statement: "^VimL:...$" that is equivalent to "^¿...¿$"
+"       (*) New statement: "^VimL:...$" that is equivalent to "^Â¿...Â¿$"
 "       (*) Default implementation for DateStamp
-"       (*) The function interpreted between ¡...¡ can echo messages and still
+"       (*) The function interpreted between Â¡...Â¡ can echo messages and still
 "           remain silent.
 "       (*) Little problem with ":MuTemplate <arg>" fixed.
 "
@@ -133,8 +133,8 @@ let s:k_version = 430
 "
 "       v0.30
 "       (*) big changes regarding the funky characters used as delimiters
-"           "¿...¿" abandoned to "VimL:..."
-"           "¡...¡" abandoned to ... WILL BE DONE IN v0.32
+"           "Â¿...Â¿" abandoned to "VimL:..."
+"           "Â¡...Â¡" abandoned to ... WILL BE DONE IN v0.32
 "       (*) little bug with Vim 6.1.362 -> s/firstline/first_line/
 "
 "       v0.30 bis
@@ -179,7 +179,7 @@ let s:k_version = 430
 "       (*) SVN + new versioning
 "       (*) Bug fix in rebuild menu
 "       (*) Marker/placeholders can be set with <++>, instead of
-"           ¡Marker_Txt()¡. This is customizable with |s:marker_open| and
+"           Â¡lh#marker#txt()Â¡. This is customizable with |s:marker_open| and
 "           |s:marker_close|.
 "       (*) Support latin1 and UTF-8 encodings
 "       (*) ft inheritance (e.g. 'if'-template is the same for C and C++)
@@ -227,7 +227,7 @@ let s:k_version = 430
 "       (*) issue#30, mt_IDontWantTemplatesAutomaticallyInserted set in .vimrc
 "           is ignored.
 "           TODO: def_togle_item should use preexisting values when set
-"           «TBT»
+"           Â«TBTÂ»
 "       v2.2.0
 "       (*) When several template-files match a snippet name, the choice can be
 "           done with |ins-completion-menu| instead of |confirm()| box thanks
@@ -367,6 +367,8 @@ let s:k_version = 430
 "       (*) ENH: Support fuzzier snippet expansion
 "       (*) REFACT: Remove `DateStamp()`
 "       (*) REFACT: Remove SearchInRuntime dependency
+"       v4.4.0
+"       (*) ENH: Disable historic snippet selection when COC is detected
 "
 " BUGS: {{{2
 "       Globals should be prefixed. Eg.: g:author .
@@ -489,11 +491,14 @@ inoremap <silent> <Plug>MuT_ckword   <C-R>=lh#mut#search_templates(lh#ui#GetCurr
 inoremap <silent> <Plug>MuT_cWORD    <C-R>=lh#mut#search_templates(lh#ui#GetCurrentWord())<cr>
 " takes a count to specify where the selected texte goes (see while-snippets)
 vnoremap <silent> <Plug>MuT_Surround :<C-U>call lh#mut#surround()<cr>
-if !hasmapto('<Plug>MuT_ckword', 'i')
-  imap <unique> <C-R><space>  <Plug>MuT_ckword
-endif
-if !hasmapto('<Plug>MuT_cWORD', 'i')
-  imap <unique> <C-R><tab>    <Plug>MuT_cWORD
+if ! lh#has#plugin('plugin/coc.vim')
+  " ÂµTemplate historic snippet selection is incompatible with COC.
+  if !hasmapto('<Plug>MuT_ckword', 'i')
+    imap <unique> <C-R><space>  <Plug>MuT_ckword
+  endif
+  if !hasmapto('<Plug>MuT_cWORD', 'i')
+    imap <unique> <C-R><tab>    <Plug>MuT_cWORD
+  endif
 endif
 if !hasmapto('<Plug>MuT_Surround', 'v')
   vmap <unique> <C-R><tab>    <Plug>MuT_Surround

@@ -279,6 +279,10 @@ VimL: silent! unlet s:times
     Bundle 'LucHermitte/lh-dev'
     ```
 
+### Note: regarding [COC](https://github.com/neoclide/coc.nvim)
+
+Since v.4.4.0, µTemplate delegates the selection of its snippets to COC.
+
 ## Credits
   * Gergely Kontra is the author of the first version of µTemplate.
   * Luc Hermitte (LH) is the current maintainer of this enhanced version of mu-template.

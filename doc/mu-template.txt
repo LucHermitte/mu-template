@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 02nd Jun 2020
+*mu-template.vim*       For Vim version 7+      Last change: 08th Jan 2021
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 4.3.3
+                    Version 4.4.0
 
 
 ==============================================================================
@@ -888,6 +888,9 @@ it to:
     imap ²         <Plug>MuT_ckword
     vmap <c-space> <Plug>MuT_Surround
 
+Note: if you have installed COC, don't use these mappings and let COC be a
+front-end for µTemplate. See |MuT-COC|.
+
 
 ==============================================================================
 DESIGN CONSIDERATIONS                       *MuT-design*       {{{1
@@ -952,6 +955,18 @@ like |b:sources_root|, can be set before a new |buffer| is created.
 
 Note: This set of ftplugins contains many C&C++ specific code-snippets that
 are not shipped with mu-tempate.
+
+|coc-nvim.txt|                                  *MuT-COC*
+<https://github.com/neoclide/coc.nvim>
+µTemplate can register itself as a |coc-custom-source|. Actually if COC is
+detected after Vim has been started, µTemplate will try to avoid to register
+any keybinding to |<Plug>MuT_ckword| and |<Plug>MuT_cWORD|. Selection of the
+snippet to expand will be taken care of by COC.
+
+Moreover, µTemplate historic selection of snippets to complete seems to be
+incompatible with COC (or the other way around...) and typed characters may
+be scrambled. That's why it's preferable to rely entirelly on COC to select
+snippets, when both are installed.
 
 
 ==============================================================================

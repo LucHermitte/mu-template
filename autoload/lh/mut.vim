@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.3.3
-let s:k_version = 433
+" Version:      4.4.0
+let s:k_version = 440
 " Created:      05th Jan 2011
-" Last Update:  21st Jul 2020
+" Last Update:  08th Jan 2021
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 433
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.4.0
+"       (*) ENH: Register MuT as a new source in COC
 "       v4.3.3
 "       (*) BUG: Fix indenting for python
 "       v4.3.1
@@ -419,7 +421,7 @@ function! lh#mut#search_templates(word) abort
   call s:Verbose("choice=%1\nfile=%2", choice, file)
 
   " 3- Template-file to insert ? {{{3
-  return s:InsertTemplateFile(a:word,file)
+  return lh#mut#_insert_template_file(a:word,file)
 endfunction
 "------------------------------------------------------------------------
 " ## Internal functions {{{1
@@ -1476,7 +1478,7 @@ function! s:FinishCompletion(choice) abort
   let choice = a:choice
   " let choice = l[(s:__complete.c-1) : (col('.')-1)]
   call s:Verbose("Finish µT expansion of %1", choice)
-  let post_action = s:InsertTemplateFile(choice, choice)
+  let post_action = lh#mut#_insert_template_file(choice, choice)
   if !empty(post_action)
     exe "normal ".post_action
   else
@@ -1550,8 +1552,8 @@ function! s:ChooseTemplateFile(files, word) abort
   return choice
 endfunction
 
-" s:InsertTemplateFile(word,file)                              {{{3
-function! s:InsertTemplateFile(word,file) abort
+" lh#mut#_insert_template_file(word,file)                      {{{3
+function! lh#mut#_insert_template_file(word,file) abort
   if "" != a:file " 3.A- => YES there is one {{{4
     " 3.1- Remove the current word {{{5
     " Note: <esc> is needed to escape from "Visual insertion mode"

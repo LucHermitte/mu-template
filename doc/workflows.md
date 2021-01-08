@@ -18,6 +18,15 @@ imap <c-space>  <Plug>MuT_ckword
 xmap <c-space>  <Plug>MuT_Surround
 ```
 
+#### Important: for COC users
+If [COC](https://github.com/neoclide/coc.nvim) is detected when Vim is started,
+the default keybindings to the two previous sequences to select and expand
+snippets is disabled. Instead, snippet selection from µTemplate will be
+automatically taken care of by COC.
+
+This was required to simplify the usage of µTemplate with COC, and also to fix
+an incompatibility between the two plugins.
+
 ### For overriding snippets
 
 See [below](#to-define-your-own-templates-or-even-override-the-default-templates).
