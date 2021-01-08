@@ -1,4 +1,4 @@
-# µTemplate [![Build Status](https://secure.travis-ci.org/LucHermitte/mu-template.png?branch=master)](http://travis-ci.org/LucHermitte/mu-template) [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
+# µTemplate [![Last release](https://img.shields.io/github/tag/LucHermitte/mu-template.svg)](https://github.com/LucHermitte/mu-template/releases) [![Build Status](https://secure.travis-ci.org/LucHermitte/mu-template.png?branch=master)](http://travis-ci.org/LucHermitte/mu-template) [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
 
 ## Introduction
 
