@@ -281,7 +281,8 @@ VimL: silent! unlet s:times
 
 ### Note: regarding [COC](https://github.com/neoclide/coc.nvim)
 
-Since v.4.4.0, µTemplate delegates the selection of its snippets to COC.
+Since v.4.4.0, µTemplate delegates the selection of its snippets to COC, when
+COC is detected.
 
 ## Credits
   * Gergely Kontra is the author of the first version of µTemplate.
