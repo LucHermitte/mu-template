@@ -13,7 +13,7 @@ VimL:   let s:_repo_addr = lh#os#system('git config --get remote.origin.url')
 MuT:  elseif s:_repo_type == 'svn'
 VimL:   let s:_repo_addr = matchstr(filter(split(lh#os#system('cd '.fnameescape(expand('%:p:h')). '&&LANG=C svn info'), "\n"), 'v:val=~"^URL"')[0], '[^:]*: \zs.*')
 MuT:  else
-VimL:   let s:_repo_addr = Marker_Txt('Unsupported repository type')
+VimL:   let s:_repo_addr = lh#marker#txt('Unsupported repository type')
 MuT:  endif
 {
 "name": "<+s:_project_name+>",gc
