@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/tree/master/License.md>
-" Version:      4.3.3
-let s:k_version = 433
+" Version:      4.4.0
+let s:k_version = 440
 " Created:      05th Jan 2011
-" Last Update:  02nd Jun 2020
+" Last Update:  09th Jan 2021
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -143,14 +143,15 @@ function! lh#mut#dirs#shorten_template_filenames(list)
 endfunction
 
 " Function: lh#mut#dirs#get_short_list_of_TF_matching(word, filetype) {{{2
-function! lh#mut#dirs#get_short_list_of_TF_matching(word, filetype)
+function! lh#mut#dirs#get_short_list_of_TF_matching(word, filetype, ...)
+  let force_update = get(a:, 1, 0)
   " 1- Build the list of template files matching the current word {{{3
   let files = s:GetTemplateFilesMatching(a:word, a:filetype)
   " let [files, sec] = lh#time#bench(function('s:GetTemplateFilesMatching'), a:word, a:filetype)
   " call s:Verbose('s:GetTemplateFilesMatching(%1, %2) takes %3s to return %4 entries', a:word, a:filetype, sec, len(files))
 
   " 2- Shorten the template-file names                            {{{3
-  if a:word != '*'
+  if a:word != '*' || force_update
     " Don't fetch hints when building menus
     call s:UpdateHints(files)
   endif
@@ -217,6 +218,7 @@ function! s:GetTemplateFilesMatching(word, filetype)
 endfunction
 
 " s:UpdateHints(files)                                         {{{2
+" TODO: Factorize: use lh#file#new_cache()
 let s:__cache = {}
 function! s:UpdateHints(files)
   for file in a:files
@@ -236,7 +238,6 @@ function! s:UpdateHints(files)
       let hint_line = match(content, 'VimL:\s*"\s*hint\s*')
       let info.hint = hint_line<0 ? '' : matchstr(content[hint_line], 'hint:\s*\zs.*')
       let info.date = date
-      "
     endif
     " echomsg string(s:__cache[short])
   endfor

@@ -7,7 +7,7 @@
 " Version:      4.4.0.
 let s:k_version = '440'
 " Created:      08th Jan 2021
-" Last Update:  08th Jan 2021
+" Last Update:  09th Jan 2021
 "------------------------------------------------------------------------
 " Description:
 "       Registers MuTemplate as a source for COC
@@ -69,8 +69,11 @@ endfunction
 " Function: coc#source#mut#complete() {{{2
 function! coc#source#mut#complete(opt, cb) abort
   let w = a:opt.word . '*'
-  let files = lh#mut#dirs#get_short_list_of_TF_matching(w, &ft)
-  let entries = map(copy(files), {_,f -> {'file':f, 'equal': 'equal=1', 'word': substitute(f, '^'.&ft.'/', '', ''), 'kind': 'S', 'info': lh#mut#dirs#hint(f), 'isSnippet': 1}})
+  let files = lh#mut#dirs#get_short_list_of_TF_matching(w, &ft, 1)
+  let styles = lh#style#get(&ft)
+  let Hint   = { f -> substitute(lh#mut#dirs#hint(f), '\\n', "\n", 'g') }
+  let Apply_style = { h -> empty(l:styles) ? h : lh#style#apply_these(l:styles, h) }
+  let entries = map(copy(files), {_,f -> {'file':f, 'equal': 'equal=1', 'word': substitute(f, '^'.&ft.'/', '', ''), 'kind': 'S', 'info': l:Apply_style(l:Hint(f)), 'isSnippet': 1}})
   " equal=1 seems requires to not see MuT snippets being discarded
   " isSnippet doesn't seem to be used by COC
   call s:Verbose("coc#MuT: opt %1, callback: %2 -> %3", a:opt, a:cb, entries)
