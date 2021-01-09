@@ -448,6 +448,9 @@ TEMPLATE FILES SYNTAX                       *MuT-syntax*       {{{1
         {snippet-hint} is a textual hint intended to summarize what the
         snippet will be expanded into. So far hints serve only with
         |MuT-snippets|.
+        When displayed hints will be processed through |lh#style#apply_these()|,
+        and `\n` will be transformed into newlines. To produce `\n` sequence,
+        use `\%n`.
 
 ------------------------------------------------------------------------------
 {{{2 How-To                            ~

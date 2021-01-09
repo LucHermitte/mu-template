@@ -71,7 +71,8 @@ function! coc#source#mut#complete(opt, cb) abort
   let w = a:opt.word . '*'
   let files = lh#mut#dirs#get_short_list_of_TF_matching(w, &ft, 1)
   let styles = lh#style#get(&ft)
-  let Hint   = { f -> substitute(lh#mut#dirs#hint(f), '\\n', "\n", 'g') }
+  " Use "\%n" to insert "\n" and not a newline; see tex/note.template
+  let Hint   = { f -> substitute(substitute(lh#mut#dirs#hint(f), '\\n', "\n", 'g'), '\\%n', '\\n', 'g') }
   let Apply_style = { h -> empty(l:styles) ? h : lh#style#apply_these(l:styles, h) }
   let entries = map(copy(files), {_,f -> {'file':f, 'equal': 'equal=1', 'word': substitute(f, '^'.&ft.'/', '', ''), 'kind': 'S', 'info': l:Apply_style(l:Hint(f)), 'isSnippet': 1}})
   " equal=1 seems requires to not see MuT snippets being discarded
