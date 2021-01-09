@@ -1,5 +1,5 @@
 VimL:" property File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 16th Jul 2020
-VimL:" hint: @property def <+ppt+>(self):
+VimL:" hint: @property\ndef <+ppt+>(self):\n  return self.<+ppt+>
 VimL: let s:reindent     = 'python'
 @property
 MuT:  let s:ppt = s:SurroundableParam("ppt", 1)

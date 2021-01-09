@@ -1,5 +1,5 @@
 VimL:" while File Template, Luc Hermitte, lun. 07 déc. 2015 20:41:54 CET
-VimL:" hint: while :
+VimL:" hint: while <+cond+>:\n  ...
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 'python'

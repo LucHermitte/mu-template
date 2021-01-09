@@ -1,5 +1,5 @@
 VimL:" Mut-if File Template, Luc Hermitte, 01st Oct 2013
-VimL:" hint: Mut: if / else . endif
+VimL:" hint: MuT: if <+cond+>\n...\nMuT: else\n...\nMuT: endif
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'

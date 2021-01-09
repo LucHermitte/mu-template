@@ -1,5 +1,5 @@
 VimL:"IF() Template-File, Luc Hermitte
-VimL:" hint: IF(cond) ... ENDIF(cond)
+VimL:" hint: IF(cond)\nENDIF(cond)
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1

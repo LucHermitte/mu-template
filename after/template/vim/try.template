@@ -1,5 +1,5 @@
 VimL:" try File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 10th Mar 2015
-VimL:" hint: try «» catch /.*/ «» endtry
+VimL:" hint: try\n  ...\ncatch /.*/\n  ...\nendtry
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1

@@ -1,5 +1,5 @@
 VimL:" begin-end File Template, Luc Hermitte, 25th Jul 2011
-VimL:" hint: \begin{env}-\end{env}
+VimL:" hint: \begin{env}\n...\n\end{env}
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1

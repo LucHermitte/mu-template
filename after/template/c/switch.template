@@ -1,5 +1,5 @@
 VimL:"{switch-case} Template-File, Luc Hermitte
-VimL:" hint: switch (cond) { case... default ...}
+VimL:" hint: switch (cond) { case...: default: ...}
 VimL: " Usage:
 VimL: " - :MuTemplate c/swith un deux trois
 VimL: " - call lh#mut#expand_and_jump(0, 'c/switch', {'values': ['un', 'deux', 'trois'] })

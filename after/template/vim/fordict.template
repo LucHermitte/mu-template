@@ -1,11 +1,9 @@
 VimL:" fordict File Template, Luc Hermitte <hermitte {at} free {dot} fr>, lun. 07 déc. 2015 20:15:33 CET
-VimL:" hint: for [key,value] in items(dict)
+VimL:" hint: for [<+key+>,<+value+>] in items(<+dict+>)\n  ...\nendfor
 VimL: " surround 1: code
 VimL: " surround 2: dict name
 VimL: " surround 3: key
 VimL: " surround 4: value
-VimL: let s:value_start  = '¡'
-VimL: let s:value_end    = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  let s:snip_params  = {}

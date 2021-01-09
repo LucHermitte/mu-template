@@ -1,5 +1,5 @@
 VimL:"«Vim» function Template File, Luc Hermitte
-VimL:" hint: :function! definition
+VimL:" hint: function! NA#ME() abort\n  ...\nendfunction
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:marker_open  = '<+'

@@ -1,5 +1,5 @@
 VimL:" «printf» File Template, Luc Hermitte <hermitte {at} free {dot} fr>, mar. 26 juil. 2016 17:29:50 CEST
-VimL:" hint: printf("fmt",...)
+VimL:" hint: printf("fmt",...); // + #include
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  let s:ns = &ft == 'cpp' ? 'std::' : ''

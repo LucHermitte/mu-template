@@ -1,5 +1,5 @@
 VimL:" itemize File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 24th Apr 2015
-VimL:" hint: \begin{itemize}\item...
+VimL:" hint: \begin{itemize}\n  \item...\n\end{itemize}
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'

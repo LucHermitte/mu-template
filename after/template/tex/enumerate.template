@@ -1,5 +1,5 @@
 VimL:" enumerate File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 12th Jun 2015
-VimL:" hint: \begin{enumerate}\item...
+VimL:" hint: \begin{enumerate}\n  \item...\n\end{enumerate}
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'

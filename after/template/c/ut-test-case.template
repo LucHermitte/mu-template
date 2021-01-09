@@ -1,5 +1,5 @@
 VimL:" ut-test-case File Template, Luc Hermitte, 30th Apr 2014
-VimL:" hint: Test case snippet
+VimL:" hint: Test case snippet (boost/gtest/cxxtest)
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'

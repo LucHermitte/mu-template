@@ -1,4 +1,4 @@
 VimL:" «LaTeX: center» File Template, Luc Hermitte <hermitte at free.fr>
-VimL:" hint: \begin{center}-\end{center}
+VimL:" hint: \begin{center}\n...\n\end{center}
 VimL: let s:reindent     = 1
 VimL: call s:Include('begin-end', 'tex', {'environment': 'center'})

@@ -1,5 +1,5 @@
 VimL:" method File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 18th Jul 2020
-VimL:" hint: def(self, <+params+):
+VimL:" hint: def(self, <+params+):\n  ...
 VimL: let s:reindent     = 'python'
 MuT:  let s:name   = s:SurroundableParam('name', 2)
 MuT:  let s:params = lh#string#join(', ', 'self', s:SurroundableParam('params', 3))

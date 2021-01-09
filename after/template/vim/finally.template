@@ -1,7 +1,5 @@
 VimL:" finally File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 10th Mar 2015
-VimL:" hint: try «» finally«» endtry
-VimL: let s:value_start = '¡'
-VimL: let s:value_end   = s:value_start
+VimL:" hint: try\n  «»\nfinally\n  «»\nendtry
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 1

@@ -1,5 +1,5 @@
 VimL:" ``VimL for-each loop'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
-VimL:" hint: for var in list
+VimL:" hint: for <+var+> in <+list+>\n  ...\nendfor
 VimL: " surround 1: code
 VimL: " surround 2: dict name
 VimL: " surround 3: iterated element

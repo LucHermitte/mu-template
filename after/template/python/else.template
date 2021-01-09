@@ -1,5 +1,5 @@
 VimL:" else File Template, Luc Hermitte, lun. 07 déc. 2015 20:45:43 CET
-VimL:" hint: else:
+VimL:" hint: else:\n  ...
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 'python'

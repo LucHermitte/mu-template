@@ -1,5 +1,5 @@
 VimL:" Parameter File Template, Luc Hermitte, 30th Apr 2015
-VimL:" hint: let s:arg = s:Param(...)
+VimL:" hint: s:Param("<+param+>", <+default+>)
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'

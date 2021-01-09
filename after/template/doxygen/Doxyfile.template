@@ -1,5 +1,5 @@
 VimL:" Doxyfile template-file, Luc Hermitte, 29th Sep 2013
-VimL:" hint: default skeleton for doxygen configuration file
+VimL:" hint: Default skeleton for doxygen configuration file
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: "

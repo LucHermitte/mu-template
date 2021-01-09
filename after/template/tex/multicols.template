@@ -1,5 +1,5 @@
 VimL:" multicols-environment File Template, Luc Hermitte, 03rd Nov 2020
-VimL:" hint: \begin{multicols}-\end{multicols}
+VimL:" hint: \begin{multicols}{2}\n  ...\n\end{multicols}
 VimL: let s:marker_open  = '{+'
 VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1

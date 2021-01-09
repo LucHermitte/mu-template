@@ -1,3 +1,3 @@
 VimL:" try-finally File Template, Luc Hermitte, 20th Jul 2020
-VimL:" hint: try...except...finally
+VimL:" hint: try:\n  ...\nexcept:\n  ...\nfinally:\n  ...
 VimL: call s:Include('try-full', 'python/internals', {'tryexcept':1, 'tryelse': 0, 'tryfinally': 1})

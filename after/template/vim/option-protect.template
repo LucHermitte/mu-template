@@ -1,5 +1,5 @@
 VimL:" Dispose-pattern for temporaly changing an option, Luc Hermitte <hermitte {at} free {dot} fr>, 20th Jan 2011
-VimL:" hint: try opt_save=&opt | &opt=... | ... finally  &opt)opt_save end_try
+VimL:" hint: try\n  let opt_save = &opt\n  let opt =...\n  ...\nfinally\n  let &opt = opt_save\nend_try
 VimL: let s:value_start = '¡'
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start

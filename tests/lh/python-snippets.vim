@@ -222,6 +222,30 @@ function! s:Test_tryelsefinally() abort
   EOF
 endfunction
 
+"------------------------------------------------------------------------
+" Function: s:Test_finally() {{{2
+function! s:Test_finally() abort
+  SetBufferContent trim << EOF
+  EOF
+
+  " Because of the delayed expansion and the fac <c-y> is defined on the
+  " fly, we cannot tests the templates when menu expand => we need to be
+  " explict and use lh#mut#expand_and_jump() :(
+  normal! G
+  call lh#mut#expand_and_jump(0, 'python/finally')
+
+  " normal! Gafinally
+  " exe "normal a\<Plug>MuT_ckword"
+
+  AssertBufferMatches trim << EOF
+  try:
+      <+code+>
+  finally:
+      <+finallycode+>
+  <++>
+  EOF
+endfunction
+
 " }}}1
 "------------------------------------------------------------------------
 let &cpo=s:cpo_save

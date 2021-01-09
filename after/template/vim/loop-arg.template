@@ -1,5 +1,5 @@
 VimL:" ``VimL loop on function parameters'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
-VimL:" hint: <+i+>=0; while i<a:0 ; actions ; ++i ; endwhile
+VimL:" hint: let <+i+>=0\nwhile <+i+> < a:0\n  ...\n  let <+i+> += 1\nendwhile
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1

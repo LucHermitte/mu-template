@@ -1,5 +1,5 @@
 VimL:" for File Template, Luc Hermitte, 07th Mar 2018
-VimL:" hint: for e in range:
+VimL:" hint: for <+e+> in <+range+>:\n  ...
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'

@@ -1,5 +1,5 @@
 VimL:" while File Template, Luc Hermitte <hermitte {at} free {dot} fr>, lun. 07 déc. 2015 20:31:23 CET
-VimL:" hint: while ...
+VimL:" hint: while\n  ...\nendwhile
 VimL: " surround 1: code
 VimL: " surround 2: condition
 VimL: let s:value_start  = '¡'

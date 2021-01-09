@@ -1,5 +1,5 @@
 VimL:" if File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 07th Nov 2018
-VimL:" hint: `if .. then .. end`
+VimL:" hint: `if .. then\n .. \nend`
 if ¡substitute(s:Surround(2, '<+cond+>'), '^\_s*\|\_s*$', '', 'g')¡ then
     ¡s:Surround(1, '<+code+>')¡
 end<+s:TerminalPlaceHolder()+>

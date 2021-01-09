@@ -1,5 +1,5 @@
 VimL:" ``VimL for-int loop'' File Template, Luc Hermitte <hermitte {at} free {dot} fr>
-VimL:" hint: <+i+>=0; while i<N ; actions ; ++i ; endwhile
+VimL:" hint: let <+i+>=0\nwhile <+i+> < <+N+>\n  ...\n  let <+i+> += 1\nendwhile
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = '¡'
 VimL: let s:reindent     = 1

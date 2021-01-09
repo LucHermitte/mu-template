@@ -1,5 +1,5 @@
 VimL:" path-exists File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 21st Apr 2015
-VimL:" hint: os.path.exists()
+VimL:" hint: os.path.exists() # + import
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 VimL: let s:reindent     = 'python'

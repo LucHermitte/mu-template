@@ -1,5 +1,5 @@
 VimL:" description File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 24th Apr 2015
-VimL:" hint: \begin{description}\item...
+VimL:" hint: \begin{description}\n  \item...\n\end{description}
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '{+'

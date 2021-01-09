@@ -1,4 +1,5 @@
 VimL:" frame for Beamer Template, Luc Hermitte
+VimL:" hint: \begin{frame}\n  \frametitle{...}\n  \frametitle{...}\n  ...\n\end{frame}
 VimL: let s:value_start  = '¡'
 VimL: let s:value_start  = '¡'
 VimL: let s:value_end    = s:value_start
@@ -7,12 +8,12 @@ VimL: let s:marker_close = '+}'
 VimL: let s:reindent     = 1
 VimL: " auto detect tile as the one of the previous (sub)*section
 VimL: silent! unlet s:title
-VimL: let s:title      = lh#tex#mut#last_title()
+MuT:  let s:title      = lh#tex#mut#last_title()
 VimL: let s:title      = lh#ui#input("title ?", s:title)
 VimL: let s:title      = empty(s:title) ?  lh#marker#txt("title") : s:title
-VimL: let s:subtitle   = lh#marker#txt('subtitle')
-VimL: let s:isFragile  = lh#option#get('mut_are_default_frames_fragiles', 1)
-VimL: let s:fragile    = s:isFragile ? "[fragile]" : ""
+MuT:  let s:subtitle   = lh#marker#txt('subtitle')
+MuT:  let s:isFragile  = lh#option#get('mut_are_default_frames_fragiles', 1)
+MuT:  let s:fragile    = s:isFragile ? "[fragile]" : ""
 \begin{frame}{+s:fragile+}
   \frametitle{{+s:title+}}
   \framesubtitle{{+s:subtitle+}}

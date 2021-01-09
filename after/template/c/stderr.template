@@ -1,5 +1,5 @@
 VimL:" «stderr» File Template, Luc Hermitte, 24th Jan 2011
-VimL:" hint: fprintf(stderr,...)
+VimL:" hint: fprintf(stderr,...); // + #include
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 MuT:  let s:ns = &ft == 'cpp' ? 'std::' : ''

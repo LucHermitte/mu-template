@@ -1,5 +1,5 @@
 VimL:" boost-loop-on-tests File Template, Luc Hermitte, 08th Jan 2014
-VimL:" hint: foreach test: add_executable+add_test
+VimL:" hint: foreach(test TESTS_LIST)\n   add_executable(${test} ...)\n   add_test(${test} ...)
 VimL:"
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'

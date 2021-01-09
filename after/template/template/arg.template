@@ -1,5 +1,5 @@
 VimL:" Argument fetching snippet, Luc Hermitte, 02nd Apr 2012
-VimL:" hint: let s:arg = fetch(s:Args[0]) (*deprecated*)
+VimL:" hint: VimL: let s:arg = fetch(s:Args[0]) (*deprecated*)
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 <+'VimL:'+> let s:<+arg0+> = empty(s:Args()) ? <+default+> : (s:Args()[0])

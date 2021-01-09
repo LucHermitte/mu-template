@@ -1,5 +1,5 @@
 VimL:" augroup File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 17th Jan 2011
-VimL:" hint: augroup {group} | au! | augroup END
+VimL:" hint: augroup {group}\n  au!\n  au...\naugroup END
 VimL: let s:value_start = '¡'
 VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
