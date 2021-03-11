@@ -1,5 +1,5 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 08th Jan 2021
+*mu-template.vim*       For Vim version 7+      Last change: 11th Mar 2021
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
@@ -778,6 +778,28 @@ For instance, |C-if| snippet looks like:
     if (¡s:Surround(2,'<+cond+>')¡) {
         ¡s:Surround(1,'<+code+>')¡
     }<++>
+
+Q: "How to have indenting style applied on separated lines?" *s:mut_merge_next_line*
+A: Sometimes we cannot have two lines merged in a snippet, but still want to
+apply styling options on bot line. A typical scenario would be: >
+    VimL: Some first snippet
+    auto a_function()
+    VimL: call s:Include('anothersnippet', 'cpp', arg)
+
+    VimL: The other snippet
+    VimL: let s:mut_merge_next_line = 1 " <<---- what makes the difference!!
+    {return expression;}
+
+Than depending on the style used (|:UseStyle|), this could be translated into:
+- with `:UseStyle -b indent_brace_style=java`: >
+  auto a_function() {
+      return expression;
+  }
+- with `:UseStyle -b indent_brace_style=allman`: >
+  auto a_function()
+  {
+      return expression;
+  }
 
 ------------------------------------------------------------------------------
 {{{2 Encoding issues                   ~

@@ -7,7 +7,7 @@
 " Version:      4.4.0
 let s:k_version = 440
 " Created:      05th Jan 2011
-" Last Update:  08th Jan 2021
+" Last Update:  11th Mar 2021
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -22,6 +22,8 @@ let s:k_version = 440
 " History:
 "       v4.4.0
 "       (*) ENH: Register MuT as a new source in COC
+"       (*) ENH: Add way for applying style on previous+next line
+"           simultaneousy
 "       v4.3.3
 "       (*) BUG: Fix indenting for python
 "       v4.3.1
@@ -1392,6 +1394,21 @@ function! s:InterpretLines(first_line) abort
     if the_line =~ pat_command
       call remove(s:content.lines, s:content.crt) " implicit next, must be done before any s:Include
       call s:InterpretCommand( matchstr(the_line, command_extract_re))
+      if get(s:, 'mut_merge_next_line', 0)
+        unlet s:mut_merge_next_line
+        " Inject next line into previous line in order to merge them
+        " before applying styling options
+        let next_line = remove(s:content.lines, s:content.crt)
+        " Next line shall not be any kind of command
+        if  next_line =~ pat_special
+          throw "Merging next line as been required, but it's `MuT:` command (".next_line.")"
+        elseif  next_line =~ pat_command
+          throw "Merging next line as been required, but it's `VimL:` command (".next_line.")"
+        endif
+        call s:Verbose("Merging `%1`  into `%2`", next_line, s:content.lines[s:content.crt-1])
+        let s:content.lines[s:content.crt-1] .= next_line
+        let s:content.crt -= 1
+      endif
     elseif the_line !~ '^\s*$'
       " NB 1- We must know the expression characters before any interpretation.
       "    2- :r inserts an empty line before the template loaded
