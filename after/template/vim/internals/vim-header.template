@@ -11,7 +11,7 @@ VimL: " <----- License
 MuT:  let s:root2 = expand('%:p')[0:-1+stridx(expand('%:p'), s:path)]
 MuT:  let s:license = glob(s:root2 . 'License*')
 MuT:  if !empty(s:license)
-MuT:    let s:license_type = lh#ft#option#get('license_type', lh#marker#txt('GPLv3 with exceptions'))
+MuT:    let s:license_type = lh#ft#option#get('license_type', &ft, lh#marker#txt('GPLv3 with exceptions'))
 " License:      <+s:license_type+>
 VimL: " TODO store the kind of license somewhere
 VimL: " TODO support storages other than github one
