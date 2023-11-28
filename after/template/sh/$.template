@@ -1,0 +1,12 @@
+VimL:" $ File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 13th Apr 2017
+VimL:" hint: "${env}"
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:env = s:SurroundableParam('variable', 1)
+MuT:  if lh#syntax#match_at('\cquote', line('.'), col('.'))
+${<+s:env+>}<+s:TerminalPlaceHolder()+>
+MuT:  else
+"${<+s:env+>}"<+s:TerminalPlaceHolder()+>
+MuT:  endif
