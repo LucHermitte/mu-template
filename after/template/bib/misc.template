@@ -1,0 +1,13 @@
+VimL:" @misc File Template, Luc Hermitte, 29th Mar 2021
+VimL:" hint: @misc{ref, title={}, author={}, howpublished={}, year=}
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+@misc{<+ref+>,
+    title={<+title+>},
+    author={<+authors+>},
+    howpublished="\url{<+url+>}",
+    year={<+year+>},
+}
+
