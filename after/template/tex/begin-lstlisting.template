@@ -1,0 +1,10 @@
+VimL:" begin-lstlisting File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 24th Apr 2015
+VimL:" hint: \begin{lstlisting}\n  \item...\n\end{lstlisting}
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '{+'
+VimL: let s:marker_close = '+}'
+VimL: let s:reindent     = 1
+\begin{lstlisting}[basicstyle=\tiny]
+  {+s:Surround(1, lh#marker#txt())+}
+\end{lstlisting}{+s:TerminalPlaceHolder()+}
