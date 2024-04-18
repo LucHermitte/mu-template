@@ -6,10 +6,11 @@ VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 usage() {
+    [ -z "$1" ] || echo
     echo "USAGE: $0 <+args+>"
     [ -z "$1" ] || {
         echo
-        echo "$1"
+        echo "Error: $1"
         exit 127
     }
 }
