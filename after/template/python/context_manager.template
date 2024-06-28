@@ -1,0 +1,11 @@
+VimL:" context_manager File Template, Luc Hermitte, 28th Jun 2024
+VimL:" hint: class implementing context manager services
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:clsname      = s:SurroundableParam('clsname', 2, lh#marker#txt(lh#naming#type(expand('%:t:r'))))
+MuT:  let s:functions    = s:Param('functions', lh#mut#snippets#new_function_list())
+VimL: call s:functions.add([{'name': '__enter__', 'params': 'self', 'return': string(s:clsname), 'doc': '', 'code': "return self"}])
+VimL: call s:functions.add([{'name': '__exit__', 'params': 'self, exception_type, exception_value, exception_traceback', 'return': 'Literal[False]', 'doc': '', 'code': 'return False'}])
+VimL: call s:Include('class', 'python', {'indented': 0, 'cls-doc': s:Param("cls-doc", lh#marker#txt("Context Manager over"))})
