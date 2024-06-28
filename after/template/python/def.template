@@ -6,19 +6,30 @@ VimL: let s:reindent     = 'python'
 MuT:  let s:function = s:Param('function', {})
 MuT:  let s:kind = get(s:function, 'kind', '')
 MuT:  if s:kind =~ '\v__\S+__'
+VimL:   " kind => include the snippet named "{kind}"
 VimL:   " avoid infinite loop thanks to :unlet
 VimL:   unlet s:function['kind']
 VimL:   call s:Include(s:kind, 'python', extend(s:function, {'indented': 0}))
 MuT:  else
-VimL: " TODO: add self, if not yet defined in method cases ; and auto-detect methods!
-MuT:  let s:params = (s:SurroundableParam('params', 3))
-MuT:  if (indent('.') > 0) && (s:params !~ '^self')
-VimL:   let s:params = lh#string#join(', ', 'self', s:params)
-MuT:  endif
-def <+s:SurroundableParam('name', 2) +>(<+s:params+>):
-MuT:  if lh#ft#option#get('template_expand_doc', &ft, 1)
-    VimL: call s:Include('docstring', 'python', {'indented': 1})
-MuT:  endif
-    <+s:SurroundableParam('code', 1, lh#marker#txt('pass'))+>
+VimL:   " TODO: add self, if not yet defined in method cases ; and auto-detect methods!
+MuT:    let s:params = get(s:function, 'params', s:SurroundableParam('params', 3))
+MuT:    if (indent('.') > 0) && (s:params !~ '^self')
+VimL:     let s:params = lh#string#join(', ', 'self', s:params)
+MuT:    endif
+MuT:    let s:name = get(s:function, 'name', s:SurroundableParam('name', 2))
+MuT:    let s:return = get(s:function, 'return', s:Param('return', ''))
+MuT:    let s:return = empty(s:return) ? s:return : ' -> ' . s:return
+def <+s:name+>(<+s:params+>)<+s:return+>:
+MuT:    let s:doc = get(s:function, 'doc', s:Param('fn-doc', lh#marker#txt('doc')))
+MuT:    if !empty(s:doc) && lh#ft#option#get('template_expand_doc', &ft, 1)
+VimL:     call s:Include('docstring', 'python', {'indented': 1, 'doc': s:doc})
+MuT:    endif
+MuT:    let s:code = get(s:function, 'code', s:SurroundableParam('code', 1, lh#marker#txt('pass')))
+    <+s:code+>
+MuT:    if empty(s:function)
+VimL:     " When used from script => no terminal placeholder!
 <+s:TerminalPlaceHolder()+>
+MuT:    else  " But an empty line!
+
+MuT:    endif
 MuT:  endif
