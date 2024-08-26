@@ -1,4 +1,11 @@
-# µTemplate [![Last release](https://img.shields.io/github/tag/LucHermitte/mu-template.svg)](https://github.com/LucHermitte/mu-template/releases) [![Build Status](https://secure.travis-ci.org/LucHermitte/mu-template.png?branch=master)](http://travis-ci.org/LucHermitte/mu-template) [![Project Stats](https://www.openhub.net/p/21020/widgets/project_thin_badge.gif)](https://www.openhub.net/p/21020)
+# µTemplate [![Last release][Releases-badge]][Releases-url] [![Build Status][gh-action-badge]][gh-action-result] [![Project Stats][openhub-badge]][openhub-url]
+
+[Releases-badge]:   https://img.shields.io/github/tag/LucHermitte/mu-template.svg
+[Releases-url]:     https://github.com/LucHermitte/mu-template/tags
+[gh-action-badge]:  ./../../actions/workflows/tests.yml/badge.svg?branch=master "Test"
+[gh-action-result]: ./../../actions/workflows/tests.yml?query=branch%3Amaster
+[openhub-badge]:    https://www.openhub.net/p/21020/widgets/project_thin_badge.gif
+[openhub-url]:      https://www.openhub.net/p/21020
 
 ## Introduction
 
