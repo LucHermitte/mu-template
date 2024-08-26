@@ -2,8 +2,9 @@
 " It should automatically load plugins installed as packages by vim-flavor
 set nocompatible
 
-set loadplugins
-filetype plugin indent on
+filetype plugin on
+filetype indent on
 syntax on
 
 set noswapfile nobackup
+set loadplugins
