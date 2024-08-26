@@ -7,7 +7,7 @@
 " Version:	4.4.0
 let s:version = '4.4.0'
 " Created:	06th Nov 2007
-" Last Update:	08th Jan 2021
+" Last Update:	26th Aug 2024
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
@@ -22,7 +22,7 @@ endtry
 finish
 License.md
 README.md
-VimFlavor
+Flavorfile
 addon-info.json
 after/plugin/mu-template.vim
 after/template/MyProject-file-header.template

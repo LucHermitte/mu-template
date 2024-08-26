@@ -91,7 +91,7 @@ RSpec.describe "Python snippets", :python do
             constructor
             """
             «pass»
-        «»
+
     «»
     EOF
   end
