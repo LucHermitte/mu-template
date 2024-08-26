@@ -7,7 +7,7 @@
 " Version:      4.3.3.
 let s:k_version = '433'
 " Created:      18th Jul 2020
-" Last Update:  21st Jul 2020
+" Last Update:  26th Aug 2024
 "------------------------------------------------------------------------
 " Description:
 "       Pure vimscript unit cases for Python snippets
@@ -59,6 +59,7 @@ endfunction
 "------------------------------------------------------------------------
 " Function: s:Test_explicit_method_func() {{{2
 function! s:Test_explicit_method_func() abort
+  Comment "indentexpr: " . &indentexpr
   SetBufferContent trim << EOF
   class foo(object):
   EOF
