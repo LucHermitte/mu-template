@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.4.0
-let s:k_version = 440
+" Version:      4.4.1
+let s:k_version = 441
 " Created:      05th Jan 2011
-" Last Update:  11th Mar 2021
+" Last Update:  29th Aug 2024
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 440
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.4.1
+"       (*) TST: Work around vim#13733 that vimrunner relies upon for testing
 "       v4.4.0
 "       (*) ENH: Register MuT as a new source in COC
 "       (*) ENH: Add way for applying style on previous+next line
@@ -506,7 +508,6 @@ function! s:Param(name, default) abort
   else
     let i = len(s:args) - 1
     while i > -1
-      silent! unlet arg
       let arg = s:args[i]
 
       if type(arg)==type([])
@@ -521,6 +522,7 @@ function! s:Param(name, default) abort
       elseif type(arg)==type({}) && has_key(arg, a:name)
         return arg[a:name]
       endif
+      silent! unlet arg
       let i -= 1
     endwhile
     " Force to return a modifiable reference
@@ -697,6 +699,7 @@ function! s:InjectAndTransform(templatename, Transformation, ...) abort
       let lines = a:Transformation(lines)
       let lines += [s:Command( 'call s:PopArgs()')]
       call extend(s:content.lines, lines, a:pos)
+    endif
   finally
     let &wildignore = wildignore_save
   endtry
@@ -757,6 +760,7 @@ function! s:Surround(id, default) abort
     endif
 
     let s:content.need_to_reinject_ignored = 1
+    call s:Verbose("Ignoring %1 from Surroung", content)
     return lh#style#just_ignore_this(content, s:content.cache_of_ignored_matches)
   else
     return a:default
@@ -950,7 +954,9 @@ function! s:DoExpand(NeedToJoin) abort
     let s:marker_open  = '<+'
     let s:marker_close = '+>'
     " Default support for evaluation of placeholder-text
-    silent! unlet s:dont_eval_markers
+    if exists('s:dont_eval_markers')
+      silent! unlet s:dont_eval_markers
+    endif
     " Default fileencoding to override in template files
     let s:fileencoding = &enc
 
@@ -994,7 +1000,9 @@ function! s:DoExpand(NeedToJoin) abort
       silent exe get(s:content, 'first_line_indented', pos).','.(last).'normal! =='
       unlet s:reindent
     endif
-    silent! unlet s:content.first_line_indented
+    if has_key(s:content, 'first_line_indented')
+      silent! unlet s:content.first_line_indented
+    endif
 
     " Join with the line after the template that have been inserted {{{4
     call s:JoinWithNext(s:NeedToJoin,pos,last)
@@ -1009,7 +1017,7 @@ function! s:DoExpand(NeedToJoin) abort
     let &foldenable=foldenable
     let s:args=[]
     " and unfold the lines inserted
-    if &foldenable
+    if &foldenable && foldclosed(pos) >= 0
       silent! exe (pos).','.(last).'foldopen!'
     endif
   endtry
@@ -1221,6 +1229,8 @@ function! s:InterpretValuesAndMarkers(line) abort
           " can_apply_style remembers the global setting while
           " s:content.can_apply_style returns whether s:Surround() has
           " been called.
+          call s:Verbose("Ignoring %1 as can_apply_style=%2 and s:content.can_apply_style=%3",
+                \ value, can_apply_style, get(s:content, 'can_apply_style', 1))
           let value = lh#style#just_ignore_this(value, s:content.cache_of_ignored_matches)
         endif
       elseif get(s:, 'dont_eval_markers', 0)
@@ -1257,6 +1267,7 @@ endfunction
 
 " s:ApplyStyling(line) ~ add spaces or NL before/after brackets{{{3
 function! s:ApplyStyling(line) abort
+  call s:Verbose("Apply styling on %1", a:line)
   " @pre must not be defining VimL functions
   if !empty(s:__function)
     throw 'already within the definition of a function (no non-VimL code authorized)'
@@ -1274,6 +1285,7 @@ function! s:ReinjectUnstyledText(line) abort
   call lh#assert#value(s:__function).empty('already within the definition of a function (no non-VimL code authorized)')
   call lh#assert#value(s:content).has_key('cache_of_ignored_matches')
 
+  call s:Verbose("Reinject %1", a:line)
   return lh#style#reinject_cached_ignored_matches(a:line, s:content.cache_of_ignored_matches)
 endfunction
 
@@ -1623,7 +1635,7 @@ endfunction
 
 " s:TryActivateStakeholders(pos, last)                         {{{3
 function! s:TryActivateStakeholders(pos,last) abort
-  if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1)
+  if exists(':StakeholdersEnable') && s:Option('use_stakeholders', 1) " && !get(g:, 'coc_enabled', 0)
     if !exists('#stakeholders') " Stakeholder not enabled for all buffers
       if !exists('b:stakeholders') || exists('b:stakeholders_range')
         " previously activated on a range, or never activated
