@@ -14,6 +14,15 @@ module Vimrunner
         script_path = Path.new(script)
         command("runtime #{script_path}")
     end
+
+    def prepend_rtp(dir)
+      dir_path = Path.new(dir)
+      if File.directory?(dir_path)
+        prepend_runtimepath(dir)
+      else
+        pp "Path #{dir_path} doesn't exist"
+      end
+    end
   end
 
   module Platform
