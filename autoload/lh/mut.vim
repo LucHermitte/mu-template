@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.4.1
-let s:k_version = 441
+" Version:      4.4.2
+let s:k_version = 442
 " Created:      05th Jan 2011
-" Last Update:  29th Aug 2024
+" Last Update:  12th Sep 2024
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 441
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.4.2
+"       (*) BUG: Fix indentation when surrounding in Python
 "       v4.4.1
 "       (*) TST: Work around vim#13733 that vimrunner relies upon for testing
 "       v4.4.0
@@ -358,6 +360,7 @@ function! lh#mut#surround() abort
     " 2- extract the thing to be surrounded {{{3
     let s:content.count0 = v:count
     let surround_id = 'surround'.v:count1
+    let s:content['surround_id'] = surround_id
     let s:content[surround_id] = lh#visual#cut()
     " The following hack is required in line-wise surrounding to not expand the
     " template-file after the first line after the one surrounded.
@@ -744,6 +747,9 @@ function! s:Surround(id, default) abort
     " In the case of surrounding multiple lines with python, we need to fix the
     " indentation here
     if get(s:content, 'reindent') == 'python' && stridx(content, "\n") >= 0
+      " Note: The following code expects no mismatch between tabs and spaces
+      " as it should be in Python.
+      " If there was, the following code wouldn't work.
       let ref_line = s:content.lines[s:content.crt]
       let ref_indent = matchstr(ref_line, '^\s*')
       let lRes = split(content, "\n")
@@ -872,6 +878,13 @@ function! s:NonNullIndent(line) abort
   return id
 endfunction
 
+" s:indent_of_string(string)                                   {{{3
+function! s:indent_of_string(string) abort
+  let leading_spaces = matchstr(a:string, '^\s*')
+  let leading_spaces = substitute(leading_spaces, "\t", repeat(' ', &tabstop), 'g')
+  return strlen(leading_spaces)
+endfunction
+
 " s:LoadTemplate(pos, templatepath [, map_action])             {{{3
 function! s:LoadTemplate(pos, templatepath, ...) abort
   call s:Verbose('s:LoadTemplate(%1)', [a:pos, a:templatepath]+a:000)
@@ -889,9 +902,11 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
   if get(s:, 'reindent') == 'python'
     call context.restore(s:content, 'crt_indent')
     if !has_key(s:content, 'crt_indent')
-      let s:content.crt_indent = a:pos > 0
-            \ ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
+      let s:content.crt_indent
+            \ = a:pos > 0 ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
+            \ : get(s:content, 'is_surrounding', 0) ? s:indent_of_string(s:content[s:content.surround_id])
             \ : s:NonNullIndent(line('.'))
+      call s:Verbose("Line #%1 Indent: %2/%4 -> %3", line('.'), s:content.crt_indent, getline('.'), python#GetIndent(line('.')))
       call s:Verbose("Loading(%1 at %2) no previous indent - using %3 <- %4", a:templatepath, a:pos, s:content.crt_indent, a:pos > 0 ? 'nb heading spaces of(previous line)' : 'indent(".")')
     else
       call s:Verbose("Loading(%1 at %2) from previous indent %3", a:templatepath, a:pos, s:content.crt_indent)
@@ -901,6 +916,7 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
     call map(lines, 'v:val !~? "\\v^VimL:|^MuT:|^\\s*$" ? indent . v:val : v:val')
   endif
   call extend(s:content.lines, lines, a:pos)
+  let g:lines = copy(s:content.lines)
   return len(lines)
 endfunction
 
