@@ -906,7 +906,6 @@ function! s:LoadTemplate(pos, templatepath, ...) abort
             \ = a:pos > 0 ? len(matchstr(s:content.lines[a:pos - 1], '\v^\s*'))
             \ : get(s:content, 'is_surrounding', 0) ? s:indent_of_string(s:content[s:content.surround_id])
             \ : s:NonNullIndent(line('.'))
-      call s:Verbose("Line #%1 Indent: %2/%4 -> %3", line('.'), s:content.crt_indent, getline('.'), python#GetIndent(line('.')))
       call s:Verbose("Loading(%1 at %2) no previous indent - using %3 <- %4", a:templatepath, a:pos, s:content.crt_indent, a:pos > 0 ? 'nb heading spaces of(previous line)' : 'indent(".")')
     else
       call s:Verbose("Loading(%1 at %2) from previous indent %3", a:templatepath, a:pos, s:content.crt_indent)
