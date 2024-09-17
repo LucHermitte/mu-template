@@ -4,6 +4,6 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-VimL: call s:AddPostExpandCallback('lh#dev#import#add("Enum", {"symbol": "enum"})')
-class <+s:SurroundableParam('enum-name', 2, lh#marker#txt('enumname'))+>:
+VimL: call s:AddPostExpandCallback('lh#dev#import#add("enum", {"symbol": "Enum"})')
+class <+s:SurroundableParam('enum-name', 2, lh#marker#txt('enumname'))+>(Enum):
     <+s:SurroundableParam('values', 1, lh#marker#txt('pass'))+>
