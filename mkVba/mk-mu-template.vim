@@ -4,10 +4,10 @@
 "		<URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/tree/master/License.md>
-" Version:	4.4.2
-let s:version = '4.4.2'
+" Version:	4.5.0
+let s:version = '4.5.0'
 " Created:	06th Nov 2007
-" Last Update:	12th Sep 2024
+" Last Update:	03rd Oct 2024
 "------------------------------------------------------------------------
 cd <sfile>:p:h
 try
