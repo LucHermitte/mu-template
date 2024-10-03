@@ -98,6 +98,7 @@ after/template/help/section.template
 after/template/html.template
 after/template/license/commented.template
 after/template/license/copying.template
+after/template/license/text/apache-2.template
 after/template/license/text/BSD-2.template
 after/template/license/text/BSD-3.template
 after/template/license/text/MIT.template

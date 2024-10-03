@@ -10,7 +10,8 @@ MuT:  if !empty(s:start_date)
 VimL:   call add(s:dates, s:start_date)
 MuT:  endif
 VimL: call add(s:dates, strftime('%Y'))
-Copyright (C) <+join(s:dates, '-')+> <+s:Param('author', Author())+>
+MuT:  let s:author = s:Param('author', Author())
+Copyright (C) <+join(s:dates, '-')+> <+s:author+>
 
 This file is part of <+s:Param('project')+>
 

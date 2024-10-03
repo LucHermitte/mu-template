@@ -4,7 +4,14 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
-Copyright (c) <+strftime('%Y')+>, <+Author()+>
+MuT:  let s:dates = []
+MuT:  let s:start_date = s:Param('start_date', '')
+MuT:  if !empty(s:start_date)
+VimL:   call add(s:dates, s:start_date)
+MuT:  endif
+VimL: call add(s:dates, strftime('%Y'))
+MuT:  let s:author = s:Param('author', Author())
+Copyright (C) <+join(s:dates, '-')+>, <+s:author+>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

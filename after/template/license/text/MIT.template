@@ -4,9 +4,16 @@ VimL: let s:value_start = '¡'
 VimL: let s:value_end   = s:value_start
 VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
+MuT:  let s:dates = []
+MuT:  let s:start_date = s:Param('start_date', '')
+MuT:  if !empty(s:start_date)
+VimL:   call add(s:dates, s:start_date)
+MuT:  endif
+VimL: call add(s:dates, strftime('%Y'))
+MuT:  let s:author = s:Param('author', Author())
 The MIT License (MIT)
 
-Copyright (c) <+strftime('%Y')+> <+Author()+>
+Copyright (C) <+join(s:dates, '-')+> <+s:author+>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
