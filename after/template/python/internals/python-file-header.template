@@ -1,0 +1,2 @@
+VimL:" Default header for new python files Template, Luc Hermitte <hermitte {at} free {dot} fr>, 03rd Oct 2024
+VimL: call s:Include('commented', 'license', {'cmdline': 'apache-2'})

@@ -6,3 +6,5 @@ VimL: let s:marker_open  = '<+'
 VimL: let s:marker_close = '+>'
 #!/usr/bin/env python
 # -*- coding: <+empty(&fenc) ? &enc : &fenc+> -*-
+
+VimL: call s:Include('python-file-header', 'python/internals')
