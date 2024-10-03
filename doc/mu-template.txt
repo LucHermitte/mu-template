@@ -1,9 +1,9 @@
 *mu-template.txt*       Utility for loading and expanding template-files
-*mu-template.vim*       For Vim version 7+      Last change: 11th Mar 2021
+*mu-template.vim*       For Vim version 7+      Last change: 03rd Oct 2024
 *µTemplate*
 
                     µTemplate MANUAL    by Luc Hermitte (LH)
-                    Version 4.4.0
+                    Version 4.5.0
 
 
 ==============================================================================
@@ -616,6 +616,10 @@ A:  Three API functions are provided for this purpose:
       sense (|String|, |List|, |Dict|), the parameter is inserted in the
       parameter stack with the default value specified, it didn't exist
       before.
+      |s:Params()| takes 2 parameters:
+      - the parameter name
+      - and the optional default value -- if not specified, it's assumed to be
+        `lh#marker#txt(parametername)`.
 
     In order to support optional arguments, the arguments passed (to
     |s:PushArgs()|, not to |s:Include()|), and fetched, shall be wrapped in a

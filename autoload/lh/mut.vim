@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.4.2
-let s:k_version = 442
+" Version:      4.4.3
+let s:k_version = 443
 " Created:      05th Jan 2011
-" Last Update:  12th Sep 2024
+" Last Update:  03rd Oct 2024
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -20,6 +20,8 @@ let s:k_version = 442
 "       Requires Vim7+
 "       See plugin/mu-template.vim
 " History:
+"       v4.5.0
+"       (*) ENH: Support default default-value in s:Param()
 "       v4.4.2
 "       (*) BUG: Fix indentation when surrounding in Python
 "       v4.4.1
@@ -503,9 +505,11 @@ function! s:Args() abort
   return empty(s:args) ? [] : s:args[-1]
 endfunction
 
-" Function: s:Param(name,default)    {{{3
+" Function: s:Param(name,[default])    {{{3
+" @param name     Name of the parameter
+" @param default  Default value for default is lh#marker#text(name)
 " @returns a list. If the list is empty, this mean no parameter was given.
-function! s:Param(name, default) abort
+function! s:Param(name, ...) abort
   if empty(a:name)
     return s:args[-1]
   else
@@ -529,7 +533,7 @@ function! s:Param(name, default) abort
       let i -= 1
     endwhile
     " Force to return a modifiable reference
-    let res = {(a:name) : a:default }
+    let res = {(a:name) : get(a:, 1, lh#marker#txt(a:name)) }
     " Try to use last param
     " TODO: refactor s:PushArgs & co:
     " -> arguments shall only be pushed on call to include and popped on the
@@ -557,6 +561,7 @@ endfunction
 " Function: s:CmdLineParams(...)     {{{3
 function! s:CmdLineParams(...) abort
   let args = lh#list#flatten(copy(s:args))
+  let g:cmdline_args = args
   " call filter(args, 'has_key(v:val, "cmdline")')
   let cmdline = lh#list#transform_if(args, [], 'v:val.cmdline', 'type(v:val) == type({}) && has_key(v:val, "cmdline")')
   return !empty(cmdline) ? cmdline[-1] : a:000
