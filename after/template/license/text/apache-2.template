@@ -1,0 +1,29 @@
+VimL:" Apache-2 File Template, Luc Hermitte <hermitte {at} free {dot} fr>, 03rd Oct 2024
+VimL:" hint: Apache 2.0
+VimL: let s:value_start = '¡'
+VimL: let s:value_end   = s:value_start
+VimL: let s:marker_open  = '<+'
+VimL: let s:marker_close = '+>'
+MuT:  let s:dates = []
+MuT:  let s:start_date = s:Param('start_date', '')
+MuT:  if !empty(s:start_date)
+VimL:   call add(s:dates, s:start_date)
+MuT:  endif
+VimL: call add(s:dates, strftime('%Y'))
+Copyright (C) <+join(s:dates, '-')+> <+s:Param('author', Author())+>
+
+This file is part of <+s:Param('project')+>
+
+    <+s:Param('project-url')+>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
