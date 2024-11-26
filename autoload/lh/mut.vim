@@ -7,7 +7,7 @@
 " Version:      4.4.3
 let s:k_version = 443
 " Created:      05th Jan 2011
-" Last Update:  03rd Oct 2024
+" Last Update:  27th Nov 2024
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -1090,7 +1090,7 @@ function! s:InterpretCommand(what) abort
       endif " != :function
     endif
   catch /.*/
-    call lh#common#warning_msg("muTemplate: Cannot execute `".a:what."': ".v:exception.'  ('.v:throwpoint.')')
+    call lh#warning#emit("muTemplate: Cannot execute `".a:what."': ".v:exception, v:throwpoint)
     throw "muTemplate: Cannot execute `".a:what."': ".v:exception.'  ('.v:throwpoint.')'
   endtry
 endfunction
