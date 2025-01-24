@@ -4,10 +4,10 @@
 "               <URL:http://github.com/LucHermitte/mu-template>
 " License:      GPLv3 with exceptions
 "               <URL:http://github.com/LucHermitte/mu-template/blob/master/License.md>
-" Version:      4.4.3
-let s:k_version = 443
+" Version:      4.5.0
+let s:k_version = 450
 " Created:      05th Jan 2011
-" Last Update:  27th Nov 2024
+" Last Update:  24th Jan 2025
 "------------------------------------------------------------------------
 " Description:
 "       mu-template internal functions
@@ -22,6 +22,7 @@ let s:k_version = 443
 " History:
 "       v4.5.0
 "       (*) ENH: Support default default-value in s:Param()
+"       (*) BUG: Avoid reindenting when there is nothing to reindent
 "       v4.4.2
 "       (*) BUG: Fix indentation when surrounding in Python
 "       v4.4.1
@@ -238,7 +239,7 @@ function! lh#mut#expand(NeedToJoin, ...) abort
     let dir = fnamemodify(a:1, ':h')
     if dir != "" | let dir .= '/' | endif
     let ft  = fnamemodify(a:1, ':t')
-    " first option : the template file is specified ; cf. cpp/template-class
+  " first option : the template file is specified ; cf. cpp/template-class
   else
     let ft=strlen(&ft) ? &ft : 'unknown'
     let dir = ''
@@ -296,7 +297,7 @@ function! lh#mut#jump_to_start() abort
     try
       let b:marker_select_current_fwd = 1
       exe "normal \<Plug>MarkersJumpF"
-      " return Marker_Jump({'direction':1, 'mode':'i'})
+    " return Marker_Jump({'direction':1, 'mode':'i'})
     finally
       call cleanup.finalize()
     endtry
@@ -326,7 +327,7 @@ function! lh#mut#expand_and_jump(needToJoin, ...) abort
       call lh#mut#jump_to_start()
     endif
     return res
-    " return [res, '']
+  " return [res, '']
   finally
     let s:args=[]
   endtry
@@ -697,7 +698,7 @@ function! s:InjectAndTransform(templatename, Transformation, ...) abort
     let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, templatepath)
     if len(matching_filenames) == 0
       return 0 " NB: the finally block is still executed
-      " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
+    " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
     else
       if &verbose >= 1
         echo "Loading <".matching_filenames[0].">"
@@ -803,7 +804,9 @@ endfunction
 
 " Function: s:StartIndentingHere()   {{{3
 function! s:StartIndentingHere() abort
-  let s:content.first_line_indented = s:Line()
+  let first = s:Line()
+  call s:Verbose("Mark start of indentation at line #%1", first)
+  let s:content.first_line_indented = first
   let s:reindent = 1
 endfunction
 
@@ -848,7 +851,7 @@ function! s:LoadTemplateLines(pos, templatepath) abort
     let matching_filenames = lh#path#glob_as_list(g:lh#mut#dirs#cache, a:templatepath)
     if len(matching_filenames) == 0
       return [] " NB: the finally block is still executed
-      " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
+    " call lh#common#warning_msg("muTemplate: No template file matching <".a:templatepath.">")
     else
       if &verbose >= 1
         echo "Loading <".matching_filenames[0].">"
@@ -1017,7 +1020,13 @@ function! s:DoExpand(NeedToJoin) abort
     " Reindent {{{4
     " Other indenting scheme: "python", managed elsewhere
     if get(s:, 'reindent', 0) == 1
-      silent exe get(s:content, 'first_line_indented', pos).','.(last).'normal! =='
+      let first = get(s:content, 'first_line_indented', pos)
+      if first <= last
+        call s:Verbose("Apply reindent %1 .. %2", first, last)
+        silent exe first.','.(last).'normal! =='
+      else
+        call s:Verbose("Ignore reindent %1 .. %2", first, last)
+      endif
       unlet s:reindent
     endif
     if has_key(s:content, 'first_line_indented')
